@@ -25,19 +25,19 @@ jobs:
           dotnet-version: '8.0'
 
       - name: Restore dependencies
-        working-directory: prueba
-        run: dotnet restore prueba.csproj
+        working-directory: TTE.API
+        run: dotnet restore TTE.API.csproj
 
       - name: Build project
-        working-directory: prueba
+        working-directory: TTE.API
         run: dotnet build --no-restore --configuration Release
 
       - name: Build Tests
-        working-directory: prueba.Tests
+        working-directory: TTE.Test
         run: dotnet build --configuration Release
 
       - name: Run Tests
-        working-directory: prueba.Tests
+        working-directory: TTE.Test
         run: dotnet test --no-build --configuration Release
   publish:
     needs: build-test
@@ -65,7 +65,7 @@ jobs:
             | docker login --username AWS --password-stdin ${{ secrets.REPOSITORY }}
 
       - name: Publish .NET App
-        working-directory: prueba
+        working-directory: TTE.API
         run: dotnet publish -c Release -o publish
 
       - name: Extract Docker metadata
