@@ -1,11 +1,14 @@
+using TTE.API.Configurations;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Register Application and Infrastructure Services
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddSwaggerServices(builder.Configuration);
+builder.Services.AddAuthServices();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
