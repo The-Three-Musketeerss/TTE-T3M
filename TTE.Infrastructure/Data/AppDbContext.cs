@@ -20,22 +20,35 @@ namespace TTE.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany()
-                .HasForeignKey(p => p.CategoryId);
-
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Electronics", Approved = true },
-                new Category { Id = 2, Name = "Furniture", Approved = false }
-            );
+        new Category { Id = 1, Name = "Electronics", Approved = true },
+        new Category { Id = 2, Name = "Books", Approved = true }
+    );
 
+            // Seed Products
             modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Title = "Laptop", Price = 1200.99M, CategoryId = 1, Description = "", Image = "", Approved = true },
-                new Product { Id = 2, Title = "Table", Price = 200.50M, CategoryId = 2, Description = "", Image = "", Approved = false }
+                new Product
+                {
+                    Id = 1,
+                    Title = "Smartphone",
+                    Price = 299.99m,
+                    Description = "Latest model smartphone.",
+                    Image = "smartphone.jpg",
+                    Approved = true,
+                    CategoryId = 1 // References Electronics
+                },
+                new Product
+                {
+                    Id = 2,
+                    Title = "Novel",
+                    Price = 19.99m,
+                    Description = "Bestselling novel.",
+                    Image = "novel.jpg",
+                    Approved = true,
+                    CategoryId = 2 // References Books
+                }
             );
         }
+
     }
 }

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TTE.Infrastructure.Models;
 
-namespace TTE.Infrastructure.Models
+namespace TTE.Application.DTOs
 {
-    public class Product
+    public class ProductDto
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
@@ -17,7 +18,5 @@ namespace TTE.Infrastructure.Models
 
         //Category FK
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
-
     }
 }

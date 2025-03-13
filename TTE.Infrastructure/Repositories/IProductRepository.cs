@@ -9,9 +9,6 @@ namespace TTE.Infrastructure.Repositories
 {
     public interface IProductRepository
     {
-        public interface IProductRepository
-        {
-            Task<IEnumerable<Product>> GetProducts();
-        }
+        Task<IEnumerable<Product>> GetProducts();
     }
 }
