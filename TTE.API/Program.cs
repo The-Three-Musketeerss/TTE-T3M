@@ -1,5 +1,4 @@
-using TTE.Application;
-using TTE.Infrastructure;
+using TTE.API.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 

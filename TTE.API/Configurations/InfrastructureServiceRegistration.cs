@@ -4,7 +4,7 @@ using TTE.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using TTE.Infrastructure.Data;
 
-namespace TTE.Infrastructure
+namespace TTE.API.Configurations
 {
     public static class InfrastructureServiceRegistration
     {
@@ -17,9 +17,6 @@ namespace TTE.Infrastructure
             {
                 options.UseMySql(connectionString, serverVersion);
             });
-
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
 
             return services;
 
