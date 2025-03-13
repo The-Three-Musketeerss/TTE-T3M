@@ -1,10 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using TTE.Application.Interfaces;
-using TTE.Application.Services;
 using TTE.Commons;
-using TTE.Infrastructure.Repositories;
 
 namespace TTE.API.Configurations
 {

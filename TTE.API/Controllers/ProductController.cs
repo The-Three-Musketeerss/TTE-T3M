@@ -5,7 +5,7 @@ using TTE.Application.Interfaces;
 namespace Api.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/products")]
     public class ProductController : ControllerBase
     {

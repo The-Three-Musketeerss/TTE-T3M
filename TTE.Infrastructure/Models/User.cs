@@ -12,11 +12,14 @@ namespace TTE.Infrastructure.Models
         public string UserName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string SecurityQuestion { get; set; } = string.Empty;
         public string SecurityAnswer { get; set; } = string.Empty;
 
         //Role FK
         public int RoleId { get; set; }
         public Role Role { get; set; }
+
+        //SecurityQuestion FK
+        public int SecurityQuestionId { get; set; }
+        public SecurityQuestion SecurityQuestion { get; set; }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TTE.Infrastructure.Models;
 
 
@@ -17,6 +12,20 @@ namespace TTE.Infrastructure.Data
 
         public DbSet<Models.Category> Categories { get; set; }
         public DbSet<Models.Product> Products { get; set; }
+        public DbSet<Models.Job> Jobs { get; set; }
+        public DbSet<Models.User> Users { get; set; }
+        public DbSet<Models.Role> Roles { get; set; }
+        public DbSet<Models.Cart> Carts { get; set; }
+        public DbSet<Models.Cart_Item> Cart_Items { get; set; }
+        public DbSet<Models.Order> Orders { get; set; }
+        public DbSet<Models.Order_Items> Order_Items { get; set; }
+        public DbSet<Models.Address> Addresses { get; set; }
+        public DbSet<Models.Coupon> Coupons { get; set; }
+        public DbSet<Models.Inventory> Inventory { get; set; }
+        public DbSet<Models.Review> Reviews { get; set; }
+        public DbSet<Models.Wishlist> Wishlists { get; set; }
+        public DbSet<Models.Rating> Ratings { get; set; }
+        public DbSet<Models.SecurityQuestion> SecurityQuestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
