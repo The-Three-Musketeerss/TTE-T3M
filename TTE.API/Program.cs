@@ -5,10 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Register Application and Infrastructure Services
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddSwaggerServices(builder.Configuration);
+builder.Services.AddAuthServices();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 

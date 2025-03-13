@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
 
 namespace Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
