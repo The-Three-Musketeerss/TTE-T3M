@@ -6,20 +6,22 @@ using TTE.Infrastructure.Data;
 
 namespace TTE.Infrastructure
 {
-    public class ServiceRegistration
+    public static class InfrastructureServiceRegistration
     {
-        public void AddInfrastructureServices(IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var serverVersion = ServerVersion.AutoDetect(connectionString);
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseMySql(connectionString, serverVersion).LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
+                options.UseMySql(connectionString, serverVersion);
             });
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+
+            return services;
 
         }
     }
