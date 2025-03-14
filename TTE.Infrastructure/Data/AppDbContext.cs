@@ -125,6 +125,12 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.OrderId)
                 .IsRequired();
+            modelBuilder.Entity<Job>()
+                .Property(e => e.Type)
+                .IsRequired();
+            modelBuilder.Entity<Job>()
+                .Property(e => e.Item_id)
+                .IsRequired();
 
         }
 
