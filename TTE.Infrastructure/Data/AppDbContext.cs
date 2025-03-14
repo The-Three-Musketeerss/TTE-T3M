@@ -29,34 +29,103 @@ namespace TTE.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>().HasData(
-        new Category { Id = 1, Name = "Electronics", Approved = true },
-        new Category { Id = 2, Name = "Books", Approved = true }
-    );
+            modelBuilder.Entity<User>()
+            .HasOne(e => e.SecurityQuestion)
+            .WithMany()
+            .HasForeignKey(e => e.SecurityQuestionId)
+            .IsRequired();
 
-            // Seed Products
-            modelBuilder.Entity<Product>().HasData(
-                new Product
-                {
-                    Id = 1,
-                    Title = "Smartphone",
-                    Price = 299.99m,
-                    Description = "Latest model smartphone.",
-                    Image = "smartphone.jpg",
-                    Approved = true,
-                    CategoryId = 1 // References Electronics
-                },
-                new Product
-                {
-                    Id = 2,
-                    Title = "Novel",
-                    Price = 19.99m,
-                    Description = "Bestselling novel.",
-                    Image = "novel.jpg",
-                    Approved = true,
-                    CategoryId = 2 // References Books
-                }
-            );
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.Role)
+                .WithMany()
+                .HasForeignKey(e => e.RoleId)
+                .IsRequired();
+            modelBuilder.Entity<Rating>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
+                .IsRequired();
+            modelBuilder.Entity<Rating>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Review>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
+                .IsRequired();
+            modelBuilder.Entity<Review>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Wishlist>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Product>()
+                .HasOne(e => e.Category)
+                .WithMany()
+                .HasForeignKey(e => e.CategoryId)
+                .IsRequired();
+            modelBuilder.Entity<Inventory>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
+                .IsRequired();
+            modelBuilder.Entity<Cart>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Cart>()
+                .HasOne(e => e.Coupon)
+                .WithMany()
+                .HasForeignKey(e => e.CouponId)
+                .IsRequired();
+            modelBuilder.Entity<Cart_Item>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
+                .IsRequired();
+            modelBuilder.Entity<Cart_Item>()
+                .HasOne(e => e.Cart)
+                .WithMany()
+                .HasForeignKey(e => e.CartId)
+                .IsRequired();
+            modelBuilder.Entity<Cart_Item>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Order>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Order>()
+                .HasOne(e => e.Address)
+                .WithMany()
+                .HasForeignKey(e => e.AddressId)
+                .IsRequired();
+            modelBuilder.Entity<Order>()
+                .HasOne(e => e.Coupon)
+                .WithMany()
+                .HasForeignKey(e => e.CouponId)
+                .IsRequired();
+            modelBuilder.Entity<Order_Items>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
+                .IsRequired();
+            modelBuilder.Entity<Order_Items>()
+                .HasOne(e => e.Order)
+                .WithMany()
+                .HasForeignKey(e => e.OrderId)
+                .IsRequired();
+
         }
 
     }
