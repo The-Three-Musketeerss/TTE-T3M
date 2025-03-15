@@ -10,7 +10,6 @@ namespace TTE.Infrastructure.Models
     public class Wishlist
     {
         public int Id { get; set; }
-        [Column(TypeName = "jsonb")]
         public string Products_Id { get; set; } = string.Empty;
 
         //User FK
