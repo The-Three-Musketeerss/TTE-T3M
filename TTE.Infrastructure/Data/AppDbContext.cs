@@ -32,9 +32,7 @@ namespace TTE.Infrastructure.Data
             modelBuilder.Entity<User>()
             .HasOne(e => e.SecurityQuestion)
             .WithMany()
-            .HasForeignKey(e => e.SecurityQuestionId)
-            .IsRequired();
-
+            .HasForeignKey(e => e.SecurityQuestionId);
             modelBuilder.Entity<User>()
                 .HasOne(e => e.Role)
                 .WithMany()
