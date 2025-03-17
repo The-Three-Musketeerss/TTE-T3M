@@ -6,7 +6,7 @@ using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
-    [Route("api/products")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
