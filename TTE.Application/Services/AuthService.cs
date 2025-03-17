@@ -32,7 +32,7 @@ namespace TTE.Application.Services
         {
             var requestData = request;
 
-            var securityQuestion = await _securityQuestionRepository.GetById(requestData.SecurityQuestionId);
+            var securityQuestion = await _securityQuestionRepository.GetByCondition(s => s.Id == requestData.SecurityQuestionId);
             if (securityQuestion == null)
             {
                 return new GenericResponseDto<ShopperResponseDto>(false, "Invalid security question ID", null);

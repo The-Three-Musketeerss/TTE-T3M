@@ -29,11 +29,6 @@ namespace TTE.Infrastructure.Repositories
             _entity = _context.Set<T>();
         }
 
-        public async Task<T?> GetById(int id)
-        {
-            return await _entity.FindAsync(id);
-        }
-
         public async Task<int> Add(T entity)
         {
             await _entity.AddAsync(entity);

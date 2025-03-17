@@ -6,7 +6,6 @@ namespace TTE.Infrastructure.Repositories
     {
         Task<T?> GetByCondition(Expression<Func<T, bool>> predicate, params string[] includes);
         Task<IEnumerable<T>> Get();
-        Task<T?> GetById(int id);
         Task<int> Add(T entity);
         Task Update(T entity);
         Task Delete(int id);
