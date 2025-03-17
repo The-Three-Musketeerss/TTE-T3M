@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TTE.Commons.Constants;
 
 namespace TTE.Infrastructure.Validators
 {
@@ -9,7 +10,7 @@ namespace TTE.Infrastructure.Validators
             if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
             {
                 string fieldName = validationContext.DisplayName;
-                return new ValidationResult($"{fieldName} is required");
+               throw new ValidationException(ValidationMessages.MESSAGE_REQUIRED_FIELD + $"{fieldName}");
             }
 
             return ValidationResult.Success;

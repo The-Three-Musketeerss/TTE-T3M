@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
+using TTE.Commons.Constants;
 
 namespace Api.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/products")]
+    [Route(AppConstants.API_PRODUCTS)]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
