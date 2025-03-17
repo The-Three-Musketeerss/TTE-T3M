@@ -6,7 +6,7 @@ using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
-    [Route(AppConstants.API_AUTH)]
+    [Route("api/products")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -17,14 +17,14 @@ namespace TTE.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost(AppConstants.SIGN_UP)]
+        [HttpPost("signup")]
         public async Task<IActionResult> RegisterUser([FromBody] ShopperRequestDto request)
         {
             var result = await _authService.RegisterUser(request);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost(AppConstants.LOG_IN)]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
             var response = await _authService.LoginAsync(loginRequest);

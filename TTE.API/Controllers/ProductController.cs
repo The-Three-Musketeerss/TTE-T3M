@@ -7,7 +7,7 @@ namespace Api.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route(AppConstants.API_PRODUCTS)]
+    [Route("api/products")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
