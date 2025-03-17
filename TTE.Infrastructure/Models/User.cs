@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TTE.Infrastructure.Validators;
 
 namespace TTE.Infrastructure.Models
 {
@@ -10,6 +6,7 @@ namespace TTE.Infrastructure.Models
     {
         public int Id { get; set; }
         public string UserName { get; set; } = string.Empty;
+        [EmailValidator]
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string SecurityAnswer { get; set; } = string.Empty;

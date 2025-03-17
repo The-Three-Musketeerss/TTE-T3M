@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TTE.Infrastructure.Data;
 
 
@@ -8,6 +9,19 @@ namespace TTE.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
         private readonly DbSet<T> _entity;
+
+        public async Task<T?> GetByCondition(Expression<Func<T, bool>> predicate, params string[] includes)
+        {
+            IQueryable<T> query = _entity.AsQueryable();
+
+            // Apply eager loading for related entities
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
 
         public GenericRepository(AppDbContext context)
         {
