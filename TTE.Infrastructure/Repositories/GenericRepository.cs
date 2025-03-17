@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TTE.Infrastructure.Data;
 
 
@@ -13,6 +14,16 @@ namespace TTE.Infrastructure.Repositories
         {
             _context = context;
             _entity = _context.Set<T>();
+        }
+
+        public async Task<T?> GetByCondition(Expression<Func<T, bool>> predicate)
+        {
+            return await _entity.AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<T?> GetById(int id)
+        {
+            return await _entity.FindAsync(id);
         }
 
         public async Task<int> Add(T entity)
@@ -41,5 +52,6 @@ namespace TTE.Infrastructure.Repositories
             _entity.Update(entity);
             await _context.SaveChangesAsync();
         }
+
     }
 }

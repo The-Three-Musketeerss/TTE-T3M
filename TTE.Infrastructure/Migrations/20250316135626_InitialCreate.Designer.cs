@@ -12,7 +12,7 @@ using TTE.Infrastructure.Data;
 namespace TTE.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250314215846_InitialCreate")]
+    [Migration("20250316135626_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -202,6 +202,15 @@ namespace TTE.Infrastructure.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("Item_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
