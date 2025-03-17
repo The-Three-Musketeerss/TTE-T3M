@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TTE.Commons\TTE.Commons.csproj" />
     <ProjectReference Include="..\TTE.Infrastructure\TTE.Infrastructure.csproj" />
   </ItemGroup>

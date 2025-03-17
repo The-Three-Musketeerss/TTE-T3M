@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
+using TTE.Commons;
 
 namespace TTE.API.Controllers
 {
@@ -22,7 +22,7 @@ namespace TTE.API.Controllers
             var response = await _authService.LoginAsync(loginRequest);
 
             if (response == null)
-                return Unauthorized(new { message = "Invalid credentials" });
+                return Unauthorized(new { message = SystemConstants.MESSAGE_LOGIN_FAIL });
 
             return Ok(response);
         }
