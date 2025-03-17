@@ -15,16 +15,11 @@ namespace TTE.Infrastructure.Validators
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value == null)
-            {
-                return new ValidationResult("El correo electrónico es obligatorio.");
-            }
-
             string email = value.ToString();
 
             if (!Regex.IsMatch(email, EmailPattern))
             {
-                return new ValidationResult("El formato del correo electrónico no es válido.");
+                return new ValidationResult("The email format is invalid.");
             }
 
             return ValidationResult.Success;

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Application", "TTE.Appl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Infrastructure", "TTE.Infrastructure\TTE.Infrastructure.csproj", "{90EE5CEB-0BDF-4C2D-BEB2-4FB854BBF483}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Test", "TTE.Test\TTE.Test.csproj", "{6B32E325-948D-4689-A07C-97FD404C5D4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Tests", "TTE.Test\TTE.Tests.csproj", "{6B32E325-948D-4689-A07C-97FD404C5D4B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Commons", "TTE.Commons\TTE.Commons.csproj", "{01F93158-DAFF-40F3-9BFA-6B525486C6C9}"
 EndProject

@@ -55,5 +55,6 @@ namespace TTE.Infrastructure.Repositories
             _entity.Update(entity);
             await _context.SaveChangesAsync();
         }
+
     }
 }

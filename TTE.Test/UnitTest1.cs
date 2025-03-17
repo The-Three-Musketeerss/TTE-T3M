@@ -1,4 +1,4 @@
-namespace TTE.Test
+namespace TTE.Tests
 {
     public class UnitTest1
     {

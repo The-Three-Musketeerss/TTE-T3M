@@ -18,10 +18,12 @@ namespace TTE.API.Configurations
                 .AddJwtBearer(options =>
                 {
                     options.Authority = issuer;
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidIssuer = issuer,
+
 
                         ValidateAudience = false,
                         ValidateLifetime = true,
@@ -41,6 +43,7 @@ namespace TTE.API.Configurations
                 options.AddPolicy("CanAccessDashboard", policy =>
                     policy.RequireRole("Admin", "Employee"));
             });
+
 
             return services;
         }
