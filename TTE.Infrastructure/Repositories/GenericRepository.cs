@@ -10,15 +10,23 @@ namespace TTE.Infrastructure.Repositories
         private readonly AppDbContext _context;
         private readonly DbSet<T> _entity;
 
+        public async Task<T?> GetByCondition(Expression<Func<T, bool>> predicate, params string[] includes)
+        {
+            IQueryable<T> query = _entity.AsQueryable();
+
+            // Apply eager loading for related entities
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
         public GenericRepository(AppDbContext context)
         {
             _context = context;
             _entity = _context.Set<T>();
-        }
-
-        public async Task<T?> GetByCondition(Expression<Func<T, bool>> predicate)
-        {
-            return await _entity.AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
         public async Task<T?> GetById(int id)
