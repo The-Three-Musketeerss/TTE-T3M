@@ -10,6 +10,6 @@ namespace TTE.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<GenericResponseDto<ShopperResponseDto>> RegisterUser(GenericRequestDto<ShopperRequestDto> request);
+        Task<GenericResponseDto<ShopperResponseDto>> RegisterUser(ShopperRequestDto request);
     }
 }
