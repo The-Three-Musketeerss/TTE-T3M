@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TTE.Commons;
 using TTE.Infrastructure.Data;
 
 namespace TTE.API.Configurations
@@ -7,7 +8,7 @@ namespace TTE.API.Configurations
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = EnvVariables.DB_CONNECTION_STRING;
             var serverVersion = ServerVersion.AutoDetect(connectionString);
 
             services.AddDbContext<AppDbContext>(options =>

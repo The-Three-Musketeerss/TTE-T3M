@@ -9,6 +9,10 @@ namespace TTE.API.Configurations
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+            services.AddScoped<IAuthService, AuthService>();
+
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             return services;
         }
