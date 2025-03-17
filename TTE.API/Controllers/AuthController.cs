@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
+using TTE.Application.Services;
 using TTE.Commons;
 
 namespace TTE.API.Controllers
@@ -16,6 +17,13 @@ namespace TTE.API.Controllers
             _authService = authService;
         }
 
+        [HttpPost("signup")]
+        public async Task<IActionResult> RegisterUser([FromBody] ShopperRequestDto request)
+        {
+            var result = await _authService.RegisterUser(request);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
@@ -26,5 +34,7 @@ namespace TTE.API.Controllers
 
             return Ok(response);
         }
+
+
     }
 }
