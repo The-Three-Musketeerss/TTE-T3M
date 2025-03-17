@@ -2,7 +2,7 @@
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Application.Services;
-using TTE.Commons;
+using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
@@ -30,7 +30,7 @@ namespace TTE.API.Controllers
             var response = await _authService.LoginAsync(loginRequest);
 
             if (response == null)
-                return Unauthorized(new { message = SystemConstants.MESSAGE_LOGIN_FAIL });
+                return Unauthorized(new { message = AuthenticationMessages.MESSAGE_LOGIN_FAIL });
 
             return Ok(response);
         }

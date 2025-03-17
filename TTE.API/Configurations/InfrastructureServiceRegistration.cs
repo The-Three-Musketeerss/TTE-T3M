@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TTE.Commons;
+using TTE.Commons.Constants;
 using TTE.Infrastructure.Data;
 
 namespace TTE.API.Configurations
