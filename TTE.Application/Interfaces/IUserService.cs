@@ -10,5 +10,7 @@ namespace TTE.Application.Interfaces
     public interface IUserService
     {
         Task<GenericResponseDto<UserResponseDto>> GetUsers();
+        Task<GenericResponseDto<string>> UpdateUser(string username, UpdateUserRequestDto request);
+
     }
 }

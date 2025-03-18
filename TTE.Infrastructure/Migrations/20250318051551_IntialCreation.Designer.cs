@@ -12,7 +12,7 @@ using TTE.Infrastructure.Data;
 namespace TTE.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250318033750_IntialCreation")]
+    [Migration("20250318051551_IntialCreation")]
     partial class IntialCreation
     {
         /// <inheritdoc />

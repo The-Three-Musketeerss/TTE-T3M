@@ -18,5 +18,12 @@
             Message = message;
             Data = data;
         }
+
+        public GenericResponseDto(bool success, string message)
+        {
+            Success = success;
+            Message = message;
+            Data = null; 
+        }
     }
 }
