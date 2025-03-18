@@ -14,12 +14,12 @@ namespace TTE.Application.Services
             _productRepository = productRepository;
         }
 
-        public async Task<ProductPaginatedDto> GetProducts(
+        public async Task<ProductPaginatedResponseDto> GetProducts(
             string? category, string? orderBy, bool descending, int page, int pageSize)
         {
             var (products, totalCount) = await _productRepository.GetProductsAsync(category, orderBy, descending, page, pageSize);
 
-            var productDtos = products.Select(p => new ProductDto
+            var productDtos = products.Select(p => new ProductResponseDto
             {
                 Id = p.Id,
                 Title = p.Title,
@@ -30,7 +30,7 @@ namespace TTE.Application.Services
                 CategoryId = p.CategoryId
             }).ToList();
 
-            return new ProductPaginatedDto(
+            return new ProductPaginatedResponseDto(
                 success: true,
                 message: AuthenticationMessages.MESSAGE_PRODUCTS_RETRIEVED,
                 data: productDtos,
