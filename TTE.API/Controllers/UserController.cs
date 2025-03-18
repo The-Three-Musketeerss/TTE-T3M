@@ -31,5 +31,13 @@ namespace Api.Controllers
             var result = await _userService.UpdateUser(username, request);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+        [HttpDelete]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> DeleteUsers([FromBody] List<string> usernames)
+        {
+            var result = await _userService.DeleteUsers(usernames);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace TTE.Application.Interfaces
     {
         Task<GenericResponseDto<UserResponseDto>> GetUsers();
         Task<GenericResponseDto<string>> UpdateUser(string username, UpdateUserRequestDto request);
+        Task<GenericResponseDto<string>> DeleteUsers(List<string> usernames);
 
     }
 }
