@@ -69,7 +69,7 @@ namespace TTE.Application.Services
             return new GenericResponseDto<ShopperResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
         }
 
-        public async Task<GenericResponseDto<LoginResponseDto>?> LoginAsync(LoginRequestDto loginRequest)
+        public async Task<GenericResponseDto<LoginResponseDto>?> LoginUser(LoginRequestDto loginRequest)
         {
             var user = await _userRepository.GetByCondition(u => u.Email == loginRequest.Email, AppConstants.ROLE);
 

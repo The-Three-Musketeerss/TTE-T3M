@@ -27,7 +27,7 @@ namespace TTE.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
-            var response = await _authService.LoginAsync(loginRequest);
+            var response = await _authService.LoginUser(loginRequest);
 
             if (response == null)
                 return Unauthorized(new { message = AuthenticationMessages.MESSAGE_LOGIN_FAIL });
