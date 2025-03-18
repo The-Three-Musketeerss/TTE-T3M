@@ -90,5 +90,32 @@ namespace TTE.Application.Services
             return new GenericResponseDto<LoginResponseDto>(true, AuthenticationMessages.MESSAGE_LOGIN_SUCCESS, response);
         }
 
+        public async Task<GenericResponseDto<EmployeeResponseDto>> RegisterEmployee(EmployeeRequestDto request)
+        {
+            var requestData = request;
+            var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.EMPLOYEE);
+
+            if (role == null)
+            {
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
+            }
+            var user = new User
+            {
+                UserName = requestData.UserName,
+                Email = requestData.Email,
+                Password = _securityService.HashPassword(requestData.Password),
+                RoleId = role.Id,
+            };
+            await _userRepository.Add(user);
+            var response = new EmployeeResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                Role = _roleRepository.GetByCondition(r => r.Id == user.RoleId).Result.Name,
+            };
+            return new GenericResponseDto<EmployeeResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
+        }
+
     }
 }
