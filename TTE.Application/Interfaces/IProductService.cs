@@ -9,6 +9,6 @@ namespace TTE.Application.Interfaces
 {
     public interface IProductService
     {
-        Task<ProductPaginatedDto> GetProductsAsync(string? category, string? orderBy, bool descending, int page, int pageSize);
+        Task<ProductPaginatedDto> GetProducts(string? category, string? orderBy, bool descending, int page, int pageSize);
     }
 }
