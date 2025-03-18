@@ -1,5 +1,3 @@
-using TTE.Infrastructure.Validators;
-
 namespace TTE.Infrastructure.Models
 {
     public class User
