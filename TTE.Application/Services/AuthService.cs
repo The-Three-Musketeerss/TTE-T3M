@@ -36,14 +36,14 @@ namespace TTE.Application.Services
             var securityQuestion = await _securityQuestionRepository.GetByCondition(s => s.Id == requestData.SecurityQuestionId);
             if (securityQuestion == null)
             {
-                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_INVALID_SECURITY_QUESTION_ID, null);
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_INVALID_SECURITY_QUESTION_ID, []);
             }
 
             var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.SHOPPER);
             
             if (role == null)
             {
-                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, null);
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
             }
 
             var user = new User
