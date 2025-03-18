@@ -88,14 +88,14 @@ namespace TTE.Application.Services
             };
         }
 
-        public async Task<GenericResponseDto<UserResponseDto>> RegisterEmployee(EmployeeRequestDto request)
+        public async Task<GenericResponseDto<EmployeeResponseDto>> RegisterEmployee(EmployeeRequestDto request)
         {
             var requestData = request;
             var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.EMPLOYEE);
 
             if (role == null)
             {
-                return new GenericResponseDto<UserResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
             }
             var user = new User
             {
@@ -105,15 +105,14 @@ namespace TTE.Application.Services
                 RoleId = role.Id,
             };
             await _userRepository.Add(user);
-            var response = new UserResponseDto
+            var response = new EmployeeResponseDto
             {
                 Id = user.Id,
                 Email = user.Email,
-                Name = user.Name,
                 UserName = user.UserName,
                 Role = _roleRepository.GetByCondition(r => r.Id == user.RoleId).Result.Name,
             };
-            return new GenericResponseDto<UserResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
+            return new GenericResponseDto<EmployeeResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
         }
 
     }
