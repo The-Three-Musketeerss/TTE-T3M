@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
+using TTE.Commons.Constants;
 using TTE.Commons.Services;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
@@ -53,6 +55,23 @@ namespace TTE.Application.Services
             await _userRepository.Update(user);
 
             return new GenericResponseDto<string>(true, $"User {username} has been updated successfully.");
+        }
+
+        public async Task<GenericResponseDto<string>> DeleteUsers(List<string> usernames)
+        {
+            var usersToDelete = await _userRepository.GetAllByCondition(u => usernames.Contains(u.UserName));
+
+            if (usersToDelete == null || !usersToDelete.Any())
+            {
+                return new GenericResponseDto<string>(false, "No users found to delete.");
+            }
+
+            foreach (var user in usersToDelete)
+            {
+                await _userRepository.Delete(user.Id);
+            }
+
+            return new GenericResponseDto<string>(true, "Users deleted successfully.");
         }
     }
 }
