@@ -101,6 +101,7 @@ namespace TTE.Application.Services
             }
             var user = new User
             {
+                Name = requestData.Name,
                 UserName = requestData.UserName,
                 Email = requestData.Email,
                 Password = _securityService.HashPassword(requestData.Password),
