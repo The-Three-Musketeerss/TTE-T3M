@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TTE.Infrastructure.Validators;
 
 namespace TTE.Application.DTOs
 {
-    public class UserResponseDto
+    public class EmployeeRequestDto
     {
-        public int Id { get; set; }
+        [RequiredFieldValidator]
         public string UserName { get; set; } = string.Empty;
+        [EmailValidator, RequiredFieldValidator]
         public string Email { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
+        [RequiredFieldValidator]
         public string Password { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
     }
 }

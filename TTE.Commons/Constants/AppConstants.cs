@@ -10,6 +10,8 @@ namespace TTE.Commons.Constants
     {        
         public const string EMAIL_PATTERN_VALIDATOR = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         public const string SHOPPER = "shopper";
+        public const string ADMIN = "admin";
+        public const string EMPLOYEE = "employee";
         public const string ROLE = "Role";
 
         public const string API_PRODUCTS = "api/products";

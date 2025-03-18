@@ -5,6 +5,7 @@ namespace TTE.Application.Interfaces
     public interface IAuthService
     {
         Task<GenericResponseDto<ShopperResponseDto>> RegisterUser(ShopperRequestDto request);
+        Task<GenericResponseDto<EmployeeResponseDto>> RegisterEmployee(EmployeeRequestDto request);
         Task<LoginResponseDto?> LoginAsync(LoginRequestDto loginRequest);
     }
 }
