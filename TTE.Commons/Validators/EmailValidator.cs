@@ -7,7 +7,7 @@ namespace TTE.Commons.Validators
     public class EmailValidator : ValidationAttribute
     {
         private const string EmailPattern = AppConstants.EMAIL_PATTERN_VALIDATOR;
-        // Testing if my commits are linked to my account
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             string email = value.ToString();
