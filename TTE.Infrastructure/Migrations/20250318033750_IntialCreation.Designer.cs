@@ -12,7 +12,7 @@ using TTE.Infrastructure.Data;
 namespace TTE.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250318022556_IntialCreation")]
+    [Migration("20250318033750_IntialCreation")]
     partial class IntialCreation
     {
         /// <inheritdoc />
@@ -462,6 +462,10 @@ namespace TTE.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
