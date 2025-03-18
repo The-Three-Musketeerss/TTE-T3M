@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TTE.Commons.Constants
+﻿namespace TTE.Commons.Constants
 {
     public static class ValidationMessages
     {
@@ -17,5 +11,6 @@ namespace TTE.Commons.Constants
         public const string CATEGORY_NOT_FOUND = "Category not found";
         public const string CATEGORY_DELETED_SUCCESSFULLY = "Category deleted successfully";
         public const string CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY = "Category deleted successfully, waiting for approval";
+        public const string CATEGORY_UPDATED_SUCCESSFULLY = "Category updated successfully";
     }
 }

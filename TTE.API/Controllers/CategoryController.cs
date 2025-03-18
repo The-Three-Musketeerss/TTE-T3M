@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using System.Security.Claims;
+using TTE.Application.DTOs;
 
 namespace TTE.API.Controllers
 {
@@ -26,6 +27,14 @@ namespace TTE.API.Controllers
             }
 
             var response = await _categoryService.DeleteCategory(categoryId, userRole);
+
+            return response.Success ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPut("{categoryId}")]
+        public async Task<IActionResult> UpdateCategory(int categoryId, [FromBody] CategoryRequestDto request)
+        {
+            var response = await _categoryService.UpdateCategory(categoryId, request);
 
             return response.Success ? Ok(response) : BadRequest(response);
         }
