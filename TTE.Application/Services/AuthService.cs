@@ -88,5 +88,33 @@ namespace TTE.Application.Services
             };
         }
 
+        public async Task<GenericResponseDto<UserResponseDto>> RegisterEmployee(EmployeeRequestDto request)
+        {
+            var requestData = request;
+            var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.EMPLOYEE);
+
+            if (role == null)
+            {
+                return new GenericResponseDto<UserResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
+            }
+            var user = new User
+            {
+                UserName = requestData.UserName,
+                Email = requestData.Email,
+                Password = _securityService.HashPassword(requestData.Password),
+                RoleId = role.Id,
+            };
+            await _userRepository.Add(user);
+            var response = new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                UserName = user.UserName,
+                Role = _roleRepository.GetByCondition(r => r.Id == user.RoleId).Result.Name,
+            };
+            return new GenericResponseDto<UserResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
+        }
+
     }
 }
