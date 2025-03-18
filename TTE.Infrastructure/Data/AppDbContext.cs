@@ -30,9 +30,9 @@ namespace TTE.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(
-                new Role {Id = 1, Name = "Admin" },
-                new Role {Id = 2, Name = "Employee" },
-                new Role {Id = 3, Name = "Shopper" }
+                new Role { Id = 1, Name = "Admin" },
+                new Role { Id = 2, Name = "Employee" },
+                new Role { Id = 3, Name = "Shopper" }
             );
             modelBuilder.Entity<SecurityQuestion>().HasData(
                 new SecurityQuestion { Id = 1, Question = "What is your favorite color?" },
@@ -40,7 +40,7 @@ namespace TTE.Infrastructure.Data
                 new SecurityQuestion { Id = 3, Question = "What is your favorite movie?" }
             );
             modelBuilder.Entity<Coupon>().HasData(
-                new Coupon {Id = 1, Code = "10OFF", Discount = 10 },
+                new Coupon { Id = 1, Code = "10OFF", Discount = 10 },
                 new Coupon { Id = 2, Code = "20OFF", Discount = 20 },
                 new Coupon { Id = 3, Code = "30OFF", Discount = 30 }
             );
@@ -56,6 +56,7 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.RoleId)
                 .IsRequired();
+
             modelBuilder.Entity<Rating>()
                 .HasOne(e => e.Product)
                 .WithMany()
@@ -66,6 +67,7 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
+
             modelBuilder.Entity<Review>()
                 .HasOne(e => e.Product)
                 .WithMany()
@@ -76,21 +78,25 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
+
             modelBuilder.Entity<Wishlist>()
                 .HasOne(e => e.User)
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
+
             modelBuilder.Entity<Product>()
                 .HasOne(e => e.Category)
                 .WithMany()
                 .HasForeignKey(e => e.CategoryId)
                 .IsRequired();
+
             modelBuilder.Entity<Inventory>()
                 .HasOne(e => e.Product)
                 .WithMany()
                 .HasForeignKey(e => e.ProductId)
                 .IsRequired();
+
             modelBuilder.Entity<Cart>()
                 .HasOne(e => e.User)
                 .WithMany()
@@ -100,7 +106,9 @@ namespace TTE.Infrastructure.Data
                 .HasOne(e => e.Coupon)
                 .WithMany()
                 .HasForeignKey(e => e.CouponId)
-                .IsRequired();
+                .IsRequired(false);
+            modelBuilder.Entity<Cart_Item>()
+                .HasKey(ci => new { ci.CartId, ci.ProductId });
             modelBuilder.Entity<Cart_Item>()
                 .HasOne(e => e.Product)
                 .WithMany()
@@ -111,11 +119,7 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.CartId)
                 .IsRequired();
-            modelBuilder.Entity<Cart_Item>()
-                .HasOne(e => e.User)
-                .WithMany()
-                .HasForeignKey(e => e.UserId)
-                .IsRequired();
+
             modelBuilder.Entity<Order>()
                 .HasOne(e => e.User)
                 .WithMany()
@@ -130,7 +134,9 @@ namespace TTE.Infrastructure.Data
                 .HasOne(e => e.Coupon)
                 .WithMany()
                 .HasForeignKey(e => e.CouponId)
-                .IsRequired();
+                .IsRequired(false);
+            modelBuilder.Entity<Order_Items>()
+                .HasKey(oi => new { oi.OrderId, oi.ProductId });
             modelBuilder.Entity<Order_Items>()
                 .HasOne(e => e.Product)
                 .WithMany()
@@ -141,6 +147,7 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.OrderId)
                 .IsRequired();
+
             modelBuilder.Entity<Job>()
                 .Property(e => e.Type)
                 .IsRequired();

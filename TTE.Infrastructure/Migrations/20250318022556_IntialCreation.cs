@@ -230,8 +230,7 @@ namespace TTE.Infrastructure.Migrations
                         name: "FK_Carts_Coupons_CouponId",
                         column: x => x.CouponId,
                         principalTable: "Coupons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Carts_Users_UserId",
                         column: x => x.UserId,
@@ -351,8 +350,7 @@ namespace TTE.Infrastructure.Migrations
                         name: "FK_Orders_Coupons_CouponId",
                         column: x => x.CouponId,
                         principalTable: "Coupons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_Users_UserId",
                         column: x => x.UserId,
@@ -366,16 +364,13 @@ namespace TTE.Infrastructure.Migrations
                 name: "Cart_Items",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     CartId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cart_Items", x => x.Id);
+                    table.PrimaryKey("PK_Cart_Items", x => new { x.CartId, x.ProductId });
                     table.ForeignKey(
                         name: "FK_Cart_Items_Carts_CartId",
                         column: x => x.CartId,
@@ -388,12 +383,6 @@ namespace TTE.Infrastructure.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Cart_Items_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -401,16 +390,14 @@ namespace TTE.Infrastructure.Migrations
                 name: "Order_Items",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order_Items", x => x.Id);
+                    table.PrimaryKey("PK_Order_Items", x => new { x.OrderId, x.ProductId });
                     table.ForeignKey(
                         name: "FK_Order_Items_Orders_OrderId",
                         column: x => x.OrderId,
@@ -462,19 +449,9 @@ namespace TTE.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cart_Items_CartId",
-                table: "Cart_Items",
-                column: "CartId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cart_Items_ProductId",
                 table: "Cart_Items",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cart_Items_UserId",
-                table: "Cart_Items",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Carts_CouponId",
@@ -490,11 +467,6 @@ namespace TTE.Infrastructure.Migrations
                 name: "IX_Inventory_ProductId",
                 table: "Inventory",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Order_Items_OrderId",
-                table: "Order_Items",
-                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_Items_ProductId",

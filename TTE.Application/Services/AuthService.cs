@@ -38,7 +38,7 @@ namespace TTE.Application.Services
                 return new GenericResponseDto<ShopperResponseDto>(false, "Invalid security question ID", null);
             }
 
-            var role = await _roleRepository.GetByCondition(r => r.Name == "shopper");
+            var role = await _roleRepository.GetByCondition(r => r.Name == "Shopper");
             if (role == null)
             {
                 return new GenericResponseDto<ShopperResponseDto>(false, "Role not found", null);
