@@ -10,6 +10,11 @@ namespace TTE.Infrastructure.Repositories
         private readonly AppDbContext _context;
         private readonly DbSet<T> _entity;
 
+        public GenericRepository(AppDbContext context)
+        {
+            _context = context;
+            _entity = _context.Set<T>();
+        }
         public async Task<T?> GetByCondition(Expression<Func<T, bool>> predicate, params string[] includes)
         {
             IQueryable<T> query = _entity.AsQueryable();
@@ -25,12 +30,6 @@ namespace TTE.Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetAllByCondition(Expression<Func<T, bool>> predicate)
         {
             return await _entity.Where(predicate).ToListAsync();
-        }
-
-        public GenericRepository(AppDbContext context)
-        {
-            _context = context;
-            _entity = _context.Set<T>();
         }
 
         public async Task<int> Add(T entity)
