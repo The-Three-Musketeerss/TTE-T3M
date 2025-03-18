@@ -71,7 +71,7 @@ namespace TTE.Application.Services
             return new GenericResponseDto<ShopperResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
         }
 
-        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto loginRequest)
+        public async Task<GenericResponseDto<LoginResponseDto>?> LoginUser(LoginRequestDto loginRequest)
         {
             var user = await _userRepository.GetByCondition(u => u.Email == loginRequest.Email, AppConstants.ROLE);
 
@@ -80,12 +80,14 @@ namespace TTE.Application.Services
 
             var token = _securityService.GenerateToken(user.UserName, user.Role.Name, user.Id);
 
-            return new LoginResponseDto
+            var response = new LoginResponseDto
             {
                 Token = token,
                 Username = user.UserName,
                 Email = user.Email
             };
+
+            return new GenericResponseDto<LoginResponseDto>(true, AuthenticationMessages.MESSAGE_LOGIN_SUCCESS, response);
         }
 
         public async Task<GenericResponseDto<EmployeeResponseDto>> RegisterEmployee(EmployeeRequestDto request)
@@ -99,6 +101,7 @@ namespace TTE.Application.Services
             }
             var user = new User
             {
+                Name = requestData.Name,
                 UserName = requestData.UserName,
                 Email = requestData.Email,
                 Password = _securityService.HashPassword(requestData.Password),

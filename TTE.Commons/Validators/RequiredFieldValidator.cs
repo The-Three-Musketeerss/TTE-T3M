@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TTE.Commons.Constants;
 
-namespace TTE.Infrastructure.Validators
+namespace TTE.Commons.Validators
 {
     public class RequiredFieldValidator : ValidationAttribute
     {

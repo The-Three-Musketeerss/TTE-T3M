@@ -1,32 +1,43 @@
 ﻿using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
-using TTE.Infrastructure.Models;
-using TTE.Infrastructure.Repositories;
+using TTE.Commons.Constants;
+using TTE.Infrastructure.Interfaces;
 
 namespace TTE.Application.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ProductService(IGenericRepository<Product> productRepository)
+        public ProductService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProducts()
+        public async Task<ProductPaginatedResponseDto> GetProducts(
+            string? category, string? orderBy, bool descending, int page, int pageSize)
         {
-            var products = await _productRepository.Get();
-            return products.Select(p => new ProductDto
+            var (products, totalCount) = await _productRepository.GetProductsAsync(category, orderBy, descending, page, pageSize);
+
+            var productDtos = products.Select(p => new ProductResponseDto
             {
                 Id = p.Id,
                 Title = p.Title,
                 Price = p.Price,
-                CategoryId = p.CategoryId,
                 Description = p.Description,
                 Image = p.Image,
-                Approved = p.Approved
-            });
+                Approved = p.Approved,
+                CategoryId = p.CategoryId
+            }).ToList();
+
+            return new ProductPaginatedResponseDto(
+                success: true,
+                message: AuthenticationMessages.MESSAGE_PRODUCTS_RETRIEVED,
+                data: productDtos,
+                page: page,
+                pageSize: pageSize,
+                totalCount: totalCount
+            );
         }
     }
 }

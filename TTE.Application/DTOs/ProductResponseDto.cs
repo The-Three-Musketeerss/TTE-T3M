@@ -7,7 +7,7 @@ using TTE.Infrastructure.Models;
 
 namespace TTE.Application.DTOs
 {
-    public class ProductDto
+    public class ProductResponseDto
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
