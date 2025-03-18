@@ -10,5 +10,6 @@ namespace TTE.Application.Interfaces
     public interface ICategoryService
     {
         Task<GenericResponseDto<string>> DeleteCategory(int id, string userRole);
+        Task<GenericResponseDto<string>> UpdateCategory(int id, CategoryRequestDto request);
     }
 }
