@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using TTE.Commons.Constants;
 
-namespace TTE.Infrastructure.Validators
+namespace TTE.Commons.Validators
 {
     public class EmailValidator : ValidationAttribute
     {
