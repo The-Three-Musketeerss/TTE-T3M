@@ -15,7 +15,7 @@ namespace Api.Controllers
         {
             _userService = userService;
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
