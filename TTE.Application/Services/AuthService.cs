@@ -40,6 +40,7 @@ namespace TTE.Application.Services
             }
 
             var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.SHOPPER);
+            
             if (role == null)
             {
                 return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, null);
