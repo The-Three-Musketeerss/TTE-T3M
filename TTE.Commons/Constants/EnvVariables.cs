@@ -1,4 +1,4 @@
-﻿namespace TTE.Commons
+﻿namespace TTE.Commons.Constants
 {
     public static class EnvVariables
     {
