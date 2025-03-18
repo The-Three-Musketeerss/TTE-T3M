@@ -12,6 +12,7 @@ namespace TTE.API.Configurations
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             return services;

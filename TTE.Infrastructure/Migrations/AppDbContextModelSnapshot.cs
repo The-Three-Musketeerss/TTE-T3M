@@ -462,6 +462,10 @@ namespace TTE.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
