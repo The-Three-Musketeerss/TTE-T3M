@@ -7,7 +7,7 @@ using TTE.Infrastructure.Repositories;
 
 namespace TTE.Application.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService: IAuthService
     {
 
 
