@@ -6,7 +6,6 @@ using TTE.Commons.Constants;
 namespace Api.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/user")]
     public class UserController : ControllerBase
     {
@@ -16,7 +15,7 @@ namespace Api.Controllers
         {
             _userService = userService;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {

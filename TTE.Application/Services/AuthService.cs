@@ -50,6 +50,7 @@ namespace TTE.Application.Services
             {
                 UserName = requestData.UserName,
                 Email = requestData.Email,
+                Name = requestData.Name,
                 Password = _securityService.HashPassword(requestData.Password),
                 SecurityQuestionId = requestData.SecurityQuestionId,
                 SecurityAnswer = _securityService.HashPassword(requestData.SecurityAnswer),
@@ -62,6 +63,7 @@ namespace TTE.Application.Services
             {
                 Id = user.Id,
                 Email = user.Email,
+                Name = user.Name,
                 UserName = user.UserName,
                 RoleId = user.RoleId,
             };

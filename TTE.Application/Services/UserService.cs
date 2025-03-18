@@ -27,6 +27,7 @@ namespace TTE.Application.Services
             {
                 UserName = u.UserName,
                 Email = u.Email,
+                Name = u.Name,
                 Password = u.Password,
                 Role = _roleRepository.GetByCondition(r => r.Id == u.RoleId).Result.Name
             }).ToList();
