@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace TTE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class IntialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -135,10 +137,10 @@ namespace TTE.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SecurityAnswer = table.Column<string>(type: "longtext", nullable: false)
+                    SecurityAnswer = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    SecurityQuestionId = table.Column<int>(type: "int", nullable: false)
+                    SecurityQuestionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -153,8 +155,7 @@ namespace TTE.Infrastructure.Migrations
                         name: "FK_Users_SecurityQuestions_SecurityQuestionId",
                         column: x => x.SecurityQuestionId,
                         principalTable: "SecurityQuestions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -424,6 +425,36 @@ namespace TTE.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Coupons",
+                columns: new[] { "Id", "Code", "Discount" },
+                values: new object[,]
+                {
+                    { 1, "10OFF", 10m },
+                    { 2, "20OFF", 20m },
+                    { 3, "30OFF", 30m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Admin" },
+                    { 2, "Employee" },
+                    { 3, "Shopper" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SecurityQuestions",
+                columns: new[] { "Id", "Question" },
+                values: new object[,]
+                {
+                    { 1, "What is your favorite color?" },
+                    { 2, "What is your favorite food?" },
+                    { 3, "What is your favorite movie?" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",

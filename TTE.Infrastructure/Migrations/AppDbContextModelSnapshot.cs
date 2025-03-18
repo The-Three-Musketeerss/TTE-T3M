@@ -161,6 +161,26 @@ namespace TTE.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coupons");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "10OFF",
+                            Discount = 10m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "20OFF",
+                            Discount = 20m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "30OFF",
+                            Discount = 30m
+                        });
                 });
 
             modelBuilder.Entity("TTE.Infrastructure.Models.Inventory", b =>
@@ -199,6 +219,15 @@ namespace TTE.Infrastructure.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("Item_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -389,6 +418,23 @@ namespace TTE.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Employee"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Shopper"
+                        });
                 });
 
             modelBuilder.Entity("TTE.Infrastructure.Models.SecurityQuestion", b =>
@@ -406,6 +452,23 @@ namespace TTE.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SecurityQuestions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Question = "What is your favorite color?"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Question = "What is your favorite food?"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Question = "What is your favorite movie?"
+                        });
                 });
 
             modelBuilder.Entity("TTE.Infrastructure.Models.User", b =>
@@ -428,10 +491,9 @@ namespace TTE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SecurityAnswer")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("SecurityQuestionId")
+                    b.Property<int?>("SecurityQuestionId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -642,9 +704,7 @@ namespace TTE.Infrastructure.Migrations
 
                     b.HasOne("TTE.Infrastructure.Models.SecurityQuestion", "SecurityQuestion")
                         .WithMany()
-                        .HasForeignKey("SecurityQuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SecurityQuestionId");
 
                     b.Navigation("Role");
 
