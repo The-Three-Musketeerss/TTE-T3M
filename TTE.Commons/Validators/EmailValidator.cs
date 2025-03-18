@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using TTE.Commons.Constants;
 
-namespace TTE.Infrastructure.Validators
+namespace TTE.Commons.Validators
 {
     public class EmailValidator : ValidationAttribute
     {
