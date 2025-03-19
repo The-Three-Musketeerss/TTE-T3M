@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TTE.Infrastructure.Models
 {
-    public class Order_Items
+    public class Order_Item
     {
         public int Quantity { get; set; }
         public decimal Price { get; set; }

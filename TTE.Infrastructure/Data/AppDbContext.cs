@@ -18,7 +18,7 @@ namespace TTE.Infrastructure.Data
         public DbSet<Models.Cart> Carts { get; set; }
         public DbSet<Models.Cart_Item> Cart_Items { get; set; }
         public DbSet<Models.Order> Orders { get; set; }
-        public DbSet<Models.Order_Items> Order_Items { get; set; }
+        public DbSet<Models.Order_Item> Order_Items { get; set; }
         public DbSet<Models.Address> Addresses { get; set; }
         public DbSet<Models.Coupon> Coupons { get; set; }
         public DbSet<Models.Inventory> Inventory { get; set; }
@@ -26,6 +26,7 @@ namespace TTE.Infrastructure.Data
         public DbSet<Models.Wishlist> Wishlists { get; set; }
         public DbSet<Models.Rating> Ratings { get; set; }
         public DbSet<Models.SecurityQuestion> SecurityQuestions { get; set; }
+        public DbSet<Models.Wishlist_Item> wishlist_Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -135,14 +136,14 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.CouponId)
                 .IsRequired(false);
-            modelBuilder.Entity<Order_Items>()
+            modelBuilder.Entity<Order_Item>()
                 .HasKey(oi => new { oi.OrderId, oi.ProductId });
-            modelBuilder.Entity<Order_Items>()
+            modelBuilder.Entity<Order_Item>()
                 .HasOne(e => e.Product)
                 .WithMany()
                 .HasForeignKey(e => e.ProductId)
                 .IsRequired();
-            modelBuilder.Entity<Order_Items>()
+            modelBuilder.Entity<Order_Item>()
                 .HasOne(e => e.Order)
                 .WithMany()
                 .HasForeignKey(e => e.OrderId)
