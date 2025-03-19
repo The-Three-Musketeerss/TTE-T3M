@@ -26,7 +26,6 @@ namespace TTE.Infrastructure.Data
         public DbSet<Models.Wishlist> Wishlists { get; set; }
         public DbSet<Models.Rating> Ratings { get; set; }
         public DbSet<Models.SecurityQuestion> SecurityQuestions { get; set; }
-        public DbSet<Models.Wishlist_Item> wishlist_Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -147,6 +146,17 @@ namespace TTE.Infrastructure.Data
                 .HasOne(e => e.Order)
                 .WithMany()
                 .HasForeignKey(e => e.OrderId)
+                .IsRequired();
+
+            modelBuilder.Entity<Wishlist>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Wishlist>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
                 .IsRequired();
 
             modelBuilder.Entity<Job>()
