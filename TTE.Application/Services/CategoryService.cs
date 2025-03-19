@@ -47,6 +47,18 @@ namespace TTE.Application.Services
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY);
         }
 
+        public async Task<GenericResponseDto<CategoryResponseDto>> GetCategories()
+        {
+            var categories = await _categoryRepository.GetAllByCondition(C => C.Approved == true);
+            var categoryDtos = categories.Select(c => new CategoryResponseDto
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+            return new GenericResponseDto<CategoryResponseDto>(true, ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, categoryDtos);
+        
+        }
+
         public async Task<GenericResponseDto<string>> UpdateCategory(int id, CategoryRequestDto request)
         {
             var categoryToUpdate = await _categoryRepository.GetByCondition(c => c.Id == id);
@@ -59,6 +71,7 @@ namespace TTE.Application.Services
             await _categoryRepository.Update(categoryToUpdate);
 
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_UPDATED_SUCCESSFULLY);
+
         }
     }
 }

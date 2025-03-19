@@ -8,7 +8,6 @@ using TTE.Application.DTOs;
 namespace TTE.API.Controllers
 {
     [ApiController]
-    [Authorize(Policy = "CanAccessDashboard")]
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
@@ -17,6 +16,15 @@ namespace TTE.API.Controllers
         {
             _categoryService = categoryService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategories()
+        {
+            var response = await _categoryService.GetCategories();
+            return Ok(response);
+        }
+
+        [Authorize(Policy = "CanAccessDashboard")]
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {
@@ -31,6 +39,7 @@ namespace TTE.API.Controllers
             return response.Success ? Ok(response) : BadRequest(response);
         }
 
+        [Authorize(Policy = "CanAccessDashboard")]
         [HttpPut("{categoryId}")]
         public async Task<IActionResult> UpdateCategory(int categoryId, [FromBody] CategoryRequestDto request)
         {
