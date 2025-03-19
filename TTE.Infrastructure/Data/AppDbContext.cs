@@ -148,6 +148,17 @@ namespace TTE.Infrastructure.Data
                 .HasForeignKey(e => e.OrderId)
                 .IsRequired();
 
+            modelBuilder.Entity<Wishlist>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+            modelBuilder.Entity<Wishlist>()
+                .HasOne(e => e.Product)
+                .WithMany()
+                .HasForeignKey(e => e.ProductId)
+                .IsRequired();
+
             modelBuilder.Entity<Job>()
                 .Property(e => e.Type)
                 .IsRequired();
