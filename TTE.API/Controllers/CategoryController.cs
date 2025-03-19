@@ -39,6 +39,7 @@ namespace TTE.API.Controllers
             return response.Success ? Ok(response) : BadRequest(response);
         }
 
+        [Authorize(Policy = "CanAccessDashboard")]
         [HttpPut("{categoryId}")]
         public async Task<IActionResult> UpdateCategory(int categoryId, [FromBody] CategoryRequestDto request)
         {
