@@ -1,4 +1,5 @@
-﻿using TTE.Application.Interfaces;
+﻿using AutoMapper;
+using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Commons.Services;
 using TTE.Infrastructure.DTOs;
@@ -10,26 +11,19 @@ namespace TTE.Application.Services
     public class UserService : IUserService
     {
         private readonly IGenericRepository<User> _userRepository;
-        private readonly IGenericRepository<Role> _roleRepository;
+        private readonly IMapper _mapper;
         private readonly ISecurityService _securityService;
 
-        public UserService(IGenericRepository<User> userRepository, IGenericRepository<Role> roleRepository, ISecurityService securityService)
+        public UserService(IGenericRepository<User> userRepository, IGenericRepository<Role> roleRepository, ISecurityService securityService, IMapper mapper)
         {
-            _userRepository = userRepository;
-            _roleRepository = roleRepository; 
-            _securityService = securityService;
+            _userRepository = userRepository;            _securityService = securityService;
+            _mapper = mapper;
         }
         public async Task<GenericResponseDto<UserResponseDto>> GetUsers()
         {
-            var users = await _userRepository.Get();
-            var userDtos = users.Select(u => new UserResponseDto
-            {
-                UserName = u.UserName,
-                Email = u.Email,
-                Name = u.Name,
-                Password = u.Password,
-                Role = _roleRepository.GetByCondition(r => r.Id == u.RoleId).Result.Name
-            }).ToList();
+            var includes = new string[] { "Role" };
+            var users = await _userRepository.GetEntityWithIncludes(includes);
+            var userDtos = users.Select(u => _mapper.Map<UserResponseDto>(u)).ToList();
 
             return new GenericResponseDto<UserResponseDto>(true, "Users retrieved successfully", userDtos);
         }

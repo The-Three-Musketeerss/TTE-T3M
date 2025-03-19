@@ -19,7 +19,7 @@ namespace TTE.API.Configurations
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
+            services.AddScoped(typeof(IGenericService<,,>), typeof(GenericService<,,>));
             return services;
         }
     }

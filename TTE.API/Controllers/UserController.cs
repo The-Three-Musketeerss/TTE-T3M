@@ -12,20 +12,19 @@ namespace TTE.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IGenericService<User,UserResponseDto> _genericService;
-        public UserController(IUserService userService, IGenericService<User, UserResponseDto> genericService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _genericService = genericService;
         }
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _genericService.GetAll();
+            var users = await _userService.GetUsers();
             return Ok(users);
         }
 
+        
         [HttpPut("{username}")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> UpdateUser(string username, [FromBody] UpdateUserRequestDto request)

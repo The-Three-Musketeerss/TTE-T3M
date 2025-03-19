@@ -7,9 +7,10 @@ using TTE.Infrastructure.DTOs;
 
 namespace TTE.Application.Interfaces
 {
-    public interface IGenericService<T, T2>
+    public interface IGenericService<T, T2, T3>
     {
-        Task<GenericResponseDto<T2>> GetAll();
+        Task<GenericResponseDto<T2>> GetAll(params string[] includes);
+        Task<GenericResponseDto<string>> Update(T3 request);
 
     }
 }

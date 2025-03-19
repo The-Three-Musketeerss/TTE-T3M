@@ -10,6 +10,8 @@ namespace TTE.Infrastructure.Mapping
         public MappingProfile() {
             CreateMap<User, UserResponseDto>().ForMember(dest => dest.Role,
                 opt => opt.MapFrom(src => src.Role.Name));
+            CreateMap<Category, CategoryResponseDto>();
+            CreateMap<CategoryRequestDto, Category>();
         }
     }
 }

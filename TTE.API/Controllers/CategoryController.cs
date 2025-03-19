@@ -4,6 +4,7 @@ using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using System.Security.Claims;
 using TTE.Infrastructure.DTOs;
+using TTE.Infrastructure.Models;
 
 namespace TTE.API.Controllers
 {
@@ -11,8 +12,8 @@ namespace TTE.API.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
+        private readonly IGenericService<Category, CategoryResponseDto, CategoryRequestDto> _categoryService;
+        public CategoryController(IGenericService<Category, CategoryResponseDto, CategoryRequestDto> categoryService)
         {
             _categoryService = categoryService;
         }
@@ -20,10 +21,10 @@ namespace TTE.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var response = await _categoryService.GetCategories();
+            var response = await _categoryService.GetAll();
             return Ok(response);
         }
-
+        /*
         [Authorize(Policy = "CanAccessDashboard")]
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
@@ -37,13 +38,14 @@ namespace TTE.API.Controllers
             var response = await _categoryService.DeleteCategory(categoryId, userRole);
 
             return response.Success ? Ok(response) : BadRequest(response);
-        }
+        }*/
 
         [Authorize(Policy = "CanAccessDashboard")]
         [HttpPut("{categoryId}")]
-        public async Task<IActionResult> UpdateCategory(int categoryId, [FromBody] CategoryRequestDto request)
+        public async Task<IActionResult> UpdateCategory(int categoryId,[FromBody] CategoryRequestDto request)
         {
-            var response = await _categoryService.UpdateCategory(categoryId, request);
+            request.Id = categoryId;
+            var response = await _categoryService.Update(request);
 
             return response.Success ? Ok(response) : BadRequest(response);
         }
