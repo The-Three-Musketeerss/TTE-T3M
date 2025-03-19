@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TTE.Application.DTOs;
+﻿using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
@@ -61,6 +56,22 @@ namespace TTE.Application.Services
                 Name = c.Name
             }).ToList();
             return new GenericResponseDto<CategoryResponseDto>(true, ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, categoryDtos);
+        
+        }
+
+        public async Task<GenericResponseDto<string>> UpdateCategory(int id, CategoryRequestDto request)
+        {
+            var categoryToUpdate = await _categoryRepository.GetByCondition(c => c.Id == id);
+            if (categoryToUpdate == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
+            }
+            categoryToUpdate.Name = request.Name;
+
+            await _categoryRepository.Update(categoryToUpdate);
+
+            return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_UPDATED_SUCCESSFULLY);
+
         }
     }
 }
