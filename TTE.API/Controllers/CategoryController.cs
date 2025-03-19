@@ -7,7 +7,6 @@ using System.Security.Claims;
 namespace TTE.API.Controllers
 {
     [ApiController]
-    [Authorize(Policy = "CanAccessDashboard")]
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
@@ -16,6 +15,15 @@ namespace TTE.API.Controllers
         {
             _categoryService = categoryService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategories()
+        {
+            var response = await _categoryService.GetCategories();
+            return Ok(response);
+        }
+
+        [Authorize(Policy = "CanAccessDashboard")]
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {

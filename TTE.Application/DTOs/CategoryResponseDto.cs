@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TTE.Application.DTOs
 {
-    public class CategoryDto
+    public class CategoryResponseDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public bool Approved { get; set; }
     }
 }

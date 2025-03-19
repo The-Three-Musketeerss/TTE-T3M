@@ -51,5 +51,16 @@ namespace TTE.Application.Services
 
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY);
         }
+
+        public async Task<GenericResponseDto<CategoryResponseDto>> GetCategories()
+        {
+            var categories = await _categoryRepository.GetAllByCondition(C => C.Approved == true);
+            var categoryDtos = categories.Select(c => new CategoryResponseDto
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+            return new GenericResponseDto<CategoryResponseDto>(true, ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, categoryDtos);
+        }
     }
 }

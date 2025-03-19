@@ -15,6 +15,7 @@ namespace TTE.Commons.Constants
         public const string MESSAGE_ROL_NOT_FOUND = "Role not found";
 
         public const string CATEGORY_NOT_FOUND = "Category not found";
+        public const string CATEGORIES_RETRIEVED_SUCCESSFULLY = "Categories retrieved successfully";
         public const string CATEGORY_DELETED_SUCCESSFULLY = "Category deleted successfully";
         public const string CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY = "Category deleted successfully, waiting for approval";
     }
