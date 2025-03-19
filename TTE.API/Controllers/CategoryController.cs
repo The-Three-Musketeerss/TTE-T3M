@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using System.Security.Claims;
-using TTE.Application.DTOs;
+using TTE.Infrastructure.DTOs;
 
 namespace TTE.API.Controllers
 {

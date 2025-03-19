@@ -1,6 +1,6 @@
 ﻿using TTE.Infrastructure.Models;
 
-namespace TTE.Infrastructure.Interfaces
+namespace TTE.Infrastructure.Repositories
 {
     public interface IProductRepository
     {

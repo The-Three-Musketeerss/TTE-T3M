@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TTE.Commons.Validators;
 
-namespace TTE.Application.DTOs
+namespace TTE.Infrastructure.DTOs
 {
     public class LoginRequestDto
     {

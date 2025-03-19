@@ -1,7 +1,7 @@
-﻿using TTE.Application.DTOs;
-using TTE.Application.Interfaces;
+﻿using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Commons.Services;
+using TTE.Infrastructure.DTOs;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
 
@@ -36,14 +36,14 @@ namespace TTE.Application.Services
             var securityQuestion = await _securityQuestionRepository.GetByCondition(s => s.Id == requestData.SecurityQuestionId);
             if (securityQuestion == null)
             {
-                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_INVALID_SECURITY_QUESTION_ID, []);
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_INVALID_SECURITY_QUESTION_ID);
             }
 
             var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.SHOPPER);
             
             if (role == null)
             {
-                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND);
             }
 
             var user = new User

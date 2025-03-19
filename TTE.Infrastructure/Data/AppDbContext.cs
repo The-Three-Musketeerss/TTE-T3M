@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
 
 
@@ -31,19 +32,19 @@ namespace TTE.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(
-                new Role { Id = 1, Name = "Admin" },
-                new Role { Id = 2, Name = "Employee" },
-                new Role { Id = 3, Name = "Shopper" }
+                new Role { Id = 1, Name = AppConstants.ADMIN},
+                new Role { Id = 2, Name = AppConstants.EMPLOYEE },
+                new Role { Id = 3, Name = AppConstants.SHOPPER }
             );
             modelBuilder.Entity<SecurityQuestion>().HasData(
-                new SecurityQuestion { Id = 1, Question = "What is your favorite color?" },
-                new SecurityQuestion { Id = 2, Question = "What is your favorite food?" },
-                new SecurityQuestion { Id = 3, Question = "What is your favorite movie?" }
+                new SecurityQuestion { Id = 1, Question = AppConstants.SECURITY_QUESTION_1 },
+                new SecurityQuestion { Id = 2, Question = AppConstants.SECURITY_QUESTION_2 },
+                new SecurityQuestion { Id = 3, Question = AppConstants.SECURITY_QUESTION_3 }
             );
             modelBuilder.Entity<Coupon>().HasData(
-                new Coupon { Id = 1, Code = "10OFF", Discount = 10 },
-                new Coupon { Id = 2, Code = "20OFF", Discount = 20 },
-                new Coupon { Id = 3, Code = "30OFF", Discount = 30 }
+                new Coupon { Id = 1, Code = AppConstants.coupon_code_1, Discount = 10 },
+                new Coupon { Id = 2, Code = AppConstants.coupon_code_2, Discount = 20 },
+                new Coupon { Id = 3, Code = AppConstants.coupon_code_3, Discount = 30 }
             );
 
 

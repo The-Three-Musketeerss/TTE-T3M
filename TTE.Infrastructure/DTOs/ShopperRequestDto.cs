@@ -1,6 +1,6 @@
 ﻿using TTE.Commons.Validators;
 
-namespace TTE.Application.DTOs
+namespace TTE.Infrastructure.DTOs
 {
     public class ShopperRequestDto
     {

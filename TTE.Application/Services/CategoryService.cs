@@ -1,6 +1,6 @@
-﻿using TTE.Application.DTOs;
-using TTE.Application.Interfaces;
+﻿using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
+using TTE.Infrastructure.DTOs;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
 

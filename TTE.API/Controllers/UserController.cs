@@ -1,26 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TTE.Application.DTOs;
+using TTE.Infrastructure.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
+using TTE.Infrastructure.Models;
 
-namespace Api.Controllers
+namespace TTE.API.Controllers
 {
     [ApiController]
     [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private readonly IGenericService<User,UserResponseDto> _genericService;
+        public UserController(IUserService userService, IGenericService<User, UserResponseDto> genericService)
         {
             _userService = userService;
+            _genericService = genericService;
         }
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetUsers();
+            var users = await _genericService.GetAll();
             return Ok(users);
         }
 

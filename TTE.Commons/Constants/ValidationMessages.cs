@@ -13,5 +13,9 @@
         public const string CATEGORY_DELETED_SUCCESSFULLY = "Category deleted successfully";
         public const string CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY = "Category deleted successfully, waiting for approval";
         public const string CATEGORY_UPDATED_SUCCESSFULLY = "Category updated successfully";
+
+        public const string MESSAGE_USER_NOT_FOUND = "User not found";
+        public const string MESSAGE_USER_UPDATED_SUCCESSFULLY = "User {0} has been updated successfully.";
+        public const string USER_DELETED_SUCCESSFULLY = "Users deleted successfully.";
     }
 }

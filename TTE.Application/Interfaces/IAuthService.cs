@@ -1,4 +1,4 @@
-﻿using TTE.Application.DTOs;
+﻿using TTE.Infrastructure.DTOs;
 
 namespace TTE.Application.Interfaces
 {

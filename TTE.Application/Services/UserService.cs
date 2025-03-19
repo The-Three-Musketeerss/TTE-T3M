@@ -1,6 +1,7 @@
-﻿using TTE.Application.DTOs;
-using TTE.Application.Interfaces;
+﻿using TTE.Application.Interfaces;
+using TTE.Commons.Constants;
 using TTE.Commons.Services;
+using TTE.Infrastructure.DTOs;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
 
@@ -38,7 +39,7 @@ namespace TTE.Application.Services
             var user = await _userRepository.GetByCondition(u => u.UserName == username);
             if (user == null)
             {
-                return new GenericResponseDto<string>(false, "User not found");
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
             }
 
             user.UserName = request.Name;
@@ -47,7 +48,7 @@ namespace TTE.Application.Services
 
             await _userRepository.Update(user);
 
-            return new GenericResponseDto<string>(true, $"User {username} has been updated successfully.");
+            return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_USER_UPDATED_SUCCESSFULLY, username));
         }
 
         public async Task<GenericResponseDto<string>> DeleteUsers(List<string> usernames)
@@ -56,7 +57,7 @@ namespace TTE.Application.Services
 
             if (usersToDelete == null || !usersToDelete.Any())
             {
-                return new GenericResponseDto<string>(false, "No users found to delete.");
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
             }
 
             foreach (var user in usersToDelete)
@@ -64,7 +65,7 @@ namespace TTE.Application.Services
                 await _userRepository.Delete(user.Id);
             }
 
-            return new GenericResponseDto<string>(true, "Users deleted successfully.");
+            return new GenericResponseDto<string>(true, ValidationMessages.USER_DELETED_SUCCESSFULLY);
         }
     }
 }

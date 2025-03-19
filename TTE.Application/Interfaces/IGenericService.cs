@@ -7,8 +7,9 @@ using TTE.Infrastructure.DTOs;
 
 namespace TTE.Application.Interfaces
 {
-    public interface IProductService
+    public interface IGenericService<T, T2>
     {
-        Task<ProductPaginatedResponseDto> GetProducts(string? category, string? orderBy, bool descending, int page, int pageSize);
+        Task<GenericResponseDto<T2>> GetAll();
+
     }
 }
