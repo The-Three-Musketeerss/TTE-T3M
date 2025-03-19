@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using TTE.Application.DTOs;
+﻿using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
-using TTE.Commons.Constants;
 using TTE.Commons.Services;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
