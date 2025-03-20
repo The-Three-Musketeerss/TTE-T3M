@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Tests", "TTE.Test\TTE.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Commons", "TTE.Commons\TTE.Commons.csproj", "{01F93158-DAFF-40F3-9BFA-6B525486C6C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTE.Seeding", "TTE.Seeding\TTE.Seeding.csproj", "{5CCE2B14-9754-4D3E-ACA7-354E226F850C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{01F93158-DAFF-40F3-9BFA-6B525486C6C9}.Release|x64.Build.0 = Release|Any CPU
 		{01F93158-DAFF-40F3-9BFA-6B525486C6C9}.Release|x86.ActiveCfg = Release|Any CPU
 		{01F93158-DAFF-40F3-9BFA-6B525486C6C9}.Release|x86.Build.0 = Release|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Debug|x64.Build.0 = Debug|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Debug|x86.Build.0 = Debug|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Release|x64.ActiveCfg = Release|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Release|x64.Build.0 = Release|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Release|x86.ActiveCfg = Release|Any CPU
+		{5CCE2B14-9754-4D3E-ACA7-354E226F850C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
