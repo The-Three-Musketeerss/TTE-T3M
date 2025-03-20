@@ -10,7 +10,6 @@ namespace TTE.Infrastructure.Data
     {
         public AppDbContext CreateDbContext(string[] args)
         {
-            // Build configuration to load connection string
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
