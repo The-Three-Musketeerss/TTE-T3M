@@ -16,7 +16,7 @@ namespace TTE.Infrastructure.Repositories
         public async Task<(IEnumerable<Product> Products, int TotalCount)> GetProducts(
             string? category, string? orderBy, bool descending, int page, int pageSize)
         {
-            IQueryable<Product> query = _context.Products.Include(p => p.Category);
+            IQueryable<Product> query = _context.Products.Include(p => p.Category).Where(p => p.Approved);
 
             if (!string.IsNullOrEmpty(category))
                 query = query.Where(p => p.Category.Name == category);
