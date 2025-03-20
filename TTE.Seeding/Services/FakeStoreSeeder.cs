@@ -21,12 +21,13 @@ public class FakeStoreSeeder
 
     public async Task SeedDataAsync()
     {
-        if (await _context.Products.AnyAsync())
+        if (await _context.Products.AnyAsync() && await _context.Categories.AnyAsync())
         {
             _logger.LogInformation("Database already seeded.");
             return;
         }
 
+        _logger.LogInformation("Fetching products from FakeStore API...");
         var response = await _httpClient.GetAsync("https://fakestoreapi.com/products");
 
         if (!response.IsSuccessStatusCode)
@@ -36,54 +37,64 @@ public class FakeStoreSeeder
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        var products = JsonSerializer.Deserialize<List<FakeStoreProduct>>(content,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var products = JsonSerializer.Deserialize<List<FakeStoreProduct>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         if (products == null || !products.Any())
         {
-            _logger.LogWarning("No products found in response.");
+            _logger.LogWarning("No products found in FakeStore API response.");
             return;
         }
 
         var categories = products.Select(p => p.Category).Distinct().ToList();
 
+        var existingCategories = await _context.Categories.ToListAsync();
         foreach (var categoryName in categories)
         {
-            if (!await _context.Categories.AnyAsync(c => c.Name == categoryName))
-                _context.Categories.Add(new Category { Name = categoryName });
+            if (!existingCategories.Any(c => c.Name == categoryName))
+            {
+                _context.Categories.Add(new Category { Name = categoryName, Approved = true });
+            }
         }
-
         await _context.SaveChangesAsync();
 
-        var categoryDict = await _context.Categories.ToDictionaryAsync(c => c.Name, c => c.Id);
+        var categoryDictionary = await _context.Categories.ToDictionaryAsync(c => c.Name, c => c.Id);
+
+        var productEntities = new List<Product>();
 
         foreach (var productDto in products)
         {
-            var product = new Product
+            if (!await _context.Products.AnyAsync(p => p.Title == productDto.Title))
             {
-                Title = productDto.Title,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                Image = productDto.Image,
-                CategoryId = categoryDict[productDto.Category]
-            };
-            _context.Products.Add(product);
+                var productEntity = new Product
+                {
+                    Title = productDto.Title,
+                    Description = productDto.Description,
+                    Price = productDto.Price,
+                    Image = productDto.Image,
+                    CategoryId = categoryDictionary[productDto.Category],
+                    Approved = true
+                };
+
+                productEntities.Add(productEntity);
+                _context.Products.Add(productEntity);
+            }
         }
 
         await _context.SaveChangesAsync();
 
-        foreach (var product in await _context.Products.ToListAsync())
+        foreach (var product in productEntities)
         {
-            _context.Inventory.Add(new Inventory
+            var inventoryItem = new Inventory
             {
                 ProductId = product.Id,
                 Total = 100,
                 Available = 100
-            });
+            };
+            _context.Inventory.Add(inventoryItem);
         }
 
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("Database seeded successfully.");
+        _logger.LogInformation("Database seeded successfully without ratings.");
     }
 }
