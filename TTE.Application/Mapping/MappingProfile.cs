@@ -12,6 +12,11 @@ namespace TTE.Application.Mapping
                 opt => opt.MapFrom(src => src.Role.Name));
             CreateMap<Category, CategoryResponseDto>();
             CreateMap<CategoryRequestDto, Category>();
+
+            CreateMap<Product, ProductResponseDto>()
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.Rating, opt => opt.Ignore());
+
         }
     }
 }

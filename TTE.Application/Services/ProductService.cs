@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AutoMapper;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
@@ -11,11 +12,13 @@ namespace TTE.Application.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IRatingRepository ratingRepository)
+        public ProductService(IProductRepository productRepository, IRatingRepository ratingRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
+            _mapper = mapper;
         }
 
         public async Task<ProductPaginatedResponseDto> GetProducts(
@@ -23,21 +26,26 @@ namespace TTE.Application.Services
         {
             var (products, totalCount) = await _productRepository.GetProducts(category, orderBy, descending, page, pageSize);
 
-            var productDtos = new List<ProductResponseDto>();
-            foreach (var product in products)
+            var productIds = products.Select(p => p.Id).ToList();
+
+            var ratings = await _ratingRepository.GetRatingsByProductIds(productIds);
+
+
+            var productDtos = products.Select(product =>
             {
-                var rating = await GetProductRatings(product.Id);
-                productDtos.Add(new ProductResponseDto
+                var productRatings = ratings.Where(r => r.ProductId == product.Id).ToList();
+
+                var ratingDto = new RatingDto
                 {
-                    Id = product.Id,
-                    Title = product.Title,
-                    Price = product.Price,
-                    Description = product.Description,
-                    Category = product.Category.Name,
-                    Image = product.Image,
-                    Rating = rating
-                });
-            }
+                    Rate = productRatings.Any() ? Math.Round(productRatings.Average(r => r.Rate), 1) : 0,
+                    Count = productRatings.Count
+                };
+
+                var dto = _mapper.Map<ProductResponseDto>(product);
+                dto.Rating = ratingDto;
+
+                return dto;
+            }).ToList();
 
             return new ProductPaginatedResponseDto(
                 success: true,
@@ -47,20 +55,6 @@ namespace TTE.Application.Services
                 pageSize: pageSize,
                 totalCount: totalCount
             );
-        }
-
-        private async Task<RatingDto> GetProductRatings(int productId)
-        {
-            var ratings = await _ratingRepository.GetRatingsByProductId(productId);
-
-            if (!ratings.Any())
-                return new RatingDto { Rate = 0, Count = 0 };
-
-            return new RatingDto
-            {
-                Rate = Math.Round(ratings.Average(r => r.Rate), 1),
-                Count = ratings.Count()
-            };
         }
     }
 }

@@ -17,5 +17,12 @@ namespace TTE.Infrastructure.Repositories
         {
             return await _context.Ratings.Where(r => r.ProductId == productId).ToListAsync();
         }
+
+        public async Task<List<Rating>> GetRatingsByProductIds(List<int> productIds)
+        {
+            return await _context.Ratings
+                .Where(r => productIds.Contains(r.ProductId))
+                .ToListAsync();
+        }
     }
 }

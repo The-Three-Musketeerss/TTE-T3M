@@ -1,4 +1,5 @@
-﻿using TTE.Application.DTOs;
+﻿using AutoMapper;
+using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
@@ -11,13 +12,15 @@ namespace TTE.Application.Services
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IGenericRepository<Job> _jobRepository;
         private readonly IGenericRepository<Product> _productRepository;
+        private readonly IMapper _mapper;
 
 
-        public CategoryService(IGenericRepository<Category> categoryRepository, IGenericRepository<Job> jobRepository, IGenericRepository<Product> productRepository)
+        public CategoryService(IGenericRepository<Category> categoryRepository, IGenericRepository<Job> jobRepository, IGenericRepository<Product> productRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _jobRepository = jobRepository;
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
         public async Task<GenericResponseDto<string>> DeleteCategory(int id, string userRole)
@@ -58,11 +61,7 @@ namespace TTE.Application.Services
         public async Task<GenericResponseDto<CategoryResponseDto>> GetCategories()
         {
             var categories = await _categoryRepository.GetAllByCondition(C => C.Approved == true);
-            var categoryDtos = categories.Select(c => new CategoryResponseDto
-            {
-                Id = c.Id,
-                Name = c.Name
-            }).ToList();
+            var categoryDtos = categories.Select(c => _mapper.Map<CategoryResponseDto>(c)).ToList();
             return new GenericResponseDto<CategoryResponseDto>(true, ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, categoryDtos);
         
         }
@@ -74,7 +73,8 @@ namespace TTE.Application.Services
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
             }
-            categoryToUpdate.Name = request.Name;
+
+            _mapper.Map(request, categoryToUpdate);
 
             await _categoryRepository.Update(categoryToUpdate);
 
