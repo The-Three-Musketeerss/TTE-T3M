@@ -13,7 +13,7 @@ namespace TTE.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<(IEnumerable<Product> Products, int TotalCount)> GetProductsAsync(
+        public async Task<(IEnumerable<Product> Products, int TotalCount)> GetProducts(
             string? category, string? orderBy, bool descending, int page, int pageSize)
         {
             IQueryable<Product> query = _context.Products.Include(p => p.Category);
@@ -30,7 +30,8 @@ namespace TTE.Infrastructure.Repositories
 
             int totalCount = await query.CountAsync();
 
-            var products = await query.Skip((page - 1) * pageSize)
+            int validatedPage = Math.Max(page, 1);
+            var products = await query.Skip((validatedPage - 1) * pageSize)
                                       .Take(pageSize)
                                       .ToListAsync();
 
