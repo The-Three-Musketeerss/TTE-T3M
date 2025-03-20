@@ -10,21 +10,35 @@ namespace TTE.Application.Services
     {
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IGenericRepository<Job> _jobRepository;
+        private readonly IGenericRepository<Product> _productRepository;
 
 
-        public CategoryService(IGenericRepository<Category> categoryRepository, IGenericRepository<Job> jobRepository)
+        public CategoryService(IGenericRepository<Category> categoryRepository, IGenericRepository<Job> jobRepository, IGenericRepository<Product> productRepository)
         {
             _categoryRepository = categoryRepository;
             _jobRepository = jobRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<GenericResponseDto<string>> DeleteCategory(int id, string userRole)
         {
             var categoryToDelete = await _categoryRepository.GetByCondition(c => c.Id == id);
 
+            var productsWithCategory = await _productRepository.GetAllByCondition(p => p.CategoryId == id);
+            if (productsWithCategory.Any())
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_HAS_PRODUCTS);
+            }
+
             if (categoryToDelete == null)
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
+            }
+
+            if (userRole == AppConstants.ADMIN)
+            {
+                await _categoryRepository.Delete(categoryToDelete.Id);
+                return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_SUCCESSFULLY);
             }
 
             var job = new Job
@@ -33,16 +47,10 @@ namespace TTE.Application.Services
                 CreatedAt = DateTime.Now,
                 Type = Job.JobEnum.Category,
                 Operation = Job.OperationEnum.Delete,
-                Status = userRole == AppConstants.ADMIN ? Job.StatusEnum.Approved : Job.StatusEnum.Declined
+                Status = Job.StatusEnum.Pending
             };
 
             await _jobRepository.Add(job);
-
-            if (userRole == AppConstants.ADMIN)
-            {
-                await _categoryRepository.Delete(categoryToDelete.Id);
-                return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_SUCCESSFULLY);
-            }
 
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY);
         }
