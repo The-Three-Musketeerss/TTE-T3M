@@ -18,11 +18,23 @@ namespace TTE.Application.Services
         private readonly IGenericRepository<Job> _jobRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IRatingRepository ratingRepository, IMapper mapper, IGenericRepository<Category> categoryRepository )
+        public ProductService(
+            IProductRepository productRepository, 
+            IRatingRepository ratingRepository, 
+            IMapper mapper, 
+            IGenericRepository<Category> categoryRepository, 
+            IGenericRepository<Product> genericProductRepository,
+            IGenericRepository<Inventory> inventoryRepository,
+            IGenericRepository<Job> jobRepository
+            )
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
-            _categoryRepository = categoryRepository; 
+            _categoryRepository = categoryRepository;
+            _genericProductRepository = genericProductRepository;
+            _inventoryRepository = inventoryRepository;
+            _jobRepository = jobRepository;
+
             _mapper = mapper;
         }
 
