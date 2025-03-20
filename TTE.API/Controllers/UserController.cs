@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
+using TTE.Infrastructure.Models;
+using TTE.Application.DTOs;
 
-namespace Api.Controllers
+namespace TTE.API.Controllers
 {
     [ApiController]
     [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -24,6 +24,7 @@ namespace Api.Controllers
             return Ok(users);
         }
 
+        
         [HttpPut("{username}")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> UpdateUser(string username, [FromBody] UpdateUserRequestDto request)

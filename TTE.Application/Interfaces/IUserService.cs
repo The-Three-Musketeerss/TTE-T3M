@@ -7,7 +7,7 @@ using TTE.Application.DTOs;
 
 namespace TTE.Application.Interfaces
 {
-    public interface IUserService
+    public interface IUserService 
     {
         Task<GenericResponseDto<UserResponseDto>> GetUsers();
         Task<GenericResponseDto<string>> UpdateUser(string username, UpdateUserRequestDto request);

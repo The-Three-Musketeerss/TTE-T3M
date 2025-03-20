@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
-using TTE.Commons.Constants;
-using System.Security.Claims;
 using TTE.Application.DTOs;
+using TTE.Application.Services;
+using System.Security.Claims;
+using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
@@ -23,7 +24,7 @@ namespace TTE.API.Controllers
             var response = await _categoryService.GetCategories();
             return Ok(response);
         }
-
+    
         [Authorize(Policy = "CanAccessDashboard")]
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
@@ -41,8 +42,9 @@ namespace TTE.API.Controllers
 
         [Authorize(Policy = "CanAccessDashboard")]
         [HttpPut("{categoryId}")]
-        public async Task<IActionResult> UpdateCategory(int categoryId, [FromBody] CategoryRequestDto request)
+        public async Task<IActionResult> UpdateCategory(int categoryId,[FromBody] CategoryRequestDto request)
         {
+            request.Id = categoryId;
             var response = await _categoryService.UpdateCategory(categoryId, request);
 
             return response.Success ? Ok(response) : BadRequest(response);

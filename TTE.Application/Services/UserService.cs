@@ -1,5 +1,7 @@
-﻿using TTE.Application.DTOs;
+﻿using AutoMapper;
+using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
+using TTE.Commons.Constants;
 using TTE.Commons.Services;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
@@ -9,26 +11,20 @@ namespace TTE.Application.Services
     public class UserService : IUserService
     {
         private readonly IGenericRepository<User> _userRepository;
-        private readonly IGenericRepository<Role> _roleRepository;
+        private readonly IMapper _mapper;
         private readonly ISecurityService _securityService;
 
-        public UserService(IGenericRepository<User> userRepository, IGenericRepository<Role> roleRepository, ISecurityService securityService)
+        public UserService(IGenericRepository<User> userRepository, ISecurityService securityService, IMapper mapper)
         {
             _userRepository = userRepository;
-            _roleRepository = roleRepository; 
             _securityService = securityService;
+            _mapper = mapper;
         }
         public async Task<GenericResponseDto<UserResponseDto>> GetUsers()
         {
-            var users = await _userRepository.Get();
-            var userDtos = users.Select(u => new UserResponseDto
-            {
-                UserName = u.UserName,
-                Email = u.Email,
-                Name = u.Name,
-                Password = u.Password,
-                Role = _roleRepository.GetByCondition(r => r.Id == u.RoleId).Result.Name
-            }).ToList();
+            var includes = new string[] { "Role" };
+            var users = await _userRepository.GetEntityWithIncludes(includes);
+            var userDtos = users.Select(u => _mapper.Map<UserResponseDto>(u)).ToList();
 
             return new GenericResponseDto<UserResponseDto>(true, "Users retrieved successfully", userDtos);
         }
@@ -38,7 +34,7 @@ namespace TTE.Application.Services
             var user = await _userRepository.GetByCondition(u => u.UserName == username);
             if (user == null)
             {
-                return new GenericResponseDto<string>(false, "User not found");
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
             }
 
             user.UserName = request.Name;
@@ -47,7 +43,7 @@ namespace TTE.Application.Services
 
             await _userRepository.Update(user);
 
-            return new GenericResponseDto<string>(true, $"User {username} has been updated successfully.");
+            return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_USER_UPDATED_SUCCESSFULLY, username));
         }
 
         public async Task<GenericResponseDto<string>> DeleteUsers(List<string> usernames)
@@ -56,7 +52,7 @@ namespace TTE.Application.Services
 
             if (usersToDelete == null || !usersToDelete.Any())
             {
-                return new GenericResponseDto<string>(false, "No users found to delete.");
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
             }
 
             foreach (var user in usersToDelete)
@@ -64,7 +60,7 @@ namespace TTE.Application.Services
                 await _userRepository.Delete(user.Id);
             }
 
-            return new GenericResponseDto<string>(true, "Users deleted successfully.");
+            return new GenericResponseDto<string>(true, ValidationMessages.USER_DELETED_SUCCESSFULLY);
         }
     }
 }

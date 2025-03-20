@@ -12,8 +12,8 @@ using TTE.Infrastructure.Data;
 namespace TTE.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250318051551_IntialCreation")]
-    partial class IntialCreation
+    [Migration("20250319174209_Creation")]
+    partial class Creation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,7 +272,7 @@ namespace TTE.Infrastructure.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("TTE.Infrastructure.Models.Order_Items", b =>
+            modelBuilder.Entity("TTE.Infrastructure.Models.Order_Item", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -503,7 +503,7 @@ namespace TTE.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Products_Id")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -515,6 +515,21 @@ namespace TTE.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("TTE.Infrastructure.Models.Wishlist_Item", b =>
+                {
+                    b.Property<int>("WishlistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WishlistId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Wishlist_Items");
                 });
 
             modelBuilder.Entity("TTE.Infrastructure.Models.Address", b =>
@@ -600,7 +615,7 @@ namespace TTE.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TTE.Infrastructure.Models.Order_Items", b =>
+            modelBuilder.Entity("TTE.Infrastructure.Models.Order_Item", b =>
                 {
                     b.HasOne("TTE.Infrastructure.Models.Order", "Order")
                         .WithMany()
@@ -694,6 +709,25 @@ namespace TTE.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TTE.Infrastructure.Models.Wishlist_Item", b =>
+                {
+                    b.HasOne("TTE.Infrastructure.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TTE.Infrastructure.Models.Wishlist", "Wishlist")
+                        .WithMany()
+                        .HasForeignKey("WishlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Wishlist");
                 });
 #pragma warning restore 612, 618
         }

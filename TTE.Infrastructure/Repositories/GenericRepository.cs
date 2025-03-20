@@ -27,6 +27,16 @@ namespace TTE.Infrastructure.Repositories
             return await query.AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<IEnumerable<T>> GetEntityWithIncludes(params string[] includes)
+        {
+            IQueryable<T> query = _entity.AsQueryable();
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.AsNoTracking().ToListAsync();
+        }
+
         public async Task<IEnumerable<T>> GetAllByCondition(Expression<Func<T, bool>> predicate)
         {
             return await _entity.Where(predicate).ToListAsync();

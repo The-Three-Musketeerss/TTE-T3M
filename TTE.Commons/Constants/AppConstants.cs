@@ -14,6 +14,14 @@ namespace TTE.Commons.Constants
         public const string EMPLOYEE = "Employee";
         public const string ROLE = "Role";
 
+        public const string SECURITY_QUESTION_1 = "What is your favorite color?";
+        public const string SECURITY_QUESTION_2 = "What is your favorite food?";
+        public const string SECURITY_QUESTION_3 = "What is your favorite movie?";
+
+        public const string coupon_code_1 = "10OFF";
+        public const string coupon_code_2 = "20OFF";
+        public const string coupon_code_3 = "30OFF";
+
         public const string API_PRODUCTS = "api/products";
         public const string API_AUTH = "api/auth";
         public const string SIGN_UP = "signup";

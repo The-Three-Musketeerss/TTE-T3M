@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TTE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreation : Migration
+    public partial class Creation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -306,7 +306,7 @@ namespace TTE.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Products_Id = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -383,6 +383,31 @@ namespace TTE.Infrastructure.Migrations
                         name: "FK_Cart_Items_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Wishlist_Items",
+                columns: table => new
+                {
+                    WishlistId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wishlist_Items", x => new { x.WishlistId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_Wishlist_Items_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Wishlist_Items_Wishlists_WishlistId",
+                        column: x => x.WishlistId,
+                        principalTable: "Wishlists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -526,6 +551,11 @@ namespace TTE.Infrastructure.Migrations
                 column: "SecurityQuestionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Wishlist_Items_ProductId",
+                table: "Wishlist_Items",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Wishlists_UserId",
                 table: "Wishlists",
                 column: "UserId");
@@ -553,7 +583,7 @@ namespace TTE.Infrastructure.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Wishlists");
+                name: "Wishlist_Items");
 
             migrationBuilder.DropTable(
                 name: "Carts");
@@ -563,6 +593,9 @@ namespace TTE.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Wishlists");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTE.Infrastructure.Data;
-using TTE.Infrastructure.Interfaces;
 using TTE.Infrastructure.Models;
 
 namespace TTE.Infrastructure.Repositories
