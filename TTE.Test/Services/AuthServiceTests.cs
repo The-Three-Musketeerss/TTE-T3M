@@ -6,19 +6,19 @@ using TTE.Application.Services;
 using TTE.Commons.Services;
 using TTE.Application.DTOs;
 using TTE.Commons.Constants;
-using TTE.Infrastructure.DTOs;
+using TTE.Application.Interfaces;
 
 namespace TTE.Tests.Services
 {
-    public class AuthServiceTest
+    public class AuthServiceTests
     {
         private readonly Mock<IGenericRepository<User>> _mockUserRepository;
         private readonly Mock<IGenericRepository<Role>> _mockRoleRepository;
         private readonly Mock<IGenericRepository<SecurityQuestion>> _mockSecurityQuestionRepository;
         private readonly Mock<ISecurityService> _mockSecurityService;
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
-        public AuthServiceTest() {
+        public AuthServiceTests() {
             _mockUserRepository = new Mock<IGenericRepository<User>>();
             _mockRoleRepository = new Mock<IGenericRepository<Role>>();
             _mockSecurityQuestionRepository = new Mock<IGenericRepository<SecurityQuestion>>();

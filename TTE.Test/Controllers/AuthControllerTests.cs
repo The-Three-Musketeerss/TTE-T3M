@@ -3,7 +3,7 @@ using Moq;
 using TTE.API.Controllers;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
-using TTE.Infrastructure.DTOs;
+using TTE.Commons.Constants;
 
 namespace TTE.Tests.Controllers
 {
@@ -48,5 +48,33 @@ namespace TTE.Tests.Controllers
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
         }
+
+        [Fact]
+        public async Task RegisterUser_ShouldReturnBadRequest_WhenEmailAlreadyExists()
+        {
+
+            var request = new ShopperRequestDto
+            {
+                Email = "existing@example.com",
+                UserName = "ExistingUser",
+                Password = "SecurePass123",
+                SecurityQuestionId = 1,
+                SecurityAnswer = "TestAnswer"
+            };
+
+            var response = new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_EMAIL_ALREADY_EXISTS);
+
+            _mockAuthService.Setup(service => service.RegisterUser(request))
+                            .ReturnsAsync(response);
+
+            // Act
+            var result = await _authController.RegisterUser(request) as BadRequestObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(response, result.Value);
+        }
+
     }
 }

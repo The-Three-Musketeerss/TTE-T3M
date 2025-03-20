@@ -14,7 +14,7 @@ namespace TTE.Application.Services
         private readonly IMapper _mapper;
         private readonly ISecurityService _securityService;
 
-        public UserService(IGenericRepository<User> userRepository, IGenericRepository<Role> roleRepository, ISecurityService securityService, IMapper mapper)
+        public UserService(IGenericRepository<User> userRepository, ISecurityService securityService, IMapper mapper)
         {
             _userRepository = userRepository;
             _securityService = securityService;

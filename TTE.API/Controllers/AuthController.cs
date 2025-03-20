@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
-using TTE.Application.Services;
 using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
