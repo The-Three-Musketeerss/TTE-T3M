@@ -9,6 +9,6 @@ namespace TTE.Application.DTOs
     public class ProductCreatedResponseDto
     {
         public int Id { get; set; }
-        public string message { get; set; }
+        public string Message { get; set; }
     }
 }

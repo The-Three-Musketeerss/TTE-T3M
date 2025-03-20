@@ -18,8 +18,6 @@ namespace TTE.Application.DTOs
 
         [RequiredFieldValidator]
         public string Image { get; set; } = string.Empty;
-
-        public RatingDto Rating { get; set; }
         public InventoryDto Inventory { get; set; }
     }
 
