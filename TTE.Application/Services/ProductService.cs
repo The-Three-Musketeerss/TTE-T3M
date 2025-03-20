@@ -39,5 +39,11 @@ namespace TTE.Application.Services
                 totalCount: totalCount
             );
         }
+
+        Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole)
+        {
+
+            throw new NotImplementedException();
+        }
     }
 }

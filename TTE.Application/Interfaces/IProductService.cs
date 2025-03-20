@@ -10,5 +10,6 @@ namespace TTE.Application.Interfaces
     public interface IProductService
     {
         Task<ProductPaginatedResponseDto> GetProducts(string? category, string? orderBy, bool descending, int page, int pageSize);
+        Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole);
     }
 }
