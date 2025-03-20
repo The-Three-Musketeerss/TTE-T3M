@@ -13,9 +13,6 @@ namespace TTE.Application.Mapping
             CreateMap<Category, CategoryResponseDto>();
             CreateMap<CategoryRequestDto, Category>();
 
-
-            CreateMap<ProductRequestDto,Product>()
-                .ForMember(dest => dest.)
         }
     }
 }
