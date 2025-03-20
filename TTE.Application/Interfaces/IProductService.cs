@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TTE.Infrastructure.DTOs;
+using TTE.Application.DTOs;
 
 namespace TTE.Application.Interfaces
 {

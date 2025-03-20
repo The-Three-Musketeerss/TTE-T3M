@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TTE.Infrastructure.DTOs
+namespace TTE.Application.DTOs
 {
     public class UpdateUserRequestDto
     {

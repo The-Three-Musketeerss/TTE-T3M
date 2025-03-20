@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Commons.Services;
-using TTE.Infrastructure.DTOs;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
 
@@ -16,7 +16,8 @@ namespace TTE.Application.Services
 
         public UserService(IGenericRepository<User> userRepository, IGenericRepository<Role> roleRepository, ISecurityService securityService, IMapper mapper)
         {
-            _userRepository = userRepository;            _securityService = securityService;
+            _userRepository = userRepository;
+            _securityService = securityService;
             _mapper = mapper;
         }
         public async Task<GenericResponseDto<UserResponseDto>> GetUsers()

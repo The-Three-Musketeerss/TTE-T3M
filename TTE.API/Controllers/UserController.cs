@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TTE.Infrastructure.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
+using TTE.Application.DTOs;
 
 namespace TTE.API.Controllers
 {

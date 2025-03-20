@@ -1,4 +1,4 @@
-﻿namespace TTE.Infrastructure.DTOs
+﻿namespace TTE.Application.DTOs
 {
     public class CategoryRequestDto
     {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
-using TTE.Commons.Constants;
+using TTE.Application.DTOs;
+using TTE.Application.Services;
 using System.Security.Claims;
-using TTE.Infrastructure.DTOs;
-using TTE.Infrastructure.Models;
+using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
@@ -12,8 +12,8 @@ namespace TTE.API.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
-        private readonly IGenericService<Category, CategoryResponseDto, CategoryRequestDto> _categoryService;
-        public CategoryController(IGenericService<Category, CategoryResponseDto, CategoryRequestDto> categoryService)
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
@@ -21,10 +21,10 @@ namespace TTE.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var response = await _categoryService.GetAll();
+            var response = await _categoryService.GetCategories();
             return Ok(response);
         }
-        /*
+    
         [Authorize(Policy = "CanAccessDashboard")]
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
@@ -38,14 +38,14 @@ namespace TTE.API.Controllers
             var response = await _categoryService.DeleteCategory(categoryId, userRole);
 
             return response.Success ? Ok(response) : BadRequest(response);
-        }*/
+        }
 
         [Authorize(Policy = "CanAccessDashboard")]
         [HttpPut("{categoryId}")]
         public async Task<IActionResult> UpdateCategory(int categoryId,[FromBody] CategoryRequestDto request)
         {
             request.Id = categoryId;
-            var response = await _categoryService.Update(request);
+            var response = await _categoryService.UpdateCategory(categoryId, request);
 
             return response.Success ? Ok(response) : BadRequest(response);
         }

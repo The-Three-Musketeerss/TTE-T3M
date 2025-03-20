@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TTE.Infrastructure.Models;
 
-namespace TTE.Infrastructure.DTOs
+namespace TTE.Application.DTOs
 {
     public class ProductResponseDto
     {

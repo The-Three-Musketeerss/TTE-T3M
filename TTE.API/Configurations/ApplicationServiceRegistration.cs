@@ -1,7 +1,7 @@
 ﻿using TTE.Application.Interfaces;
+using TTE.Application.Mapping;
 using TTE.Application.Services;
 using TTE.Commons.Services;
-using TTE.Infrastructure.Mapping;
 using TTE.Infrastructure.Repositories;
 
 namespace TTE.API.Configurations
@@ -19,7 +19,6 @@ namespace TTE.API.Configurations
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped(typeof(IGenericService<,,>), typeof(GenericService<,,>));
             return services;
         }
     }

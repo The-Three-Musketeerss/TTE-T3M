@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using AutoMapper;
-using TTE.Infrastructure.DTOs;
+using TTE.Application.DTOs;
 using TTE.Infrastructure.Models;
 
-namespace TTE.Infrastructure.Mapping
+namespace TTE.Application.Mapping
 {
     public class MappingProfile : Profile
     {

@@ -1,7 +1,7 @@
-﻿using TTE.Application.Interfaces;
+﻿using TTE.Application.DTOs;
+using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Commons.Services;
-using TTE.Infrastructure.DTOs;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
 
