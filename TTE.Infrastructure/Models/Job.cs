@@ -21,7 +21,7 @@ namespace TTE.Infrastructure.Models
         public OperationEnum Operation { get; set; }
 
         //Status
-        public enum StatusEnum { Approved, Declined }
+        public enum StatusEnum { Approved, Declined, Pending }
         public StatusEnum Status { get; set; }
     }
 }

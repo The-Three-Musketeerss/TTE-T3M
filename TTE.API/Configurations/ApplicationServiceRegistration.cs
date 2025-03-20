@@ -19,6 +19,7 @@ namespace TTE.API.Configurations
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
             return services;
         }
     }
