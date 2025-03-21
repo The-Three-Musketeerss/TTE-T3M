@@ -15,7 +15,7 @@ namespace TTE.Application.Mapping
             CreateMap<Category, CategoryResponseDto>();
             CreateMap<CategoryRequestDto, Category>();
 
-            CreateMap<ProductRequestDto, Product>()
+            CreateMap<ProductUpdateRequestDto, Product>()
                 .ForMember(dest => dest.Category, opt => opt.Ignore())
                 .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
                 .ForMember(dest => dest.Inventory, opt => opt.Ignore())

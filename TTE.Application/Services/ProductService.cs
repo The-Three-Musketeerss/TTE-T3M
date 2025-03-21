@@ -13,18 +13,23 @@ namespace TTE.Application.Services
         private readonly IGenericRepository<Product> _genericProductRepository;
         private readonly IGenericRepository<Category> _genericCategoryRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly IGenericRepository<Inventory> _genericInventoryRepository;
+        private readonly IGenericRepository<Job> _genericJobRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IGenericRepository<Product> genericProductRepository, IGenericRepository<Category> genericCategoryRepository, IRatingRepository ratingRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, IGenericRepository<Product> genericProductRepository, IGenericRepository<Category> genericCategoryRepository, IRatingRepository ratingRepository, IGenericRepository<Inventory> genericInventoryRepository,
+            IGenericRepository<Job> genericJobRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
             _genericProductRepository = genericProductRepository;
             _genericCategoryRepository = genericCategoryRepository;
+            _genericJobRepository = genericJobRepository;
+            _genericInventoryRepository = genericInventoryRepository;
             _mapper = mapper;
         }
 
-        public async Task<GenericResponseDto<string>> UpdateProduct(int productId, ProductRequestDto request)
+        public async Task<GenericResponseDto<string>> UpdateProduct(int productId, ProductUpdateRequestDto request)
         {
             var includes = new string[1] { "Inventory" };
             var products = await _genericProductRepository.GetEntityWithIncludes(includes);
@@ -106,5 +111,58 @@ namespace TTE.Application.Services
                 totalCount: totalCount
             );
         }
+
+
+        public async Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole)
+        {
+            var category = await _genericCategoryRepository.GetByCondition(c => c.Name == request.Category);
+            if(category == null)
+            {
+                return new GenericResponseDto<ProductCreatedResponseDto>(false, "category not found");
+            }
+
+            var product = new Product
+            {
+                Title = request.Title,
+                Price = request.Price,
+                Description = request.Description,
+                CategoryId = category.Id,
+                Image = request.Image,
+                Approved = userRole == AppConstants.ADMIN ? true : false
+            };
+
+            await _genericProductRepository.Add(product);
+
+            var inventory = new Inventory
+            {
+                ProductId = product.Id,
+                Total = request.Inventory.Total,
+                Available = request.Inventory.Available
+            };
+
+            await _genericInventoryRepository.Add(inventory);
+
+            if (userRole == AppConstants.EMPLOYEE)
+            {
+                var job = new Job
+                {
+                    Item_id = product.Id,
+                    CreatedAt = DateTime.Now,
+                    Type = Job.JobEnum.Product,
+                    Operation = Job.OperationEnum.Create,
+                    Status = Job.StatusEnum.Pending
+                };
+                await _genericJobRepository.Add(job);
+            }
+
+            var response = new ProductCreatedResponseDto
+            {
+                Id = product.Id,
+                Message = "Product created successfully."
+            };
+
+            return new GenericResponseDto<ProductCreatedResponseDto>(true,"Created", response);
+        }
+
     }
 }

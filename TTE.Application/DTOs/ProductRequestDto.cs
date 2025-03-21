@@ -1,8 +1,9 @@
-﻿using TTE.Infrastructure.Models;
+using TTE.Infrastructure.Models;
+using TTE.Commons.Validators;
 
 namespace TTE.Application.DTOs
 {
-    public class ProductRequestDto
+    public class ProductUpdateRequestDto
     {
         public string? Title { get; set; }
         public decimal? Price { get; set; }
@@ -12,4 +13,25 @@ namespace TTE.Application.DTOs
         public InventoryRequestDto? Inventory { get; set; }
 
     }
+
+    public class ProductRequestDto
+    {
+        [RequiredFieldValidator]
+        public string Title { get; set; } = string.Empty;
+
+        [RequiredFieldValidator]
+        public decimal Price { get; set; }
+
+        [RequiredFieldValidator]
+        public string Description { get; set; } = string.Empty;
+
+        [RequiredFieldValidator]
+        public string Category { get; set; } = string.Empty;
+
+        [RequiredFieldValidator]
+        public string Image { get; set; } = string.Empty;
+        public InventoryDto Inventory { get; set; }
+    }
+
 }
+

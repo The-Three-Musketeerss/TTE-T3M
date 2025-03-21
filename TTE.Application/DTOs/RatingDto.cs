@@ -1,4 +1,4 @@
-﻿namespace TTE.Application.DTOs
+namespace TTE.Application.DTOs
 {
     public class RatingDto
     {
