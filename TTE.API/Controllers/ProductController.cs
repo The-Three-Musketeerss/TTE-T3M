@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
+using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
@@ -24,6 +27,21 @@ namespace TTE.API.Controllers
         {
             var response = await _productService.GetProducts(category, orderBy, descending, page, pageSize);
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
+        {
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (userRole != AppConstants.ADMIN && userRole != AppConstants.EMPLOYEE)
+            {
+                return Forbid();
+            }
+
+            var result = await _productService.CreateProducts(request, userRole);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
     }
 }

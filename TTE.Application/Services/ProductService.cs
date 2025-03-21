@@ -12,12 +12,29 @@ namespace TTE.Application.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly IGenericRepository<Product> _genericProductRepository;
+        private readonly IGenericRepository<Inventory> _inventoryRepository;
+        private readonly IGenericRepository<Job> _jobRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IRatingRepository ratingRepository, IMapper mapper)
+        public ProductService(
+            IProductRepository productRepository, 
+            IRatingRepository ratingRepository, 
+            IMapper mapper, 
+            IGenericRepository<Category> categoryRepository, 
+            IGenericRepository<Product> genericProductRepository,
+            IGenericRepository<Inventory> inventoryRepository,
+            IGenericRepository<Job> jobRepository
+            )
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
+            _categoryRepository = categoryRepository;
+            _genericProductRepository = genericProductRepository;
+            _inventoryRepository = inventoryRepository;
+            _jobRepository = jobRepository;
+
             _mapper = mapper;
         }
 
@@ -56,5 +73,58 @@ namespace TTE.Application.Services
                 totalCount: totalCount
             );
         }
+
+
+        public async Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole)
+        {
+            var category = await _categoryRepository.GetByCondition(c => c.Name == request.Category);
+            if(category == null)
+            {
+                return new GenericResponseDto<ProductCreatedResponseDto>(false, "category not found");
+            }
+
+            var product = new Product
+            {
+                Title = request.Title,
+                Price = request.Price,
+                Description = request.Description,
+                CategoryId = category.Id,
+                Image = request.Image,
+                Approved = userRole == AppConstants.ADMIN ? true : false
+            };
+
+            await _genericProductRepository.Add(product);
+
+            var inventory = new Inventory
+            {
+                ProductId = product.Id,
+                Total = request.Inventory.Total,
+                Available = request.Inventory.Available
+            };
+
+            await _inventoryRepository.Add(inventory);
+
+            if (userRole == AppConstants.EMPLOYEE)
+            {
+                var job = new Job
+                {
+                    Item_id = product.Id,
+                    CreatedAt = DateTime.Now,
+                    Type = Job.JobEnum.Product,
+                    Operation = Job.OperationEnum.Create,
+                    Status = Job.StatusEnum.Pending
+                };
+                await _jobRepository.Add(job);
+            }
+
+            var response = new ProductCreatedResponseDto
+            {
+                Id = product.Id,
+                Message = "Product created successfully."
+            };
+
+            return new GenericResponseDto<ProductCreatedResponseDto>(true,"Created", response);
+        }
+
     }
 }
