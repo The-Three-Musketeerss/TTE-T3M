@@ -12,8 +12,8 @@ using TTE.Infrastructure.Data;
 namespace TTE.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250319174209_Creation")]
-    partial class Creation
+    [Migration("20250321174025_inventoryFix")]
+    partial class inventoryFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,7 +192,8 @@ namespace TTE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("Inventory");
                 });
@@ -582,8 +583,8 @@ namespace TTE.Infrastructure.Migrations
             modelBuilder.Entity("TTE.Infrastructure.Models.Inventory", b =>
                 {
                     b.HasOne("TTE.Infrastructure.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+                        .WithOne("Inventory")
+                        .HasForeignKey("TTE.Infrastructure.Models.Inventory", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -728,6 +729,12 @@ namespace TTE.Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Wishlist");
+                });
+
+            modelBuilder.Entity("TTE.Infrastructure.Models.Product", b =>
+                {
+                    b.Navigation("Inventory")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
