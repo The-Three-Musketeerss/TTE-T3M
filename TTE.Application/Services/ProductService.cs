@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
@@ -11,14 +10,31 @@ namespace TTE.Application.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IGenericRepository<Product> _genericProductRepository;
+        private readonly IGenericRepository<Category> _genericCategoryRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IRatingRepository ratingRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, IGenericRepository<Product> genericProductRepository, IGenericRepository<Category> genericCategoryRepository, IRatingRepository ratingRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
+            _genericProductRepository = genericProductRepository;
+            _genericCategoryRepository = genericCategoryRepository;
             _mapper = mapper;
+        }
+
+        public async Task<GenericResponseDto<string>> UpdateProduct(ProductRequestDto request)
+        {
+            var product = await _genericProductRepository.GetByCondition(x => x.Id == request.Id);
+            var categoryExists = await _genericCategoryRepository.GetByCondition(x => x == request.Category);
+            if (product == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+            }
+
+            _mapper.Map(request, product);
+
         }
 
         public async Task<ProductPaginatedResponseDto> GetProducts(
