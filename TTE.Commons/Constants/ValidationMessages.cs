@@ -9,6 +9,7 @@
         public const string MESSAGE_ROL_NOT_FOUND = "Role not found.";
 
         public const string MESSAGE_PRODUCT_NOT_FOUND = "Product not found.";
+        public const string MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY = "Product updated successfully.";
 
         public const string CATEGORY_NOT_FOUND = "Category not found.";
         public const string CATEGORIES_RETRIEVED_SUCCESSFULLY = "Categories retrieved successfully.";

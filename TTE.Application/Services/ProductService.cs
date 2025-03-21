@@ -40,6 +40,11 @@ namespace TTE.Application.Services
                 return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
             }
 
+            if (request.Inventory.Available > request.Inventory.Total)
+            {
+                return new GenericResponseDto<string>(false, "Available inventory cannot be greater than the total inventory.");
+            }
+
             _mapper.Map(request, product);
 
             product.CategoryId = category.Id;
@@ -55,7 +60,7 @@ namespace TTE.Application.Services
             }
 
             await _genericProductRepository.Update(product);
-            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_USER_UPDATED_SUCCESSFULLY);
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY);
 
         }
 
