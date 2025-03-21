@@ -18,7 +18,8 @@ namespace TTE.Application.Mapping
             CreateMap<ProductRequestDto, Product>()
                 .ForMember(dest => dest.Category, opt => opt.Ignore())
                 .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
-                .ForMember(dest => dest.Inventory, opt => opt.Ignore());
+                .ForMember(dest => dest.Inventory, opt => opt.Ignore())
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<Product, ProductResponseDto>()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Rating, opt => opt.Ignore());

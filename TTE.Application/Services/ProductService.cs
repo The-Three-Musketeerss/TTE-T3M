@@ -34,20 +34,28 @@ namespace TTE.Application.Services
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
 
-            var category = await _genericCategoryRepository.GetByCondition(x => x.Name == request.Category);
-            if (category == null)
+            if (request.Inventory != null && request.Inventory.Available > request.Inventory.Total)
             {
-                return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
+                return new GenericResponseDto<string>(
+                    false, "Available inventory cannot be greater than total inventory.");
             }
 
-            if (request.Inventory.Available > request.Inventory.Total)
+            if (request.Category != null)
             {
-                return new GenericResponseDto<string>(false, "Available inventory cannot be greater than the total inventory.");
+                var category = await _genericCategoryRepository.GetByCondition(x => x.Name == request.Category);
+                if (category == null)
+                {
+                    return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
+                }
+                product.CategoryId = category.Id;
+            }
+
+            if (request.Price == null)
+            {
+                request.Price = product.Price;
             }
 
             _mapper.Map(request, product);
-
-            product.CategoryId = category.Id;
 
             if (product.Inventory == null)
             {
@@ -61,7 +69,6 @@ namespace TTE.Application.Services
 
             await _genericProductRepository.Update(product);
             return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY);
-
         }
 
         public async Task<ProductPaginatedResponseDto> GetProducts(

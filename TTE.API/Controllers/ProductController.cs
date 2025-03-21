@@ -15,7 +15,7 @@ namespace TTE.API.Controllers
             _productService = productService;
         }
 
-        [HttpPut("{productId}")]
+        [HttpPatch("{productId}")]
         [Authorize(Policy = "CanAccessDashboard")]
         public async Task<IActionResult> UpdateProduct(int productId,[FromBody] ProductRequestDto request)
         {
