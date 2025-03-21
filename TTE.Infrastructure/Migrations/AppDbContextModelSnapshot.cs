@@ -189,7 +189,8 @@ namespace TTE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("Inventory");
                 });
@@ -579,8 +580,8 @@ namespace TTE.Infrastructure.Migrations
             modelBuilder.Entity("TTE.Infrastructure.Models.Inventory", b =>
                 {
                     b.HasOne("TTE.Infrastructure.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+                        .WithOne("Inventory")
+                        .HasForeignKey("TTE.Infrastructure.Models.Inventory", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -725,6 +726,12 @@ namespace TTE.Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Wishlist");
+                });
+
+            modelBuilder.Entity("TTE.Infrastructure.Models.Product", b =>
+                {
+                    b.Navigation("Inventory")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -9,9 +9,10 @@
         public string Image { get; set; } = string.Empty;
         public bool Approved { get; set; }
 
-        //Category FK
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        public Inventory Inventory { get; set; }
 
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 
 namespace TTE.API.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
@@ -14,6 +14,15 @@ namespace TTE.API.Controllers
         {
             _productService = productService;
         }
+
+        [HttpPut("{productId}")]
+        [Authorize(Policy = "CanAccessDashboard")]
+        public async Task<IActionResult> UpdateProduct(int productId,[FromBody] ProductRequestDto request)
+        {
+            var response = await _productService.UpdateProduct(productId,request);
+            return Ok(response);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetProducts(
             [FromQuery] string? category,

@@ -50,7 +50,7 @@ public class FakeStoreSeeder
         foreach (var categoryName in categories)
         {
             if (!await _context.Categories.AnyAsync(c => c.Name == categoryName))
-                _context.Categories.Add(new Category { Name = categoryName });
+                _context.Categories.Add(new Category { Name = categoryName, Approved = true });
         }
 
         await _context.SaveChangesAsync();
@@ -65,7 +65,8 @@ public class FakeStoreSeeder
                 Description = productDto.Description,
                 Price = productDto.Price,
                 Image = productDto.Image,
-                CategoryId = categoryDict[productDto.Category]
+                CategoryId = categoryDict[productDto.Category],
+                Approved = true
             };
             _context.Products.Add(product);
         }

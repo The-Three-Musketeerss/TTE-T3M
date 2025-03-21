@@ -93,11 +93,10 @@ namespace TTE.Infrastructure.Data
                 .HasForeignKey(e => e.CategoryId)
                 .IsRequired();
 
-            modelBuilder.Entity<Inventory>()
-                .HasOne(e => e.Product)
-                .WithMany()
-                .HasForeignKey(e => e.ProductId)
-                .IsRequired();
+            modelBuilder.Entity<Product>()
+            .HasOne(e => e.Inventory)
+            .WithOne(i => i.Product)
+            .HasForeignKey<Inventory>(i => i.ProductId);
 
             modelBuilder.Entity<Cart>()
                 .HasOne(e => e.User)

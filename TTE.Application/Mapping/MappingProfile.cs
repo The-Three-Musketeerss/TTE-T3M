@@ -7,16 +7,23 @@ namespace TTE.Application.Mapping
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile() {
+        public MappingProfile()
+        {
             CreateMap<User, UserResponseDto>().ForMember(dest => dest.Role,
                 opt => opt.MapFrom(src => src.Role.Name));
+
             CreateMap<Category, CategoryResponseDto>();
             CreateMap<CategoryRequestDto, Category>();
 
-            CreateMap<ProductRequestDto, Product>();
+            CreateMap<ProductRequestDto, Product>()
+                .ForMember(dest => dest.Category, opt => opt.Ignore())
+                .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
+                .ForMember(dest => dest.Inventory, opt => opt.Ignore());
             CreateMap<Product, ProductResponseDto>()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Rating, opt => opt.Ignore());
+
+            CreateMap<InventoryRequestDto, Inventory>();
 
         }
     }

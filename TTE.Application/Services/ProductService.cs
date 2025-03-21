@@ -24,16 +24,38 @@ namespace TTE.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<GenericResponseDto<string>> UpdateProduct(ProductRequestDto request)
+        public async Task<GenericResponseDto<string>> UpdateProduct(int productId, ProductRequestDto request)
         {
-            var product = await _genericProductRepository.GetByCondition(x => x.Id == request.Id);
-            var categoryExists = await _genericCategoryRepository.GetByCondition(x => x == request.Category);
+            var includes = new string[1] { "Inventory" };
+            var products = await _genericProductRepository.GetEntityWithIncludes(includes);
+            var product = products.FirstOrDefault(p => p.Id == productId);
             if (product == null)
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
 
+            var category = await _genericCategoryRepository.GetByCondition(x => x.Name == request.Category);
+            if (category == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
+            }
+
             _mapper.Map(request, product);
+
+            product.CategoryId = category.Id;
+
+            if (product.Inventory == null)
+            {
+                product.Inventory = _mapper.Map<Inventory>(request.Inventory);
+                product.Inventory.ProductId = product.Id;
+            }
+            else
+            {
+                _mapper.Map(request.Inventory, product.Inventory);
+            }
+
+            await _genericProductRepository.Update(product);
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_USER_UPDATED_SUCCESSFULLY);
 
         }
 

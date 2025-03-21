@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TTE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Creation : Migration
+    public partial class inventoryFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -493,7 +493,8 @@ namespace TTE.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Inventory_ProductId",
                 table: "Inventory",
-                column: "ProductId");
+                column: "ProductId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_Items_ProductId",
