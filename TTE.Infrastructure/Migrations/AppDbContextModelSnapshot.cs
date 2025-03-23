@@ -22,44 +22,6 @@ namespace TTE.Infrastructure.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("TTE.Infrastructure.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressLine1")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("AddressLine2")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Optional")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Addresses");
-                });
-
             modelBuilder.Entity("TTE.Infrastructure.Models.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -231,9 +193,6 @@ namespace TTE.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CouponId")
                         .HasColumnType("int");
 
@@ -260,8 +219,6 @@ namespace TTE.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("CouponId");
 
@@ -501,44 +458,19 @@ namespace TTE.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Wishlists");
-                });
-
-            modelBuilder.Entity("TTE.Infrastructure.Models.Wishlist_Item", b =>
-                {
-                    b.Property<int>("WishlistId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("WishlistId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Wishlist_Items");
-                });
-
-            modelBuilder.Entity("TTE.Infrastructure.Models.Address", b =>
-                {
-                    b.HasOne("TTE.Infrastructure.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TTE.Infrastructure.Models.Cart", b =>
@@ -590,12 +522,6 @@ namespace TTE.Infrastructure.Migrations
 
             modelBuilder.Entity("TTE.Infrastructure.Models.Order", b =>
                 {
-                    b.HasOne("TTE.Infrastructure.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TTE.Infrastructure.Models.Coupon", "Coupon")
                         .WithMany()
                         .HasForeignKey("CouponId");
@@ -605,8 +531,6 @@ namespace TTE.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("Coupon");
 
@@ -700,32 +624,21 @@ namespace TTE.Infrastructure.Migrations
 
             modelBuilder.Entity("TTE.Infrastructure.Models.Wishlist", b =>
                 {
-                    b.HasOne("TTE.Infrastructure.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TTE.Infrastructure.Models.Wishlist_Item", b =>
-                {
                     b.HasOne("TTE.Infrastructure.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TTE.Infrastructure.Models.Wishlist", "Wishlist")
+                    b.HasOne("TTE.Infrastructure.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("WishlistId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("Wishlist");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TTE.Infrastructure.Models.Product", b =>

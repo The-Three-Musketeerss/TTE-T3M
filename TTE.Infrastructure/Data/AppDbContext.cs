@@ -20,12 +20,10 @@ namespace TTE.Infrastructure.Data
         public DbSet<Models.Cart_Item> Cart_Items { get; set; }
         public DbSet<Models.Order> Orders { get; set; }
         public DbSet<Models.Order_Item> Order_Items { get; set; }
-        public DbSet<Models.Address> Addresses { get; set; }
         public DbSet<Models.Coupon> Coupons { get; set; }
         public DbSet<Models.Inventory> Inventory { get; set; }
         public DbSet<Models.Review> Reviews { get; set; }
         public DbSet<Models.Wishlist> Wishlists { get; set; }
-        public DbSet<Models.Wishlist_Item> Wishlist_Items { get; set; }
         public DbSet<Models.Rating> Ratings { get; set; }
         public DbSet<Models.SecurityQuestion> SecurityQuestions { get; set; }
 
@@ -127,11 +125,6 @@ namespace TTE.Infrastructure.Data
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
             modelBuilder.Entity<Order>()
-                .HasOne(e => e.Address)
-                .WithMany()
-                .HasForeignKey(e => e.AddressId)
-                .IsRequired();
-            modelBuilder.Entity<Order>()
                 .HasOne(e => e.Coupon)
                 .WithMany()
                 .HasForeignKey(e => e.CouponId)
@@ -154,17 +147,10 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
-            modelBuilder.Entity<Wishlist_Item>()
-                .HasKey(e => new { e.WishlistId, e.ProductId });
-            modelBuilder.Entity<Wishlist_Item>()
+            modelBuilder.Entity<Wishlist>()
                 .HasOne(e => e.Product)
                 .WithMany()
                 .HasForeignKey(e => e.ProductId)
-                .IsRequired();
-            modelBuilder.Entity<Wishlist_Item>()
-                .HasOne(e => e.Wishlist)
-                .WithMany()
-                .HasForeignKey(e => e.WishlistId)
                 .IsRequired();
 
             modelBuilder.Entity<Job>()
