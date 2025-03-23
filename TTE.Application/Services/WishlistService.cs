@@ -9,10 +9,12 @@ namespace TTE.Application.Services
     public class WishlistService : IWishlistService
     {
         private readonly IGenericRepository<Wishlist> _wishlistRepo;
+        private readonly IGenericRepository<Product> _productRepository;
 
-        public WishlistService(IGenericRepository<Wishlist> wishlistRepo)
+        public WishlistService(IGenericRepository<Wishlist> wishlistRepo, IGenericRepository<Product> productRepository)
         {
             _wishlistRepo = wishlistRepo;
+            _productRepository = productRepository;
         }
 
         public async Task<GenericResponseDto<WishlistResponseDto>> GetWishlist(int userId)
@@ -26,6 +28,11 @@ namespace TTE.Application.Services
 
         public async Task<GenericResponseDto<string>> AddToWishlist(int userId, int productId)
         {
+            var product = await _productRepository.GetByCondition(p => p.Id == productId);
+            if (product == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+            }
             var existing = await _wishlistRepo.GetByCondition(w => w.UserId == userId && w.ProductId == productId);
             if (existing != null)
             {
