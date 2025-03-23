@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
@@ -11,31 +10,70 @@ namespace TTE.Application.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly IRatingRepository _ratingRepository;
-        private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IGenericRepository<Product> _genericProductRepository;
-        private readonly IGenericRepository<Inventory> _inventoryRepository;
-        private readonly IGenericRepository<Job> _jobRepository;
+        private readonly IGenericRepository<Category> _genericCategoryRepository;
+        private readonly IRatingRepository _ratingRepository;
+        private readonly IGenericRepository<Inventory> _genericInventoryRepository;
+        private readonly IGenericRepository<Job> _genericJobRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(
-            IProductRepository productRepository, 
-            IRatingRepository ratingRepository, 
-            IMapper mapper, 
-            IGenericRepository<Category> categoryRepository, 
-            IGenericRepository<Product> genericProductRepository,
-            IGenericRepository<Inventory> inventoryRepository,
-            IGenericRepository<Job> jobRepository
-            )
+        public ProductService(IProductRepository productRepository, IGenericRepository<Product> genericProductRepository, IGenericRepository<Category> genericCategoryRepository, IRatingRepository ratingRepository, IGenericRepository<Inventory> genericInventoryRepository,
+            IGenericRepository<Job> genericJobRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
-            _categoryRepository = categoryRepository;
             _genericProductRepository = genericProductRepository;
-            _inventoryRepository = inventoryRepository;
-            _jobRepository = jobRepository;
-
+            _genericCategoryRepository = genericCategoryRepository;
+            _genericJobRepository = genericJobRepository;
+            _genericInventoryRepository = genericInventoryRepository;
             _mapper = mapper;
+        }
+
+        public async Task<GenericResponseDto<string>> UpdateProduct(int productId, ProductUpdateRequestDto request)
+        {
+            var includes = new string[1] { "Inventory" };
+            var products = await _genericProductRepository.GetEntityWithIncludes(includes);
+            var product = products.FirstOrDefault(p => p.Id == productId);
+            if (product == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+            }
+
+            if (request.Inventory != null && request.Inventory.Available > request.Inventory.Total)
+            {
+                return new GenericResponseDto<string>(
+                    false, "Available inventory cannot be greater than total inventory.");
+            }
+
+            if (request.Category != null)
+            {
+                var category = await _genericCategoryRepository.GetByCondition(x => x.Name == request.Category);
+                if (category == null)
+                {
+                    return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
+                }
+                product.CategoryId = category.Id;
+            }
+
+            if (request.Price == null)
+            {
+                request.Price = product.Price;
+            }
+
+            _mapper.Map(request, product);
+
+            if (product.Inventory == null)
+            {
+                product.Inventory = _mapper.Map<Inventory>(request.Inventory);
+                product.Inventory.ProductId = product.Id;
+            }
+            else
+            {
+                _mapper.Map(request.Inventory, product.Inventory);
+            }
+
+            await _genericProductRepository.Update(product);
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY);
         }
 
         public async Task<ProductPaginatedResponseDto> GetProducts(
@@ -77,7 +115,7 @@ namespace TTE.Application.Services
 
         public async Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole)
         {
-            var category = await _categoryRepository.GetByCondition(c => c.Name == request.Category);
+            var category = await _genericCategoryRepository.GetByCondition(c => c.Name == request.Category);
             if(category == null)
             {
                 return new GenericResponseDto<ProductCreatedResponseDto>(false, "category not found");
@@ -102,7 +140,7 @@ namespace TTE.Application.Services
                 Available = request.Inventory.Available
             };
 
-            await _inventoryRepository.Add(inventory);
+            await _genericInventoryRepository.Add(inventory);
 
             if (userRole == AppConstants.EMPLOYEE)
             {
@@ -114,7 +152,7 @@ namespace TTE.Application.Services
                     Operation = Job.OperationEnum.Create,
                     Status = Job.StatusEnum.Pending
                 };
-                await _jobRepository.Add(job);
+                await _genericJobRepository.Add(job);
             }
 
             var response = new ProductCreatedResponseDto

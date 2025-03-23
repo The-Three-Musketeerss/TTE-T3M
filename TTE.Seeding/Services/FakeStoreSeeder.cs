@@ -55,7 +55,6 @@ public class FakeStoreSeeder
                 _context.Categories.Add(new Category { Name = categoryName, Approved = true });
             }
         }
-        await _context.SaveChangesAsync();
 
         var categoryDictionary = await _context.Categories.ToDictionaryAsync(c => c.Name, c => c.Id);
 
@@ -78,23 +77,23 @@ public class FakeStoreSeeder
                 productEntities.Add(productEntity);
                 _context.Products.Add(productEntity);
             }
-        }
 
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-        foreach (var product in productEntities)
-        {
-            var inventoryItem = new Inventory
+            foreach (var product in productEntities)
             {
-                ProductId = product.Id,
-                Total = 100,
-                Available = 100
-            };
-            _context.Inventory.Add(inventoryItem);
+                var inventoryItem = new Inventory
+                {
+                    ProductId = product.Id,
+                    Total = 100,
+                    Available = 100
+                };
+                _context.Inventory.Add(inventoryItem);
+            }
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Database seeded successfully without ratings.");
         }
-
-        await _context.SaveChangesAsync();
-
-        _logger.LogInformation("Database seeded successfully without ratings.");
     }
 }

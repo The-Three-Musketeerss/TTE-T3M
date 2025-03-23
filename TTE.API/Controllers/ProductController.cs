@@ -8,7 +8,6 @@ using TTE.Commons.Constants;
 namespace TTE.API.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
@@ -17,6 +16,15 @@ namespace TTE.API.Controllers
         {
             _productService = productService;
         }
+
+        [HttpPatch("{productId}")]
+        [Authorize(Policy = "CanAccessDashboard")]
+        public async Task<IActionResult> UpdateProduct(int productId,[FromBody] ProductUpdateRequestDto request)
+        {
+            var response = await _productService.UpdateProduct(productId,request);
+            return Ok(response);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetProducts(
             [FromQuery] string? category,
