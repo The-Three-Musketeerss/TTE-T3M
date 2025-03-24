@@ -46,7 +46,6 @@ public class FakeStoreSeeder
         }
 
         var categories = products.Select(p => p.Category).Distinct().ToList();
-
         var existingCategories = await _context.Categories.ToListAsync();
         foreach (var categoryName in categories)
         {
@@ -56,6 +55,8 @@ public class FakeStoreSeeder
             }
         }
 
+        await _context.SaveChangesAsync();
+
         var categoryDictionary = await _context.Categories.ToDictionaryAsync(c => c.Name, c => c.Id);
 
         var productEntities = new List<Product>();
@@ -64,23 +65,33 @@ public class FakeStoreSeeder
         {
             if (!await _context.Products.AnyAsync(p => p.Title == productDto.Title))
             {
-                var productEntity = new Product
+                if (categoryDictionary.TryGetValue(productDto.Category, out var categoryId))
                 {
-                    Title = productDto.Title,
-                    Description = productDto.Description,
-                    Price = productDto.Price,
-                    Image = productDto.Image,
-                    CategoryId = categoryDictionary[productDto.Category],
-                    Approved = true
-                };
+                    var productEntity = new Product
+                    {
+                        Title = productDto.Title,
+                        Description = productDto.Description,
+                        Price = productDto.Price,
+                        Image = productDto.Image,
+                        CategoryId = categoryId,
+                        Approved = true
+                    };
 
-                productEntities.Add(productEntity);
-                _context.Products.Add(productEntity);
+                    productEntities.Add(productEntity);
+                    _context.Products.Add(productEntity);
+                }
+                else
+                {
+                    _logger.LogWarning($"Category '{productDto.Category}' not found in dictionary.");
+                }
             }
+        }
 
-            await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-            foreach (var product in productEntities)
+        foreach (var product in productEntities)
+        {
+            if (!await _context.Inventory.AnyAsync(i => i.ProductId == product.Id))
             {
                 var inventoryItem = new Inventory
                 {
@@ -88,12 +99,14 @@ public class FakeStoreSeeder
                     Total = 100,
                     Available = 100
                 };
+
                 _context.Inventory.Add(inventoryItem);
             }
-
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Database seeded successfully without ratings.");
         }
+
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Database seeded successfully without ratings.");
     }
+
 }
