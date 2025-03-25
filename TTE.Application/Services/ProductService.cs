@@ -16,9 +16,16 @@ namespace TTE.Application.Services
         private readonly IGenericRepository<Inventory> _genericInventoryRepository;
         private readonly IGenericRepository<Job> _genericJobRepository;
         private readonly IMapper _mapper;
+        private readonly IGenericRepository<Rating> _genericRatingRepository;
 
-        public ProductService(IProductRepository productRepository, IGenericRepository<Product> genericProductRepository, IGenericRepository<Category> genericCategoryRepository, IRatingRepository ratingRepository, IGenericRepository<Inventory> genericInventoryRepository,
-            IGenericRepository<Job> genericJobRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, 
+            IGenericRepository<Product> genericProductRepository, 
+            IGenericRepository<Category> genericCategoryRepository, 
+            IRatingRepository ratingRepository, 
+            IGenericRepository<Inventory> genericInventoryRepository,
+            IGenericRepository<Job> genericJobRepository,
+            IGenericRepository<Rating> genericRatingRepository,
+            IMapper mapper)
         {
             _productRepository = productRepository;
             _ratingRepository = ratingRepository;
@@ -26,6 +33,7 @@ namespace TTE.Application.Services
             _genericCategoryRepository = genericCategoryRepository;
             _genericJobRepository = genericJobRepository;
             _genericInventoryRepository = genericInventoryRepository;
+            _genericRatingRepository = genericRatingRepository;
             _mapper = mapper;
         }
 
@@ -190,6 +198,34 @@ namespace TTE.Application.Services
             return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY);
 
         }
+        public async Task<GenericResponseDto<ProductByIdResponse>> GetProductById(int productId)
+        {
 
+            var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
+            if (product == null)
+            {
+                return new GenericResponseDto<ProductByIdResponse>(false, "Product not found.");
+            }
+
+            var category = await _genericCategoryRepository.GetByCondition(c => c.Id == product.CategoryId);
+
+            var ratings = await _ratingRepository.GetRatingsByProductId(product.Id);
+            var productRatings = ratings.ToList();
+
+            var ratingDto = new RatingDto
+            {
+                Rate = productRatings.Any() ? Math.Round(productRatings.Average(r => r.Rate), 1) : 0,
+                Count = productRatings.Count
+            };
+
+            var inventory = await _genericInventoryRepository.GetByCondition(i => i.ProductId == product.Id);
+            var inventoryDto = inventory != null ? _mapper.Map<InventoryDto>(inventory) : new InventoryDto { Total = 0, Available = 0 };
+
+            var productDto = _mapper.Map<ProductByIdResponse>(product);
+            productDto.Rating = ratingDto;
+            productDto.Inventory = inventoryDto;
+
+            return new GenericResponseDto<ProductByIdResponse>(true,"", productDto);
+        }
     }
 }

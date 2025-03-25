@@ -16,6 +16,7 @@ namespace TTE.API.Controllers
         {
             _productService = productService;
         }
+        
 
         [Authorize]
         [HttpPost]
@@ -42,6 +43,14 @@ namespace TTE.API.Controllers
         {
             var response = await _productService.GetProducts(category, orderBy, descending, page, pageSize);
             return Ok(response);
+        }
+
+        [HttpGet("{productId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductById(int productId)
+        {
+            var result = await _productService.GetProductById(productId);
+            return result.Success ? Ok(result) : NotFound(result);
         }
 
         [Authorize(Policy = "CanAccessDashboard")]
