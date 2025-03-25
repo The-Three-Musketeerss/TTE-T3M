@@ -61,7 +61,7 @@ namespace TTE.API.Controllers
             {
                 return Unauthorized(new { message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND });
             }
-            var response = await _productService.DeleteProduct(productId);
+            var response = await _productService.DeleteProduct(productId, userRole);
             return Ok(response);
         }
     }

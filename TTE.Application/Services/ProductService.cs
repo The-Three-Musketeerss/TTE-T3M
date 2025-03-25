@@ -116,7 +116,7 @@ namespace TTE.Application.Services
         public async Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole)
         {
             var category = await _genericCategoryRepository.GetByCondition(c => c.Name == request.Category);
-            if(category == null)
+            if (category == null)
             {
                 return new GenericResponseDto<ProductCreatedResponseDto>(false, "category not found");
             }
@@ -161,18 +161,34 @@ namespace TTE.Application.Services
                 Message = "Product created successfully."
             };
 
-            return new GenericResponseDto<ProductCreatedResponseDto>(true,"Created", response);
+            return new GenericResponseDto<ProductCreatedResponseDto>(true, "Created", response);
         }
 
-        public async Task<GenericResponseDto<string>> DeleteProduct(int productId)
+        public async Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole)
         {
             var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
             if (product == null)
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
-            await _genericProductRepository.Delete(productId);
-            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY);
+
+            if (userRole == AppConstants.ADMIN)
+            {
+                await _genericProductRepository.Delete(productId);
+                return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY);
+            }
+
+            var job = new Job
+            {
+                Item_id = productId,
+                CreatedAt = DateTime.Now,
+                Type = Job.JobEnum.Product,
+                Operation = Job.OperationEnum.Delete,
+                Status = Job.StatusEnum.Pending
+            };
+            await _genericJobRepository.Add(job);
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY);
+
         }
 
     }
