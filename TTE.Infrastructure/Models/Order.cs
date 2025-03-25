@@ -19,10 +19,6 @@ namespace TTE.Infrastructure.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
-        //Address FK
-        public int AddressId { get; set; }
-        public Address Address { get; set; }
-
         //Coupon FK
         public int CouponId { get; set; }
         public Coupon Coupon { get; set; }

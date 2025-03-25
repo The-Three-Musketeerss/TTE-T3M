@@ -16,7 +16,7 @@ namespace TTE.Commons.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
-                new Claim("Uid", id.ToString()),
+                new Claim("UserId", id.ToString()),
                 new Claim(ClaimTypes.Role, role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

@@ -171,6 +171,33 @@ namespace TTE.Application.Services
 
             return new GenericResponseDto<ProductCreatedResponseDto>(true, "Created", response);
         }
+
+        public async Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole)
+        {
+            var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
+            if (product == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+            }
+
+            if (userRole == AppConstants.ADMIN)
+            {
+                await _genericProductRepository.Delete(productId);
+                return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY);
+            }
+
+            var job = new Job
+            {
+                Item_id = productId,
+                CreatedAt = DateTime.Now,
+                Type = Job.JobEnum.Product,
+                Operation = Job.OperationEnum.Delete,
+                Status = Job.StatusEnum.Pending
+            };
+            await _genericJobRepository.Add(job);
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY);
+
+        }
         public async Task<GenericResponseDto<ProductByIdResponse>> GetProductById(int productId)
         {
 

@@ -123,7 +123,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal(ValidationMessages.MESSAGE_ROL_NOT_FOUND, result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_ROLE_NOT_FOUND, result.Message);
             Assert.Null(result.Data);
         }
     }
