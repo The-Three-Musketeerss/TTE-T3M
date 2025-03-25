@@ -6,11 +6,13 @@
         public const string MESSAGE_REQUIRED_FIELD = "The following element is required:";
 
         public const string MESSAGE_INVALID_SECURITY_QUESTION_ID = "Invalid security question ID.";
-        public const string MESSAGE_ROL_NOT_FOUND = "Role not found.";
+        public const string MESSAGE_ROLE_NOT_FOUND = "Role not found.";
         public const string MESAGGE_ID_NOT_FOUND = "ID not found.";
 
         public const string MESSAGE_PRODUCT_NOT_FOUND = "Product not found.";
         public const string MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY = "Product updated successfully.";
+        public const string MESSAGE_PRODUCT_DELETED_SUCCESSFULLY = "Product deleted successfully.";
+        public const string MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY = "Product deleted successfully, waiting for approval.";
 
         public const string CATEGORY_NOT_FOUND = "Category not found.";
         public const string CATEGORIES_RETRIEVED_SUCCESSFULLY = "Categories retrieved successfully.";
