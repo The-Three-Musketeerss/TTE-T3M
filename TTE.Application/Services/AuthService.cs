@@ -43,7 +43,7 @@ namespace TTE.Application.Services
             
             if (role == null)
             {
-                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND);
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROLE_NOT_FOUND);
             }
 
             var user = new User
@@ -97,7 +97,7 @@ namespace TTE.Application.Services
 
             if (role == null)
             {
-                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROL_NOT_FOUND, []);
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROLE_NOT_FOUND, []);
             }
             var user = new User
             {

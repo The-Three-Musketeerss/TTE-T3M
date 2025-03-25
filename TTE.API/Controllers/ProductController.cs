@@ -56,6 +56,11 @@ namespace TTE.API.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(userRole))
+            {
+                return Unauthorized(new { message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND });
+            }
             var response = await _productService.DeleteProduct(productId);
             return Ok(response);
         }

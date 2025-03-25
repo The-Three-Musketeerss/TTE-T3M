@@ -32,7 +32,7 @@ namespace TTE.API.Controllers
             var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
             if (string.IsNullOrEmpty(userRole))
             {
-                return Unauthorized(new {message = ValidationMessages.MESSAGE_ROL_NOT_FOUND});
+                return Unauthorized(new {message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND});
             }
 
             var response = await _categoryService.DeleteCategory(categoryId, userRole);

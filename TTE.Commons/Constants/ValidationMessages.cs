@@ -6,7 +6,7 @@
         public const string MESSAGE_REQUIRED_FIELD = "The following element is required:";
 
         public const string MESSAGE_INVALID_SECURITY_QUESTION_ID = "Invalid security question ID.";
-        public const string MESSAGE_ROL_NOT_FOUND = "Role not found.";
+        public const string MESSAGE_ROLE_NOT_FOUND = "Role not found.";
         public const string MESAGGE_ID_NOT_FOUND = "ID not found.";
 
         public const string MESSAGE_PRODUCT_NOT_FOUND = "Product not found.";
