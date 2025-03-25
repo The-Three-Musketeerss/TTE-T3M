@@ -18,6 +18,23 @@ namespace TTE.API.Controllers
             _categoryService = categoryService;
         }
 
+        [Authorize(Policy = "CanAccessDashboard")]
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDto request)
+        {
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(userRole))
+            {
+                return Unauthorized(new { message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND });
+            }
+            if (userRole != AppConstants.ADMIN && userRole != AppConstants.EMPLOYEE)
+            {
+                return Forbid();
+            }
+            var result = await _categoryService.CreateCategory(request, userRole);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {

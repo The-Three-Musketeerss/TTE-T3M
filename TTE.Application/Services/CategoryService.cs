@@ -58,6 +58,42 @@ namespace TTE.Application.Services
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY);
         }
 
+        public async Task<GenericResponseDto<CategoryResponseDto>> CreateCategory(CategoryRequestDto request, string userRole)
+        {
+            var categoryExists = await _categoryRepository.GetByCondition(c => c.Name == request.Name);
+            if (categoryExists != null)
+            {
+                return new GenericResponseDto<CategoryResponseDto>(false, ValidationMessages.CATEGORY_ALREADY_EXISTS);
+            }
+
+            request.Id = null;
+
+            var category = _mapper.Map<Category>(request);
+
+            if (userRole == AppConstants.ADMIN)
+            {
+                category.Approved = true;
+                await _categoryRepository.Add(category);
+                var response = _mapper.Map<CategoryResponseDto>(category);
+                return new GenericResponseDto<CategoryResponseDto>(true, ValidationMessages.CATEGORY_CREATED_SUCCESSFULLY, response);
+            }
+
+            category.Approved = false;
+            await _categoryRepository.Add(category);
+
+            var job = new Job
+            {
+                Item_id = category.Id,
+                CreatedAt = DateTime.Now,
+                Type = Job.JobEnum.Category,
+                Operation = Job.OperationEnum.Create,
+                Status = Job.StatusEnum.Pending
+            };
+            await _jobRepository.Add(job);
+
+            var responseDto = _mapper.Map<CategoryResponseDto>(category);
+            return new GenericResponseDto<CategoryResponseDto>(true, ValidationMessages.CATEGORY_CREATED_EMPLOYEE_SUCCESSFULLY, responseDto);
+        }
         public async Task<GenericResponseDto<CategoryResponseDto>> GetCategories()
         {
             var categories = await _categoryRepository.GetAllByCondition(C => C.Approved == true);
