@@ -26,6 +26,21 @@ namespace TTE.Application.Mapping
 
             CreateMap<InventoryRequestDto, Inventory>();
 
+            CreateMap<Product, ProductByIdResponse>()
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.Rating, opt => opt.Ignore()) 
+                .ForMember(dest => dest.Inventory, opt => opt.Ignore());
+
+            CreateMap<Inventory, InventoryDto>();
+
+            CreateMap<ProductRequestDto, Product>()
+                .ForMember(dest => dest.Category, opt => opt.Ignore())
+                .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
+                .ForMember(dest => dest.Approved, opt => opt.Ignore());
+
+
+            CreateMap<InventoryRequestDto, Inventory>();
+
         }
     }
 }

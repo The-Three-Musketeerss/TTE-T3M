@@ -37,6 +37,14 @@ namespace TTE.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{productId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductById(int productId)
+        {
+            var result = await _productService.GetProductById(productId);
+            return result.Success ? Ok(result) : NotFound(result);
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)

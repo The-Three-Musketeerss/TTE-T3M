@@ -12,6 +12,6 @@ namespace TTE.Application.Interfaces
         Task<GenericResponseDto<string>> UpdateProduct(int productId, ProductUpdateRequestDto request);
         Task<ProductPaginatedResponseDto> GetProducts(string? category, string? orderBy, bool descending, int page, int pageSize);
         Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole);
-
+        Task<GenericResponseDto<ProductByIdResponse>> GetProductById(int productId);
     }
 }
