@@ -164,5 +164,16 @@ namespace TTE.Application.Services
             return new GenericResponseDto<ProductCreatedResponseDto>(true,"Created", response);
         }
 
+        public async Task<GenericResponseDto<string>> DeleteProduct(int productId)
+        {
+            var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
+            if (product == null)
+            {
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+            }
+            await _genericProductRepository.Delete(productId);
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY);
+        }
+
     }
 }

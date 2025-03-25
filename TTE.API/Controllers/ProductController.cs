@@ -17,12 +17,19 @@ namespace TTE.API.Controllers
             _productService = productService;
         }
 
-        [HttpPatch("{productId}")]
-        [Authorize(Policy = "CanAccessDashboard")]
-        public async Task<IActionResult> UpdateProduct(int productId,[FromBody] ProductUpdateRequestDto request)
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
         {
-            var response = await _productService.UpdateProduct(productId,request);
-            return Ok(response);
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (userRole != AppConstants.ADMIN && userRole != AppConstants.EMPLOYEE)
+            {
+                return Forbid();
+            }
+
+            var result = await _productService.CreateProducts(request, userRole);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpGet]
@@ -37,19 +44,20 @@ namespace TTE.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
+        [Authorize(Policy = "CanAccessDashboard")]
+        [HttpPatch("{productId}")]
+        public async Task<IActionResult> UpdateProduct(int productId, [FromBody] ProductUpdateRequestDto request)
         {
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var response = await _productService.UpdateProduct(productId, request);
+            return Ok(response);
+        }
 
-            if (userRole != AppConstants.ADMIN && userRole != AppConstants.EMPLOYEE)
-            {
-                return Forbid();
-            }
-
-            var result = await _productService.CreateProducts(request, userRole);
-            return result.Success ? Ok(result) : BadRequest(result);
+        [Authorize(Policy = "CanAccessDashboard")]
+        [HttpDelete("{productId}")]
+        public async Task<IActionResult> DeleteProduct(int productId)
+        {
+            var response = await _productService.DeleteProduct(productId);
+            return Ok(response);
         }
     }
 }
