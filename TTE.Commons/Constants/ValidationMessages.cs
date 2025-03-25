@@ -15,6 +15,9 @@
         public const string MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY = "Product deleted successfully, waiting for approval.";
 
         public const string CATEGORY_NOT_FOUND = "Category not found.";
+        public const string CATEGORY_ALREADY_EXISTS = "Category already exists.";
+        public const string CATEGORY_CREATED_SUCCESSFULLY = "Category created successfully.";
+        public const string CATEGORY_CREATED_EMPLOYEE_SUCCESSFULLY = "Category created successfully, waiting for approval.";
         public const string CATEGORIES_RETRIEVED_SUCCESSFULLY = "Categories retrieved successfully.";
         public const string CATEGORY_DELETED_SUCCESSFULLY = "Category deleted successfully.";
         public const string CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY = "Category deleted successfully, waiting for approval.";
