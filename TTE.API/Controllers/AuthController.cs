@@ -27,12 +27,12 @@ namespace TTE.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
-            var response = await _authService.LoginUser(loginRequest);
+            var result = await _authService.LoginUser(loginRequest);
 
-            if (response == null)
+            if (result == null)
                 return Unauthorized(new { message = AuthenticationMessages.MESSAGE_LOGIN_FAIL });
 
-            return Ok(response);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost("admin")]
