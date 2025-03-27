@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Moq;
 using TTE.Application.DTOs;
+using TTE.Application.Interfaces;
 using TTE.Application.Services;
 using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
@@ -16,27 +17,35 @@ namespace TTE.Tests.Services
     public class ProductServiceTests
     {
 
-
-        private readonly Mock<IProductRepository> _mockProductRepository = new();
-        private readonly Mock<IGenericRepository<Product>> _mockGenericProductRepo = new();
-        private readonly Mock<IGenericRepository<Category>> _mockCategoryRepo = new();
-        private readonly Mock<IRatingRepository> _mockRatingRepo = new();
-        private readonly Mock<IGenericRepository<Inventory>> _mockInventoryRepo = new();
-        private readonly Mock<IGenericRepository<Job>> _mockJobRepo = new();
-        private readonly Mock<IGenericRepository<Rating>> _mockRatingGenericRepo = new();
-        private readonly Mock<IMapper> _mockMapper = new();
-        private readonly ProductService _service;
+        private readonly Mock<IProductRepository> _mockProductRepository;
+        private readonly Mock<IGenericRepository<Product>> _mockGenericProductRepository;
+        private readonly Mock<IGenericRepository<Category>> _mockGenericCategoryRepository;
+        private readonly Mock<IRatingRepository> _mockRatingRepository;
+        private readonly Mock<IGenericRepository<Inventory>> _mockGenericInventoryRepository;
+        private readonly Mock<IGenericRepository<Job>> _mockGenericJobRepository;
+        private readonly Mock<IGenericRepository<Rating>> _mockGenericRatingRepository;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly ProductService _productService;
 
         public ProductServiceTests()
         {
-            _service = new ProductService(
+            _mockProductRepository = new Mock<IProductRepository>();
+            _mockGenericProductRepository = new Mock<IGenericRepository<Product>>();
+            _mockGenericCategoryRepository = new Mock<IGenericRepository<Category>>();
+            _mockRatingRepository = new Mock<IRatingRepository>();
+            _mockGenericInventoryRepository = new Mock<IGenericRepository<Inventory>>();
+            _mockGenericJobRepository = new Mock<IGenericRepository<Job>>();
+            _mockGenericRatingRepository = new Mock<IGenericRepository<Rating>>();
+            _mockMapper = new Mock<IMapper>();
+
+            _productService = new ProductService(
                 _mockProductRepository.Object,
-                _mockGenericProductRepo.Object,
-                _mockCategoryRepo.Object,
-                _mockRatingRepo.Object,
-                _mockInventoryRepo.Object,
-                _mockJobRepo.Object,
-                _mockRatingGenericRepo.Object,
+                _mockGenericProductRepository.Object,
+                _mockGenericCategoryRepository.Object,
+                _mockRatingRepository.Object,
+                _mockGenericInventoryRepository.Object,
+                _mockGenericJobRepository.Object,
+                _mockGenericRatingRepository.Object,
                 _mockMapper.Object
             );
         }
@@ -57,19 +66,19 @@ namespace TTE.Tests.Services
 
             var category = new Category { Id = 1, Name = "electronics" };
 
-            _mockCategoryRepo.Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<System.Func<Category, bool>>>()))
+            _mockGenericCategoryRepository.Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<System.Func<Category, bool>>>()))
                              .ReturnsAsync(category);
 
-            _mockGenericProductRepo.Setup(repo => repo.Add(It.IsAny<Product>()))
+            _mockGenericProductRepository.Setup(repo => repo.Add(It.IsAny<Product>()))
                                    .ReturnsAsync(1);
 
-            _mockInventoryRepo.Setup(repo => repo.Add(It.IsAny<Inventory>()))
+            _mockGenericInventoryRepository.Setup(repo => repo.Add(It.IsAny<Inventory>()))
                               .ReturnsAsync(1);
 
             var userRole = AppConstants.ADMIN;
 
             // Act
-            var result = await _service.CreateProducts(request, userRole) ;
+            var result = await _productService.CreateProducts(request, userRole) ;
 
             // Assert
             var data = result.Data as ProductCreatedResponseDto;
@@ -92,11 +101,11 @@ namespace TTE.Tests.Services
                 Inventory = new InventoryDto { Total = 10, Available = 5 }
             };
 
-            _mockCategoryRepo.Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<System.Func<Category, bool>>>()))
+            _mockGenericCategoryRepository.Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<System.Func<Category, bool>>>()))
                              .ReturnsAsync((Category)null);
 
             // Act
-            var result = await _service.CreateProducts(request, AppConstants.ADMIN);
+            var result = await _productService.CreateProducts(request, AppConstants.ADMIN);
 
             // Assert
             Assert.False(result.Success);
@@ -122,13 +131,13 @@ namespace TTE.Tests.Services
             var ratingList = new List<Rating> { new Rating { ProductId = 1, Rate = 4 }, new Rating { ProductId = 1, Rate = 5 } };
             var inventory = new Inventory { ProductId = 1, Total = 50, Available = 25 };
 
-            _mockGenericProductRepo.Setup(r => r.GetByCondition(p => p.Id == 1))
+            _mockGenericProductRepository.Setup(r => r.GetByCondition(p => p.Id == 1))
                                    .ReturnsAsync(product);
-            _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Id == 2))
+            _mockGenericCategoryRepository.Setup(r => r.GetByCondition(c => c.Id == 2))
                              .ReturnsAsync(category);
-            _mockRatingRepo.Setup(r => r.GetRatingsByProductId(1))
+            _mockRatingRepository.Setup(r => r.GetRatingsByProductId(1))
                            .ReturnsAsync(ratingList);
-            _mockInventoryRepo.Setup(r => r.GetByCondition(i => i.ProductId == 1))
+            _mockGenericInventoryRepository.Setup(r => r.GetByCondition(i => i.ProductId == 1))
                               .ReturnsAsync(inventory);
             _mockMapper.Setup(m => m.Map<ProductByIdResponse>(product))
                        .Returns(new ProductByIdResponse
@@ -145,7 +154,7 @@ namespace TTE.Tests.Services
                        .Returns(new InventoryDto { Total = 50, Available = 25 });
 
             // Act
-            var result = await _service.GetProductById(1);
+            var result = await _productService.GetProductById(1);
 
             // Assert
             var data = result.Data as ProductByIdResponse;
@@ -160,15 +169,80 @@ namespace TTE.Tests.Services
         public async Task GetProductById_ShouldFail_WhenProductNotFound()
         {
             // Arrange
-            _mockGenericProductRepo.Setup(r => r.GetByCondition(p => p.Id == 99))
+            _mockGenericProductRepository.Setup(r => r.GetByCondition(p => p.Id == 99))
                                    .ReturnsAsync((Product)null);
 
             // Act
-            var result = await _service.GetProductById(99);
+            var result = await _productService.GetProductById(99);
 
             // Assert
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND, result.Message);
         }
+
+        [Fact]
+        public async Task GetProducts_ShouldReturnPaginatedResponse_WithCorrectRatings()
+        {
+            var products = new List<Product>
+            {
+                new Product { Id = 1, Title = "Product 1", Price = 10 },
+                new Product { Id = 2, Title = "Product 2", Price = 20 }
+            };
+
+            var ratings = new List<Rating>
+            {
+                new Rating { ProductId = 1, Rate = 4 },
+                new Rating { ProductId = 1, Rate = 5 },
+                new Rating { ProductId = 2, Rate = 3 }
+            };
+
+            var mappedDtos = new List<ProductResponseDto>
+            {
+                new ProductResponseDto { Id = 1, Title = "Product 1", Price = 10 },
+                new ProductResponseDto { Id = 2, Title = "Product 2", Price = 20 }
+            };
+
+            _mockProductRepository
+                .Setup(r => r.GetProducts(null, null, false, 1, 10))
+                .ReturnsAsync((products, products.Count));
+
+            _mockRatingRepository
+                .Setup(r => r.GetRatingsByProductIds(It.IsAny<List<int>>()))
+                .ReturnsAsync(ratings);
+
+            _mockMapper
+                .Setup(m => m.Map<ProductResponseDto>(products[0]))
+                .Returns(mappedDtos[0]);
+
+            _mockMapper
+                .Setup(m => m.Map<ProductResponseDto>(products[1]))
+                .Returns(mappedDtos[1]);
+
+            // Act
+            var result = await _productService.GetProducts(null, null, false, 1, 10);
+
+            // Assert
+            Assert.True(result.Success);
+
+            var data = Assert.IsAssignableFrom<IEnumerable<ProductResponseDto>>(result.Data).ToList();
+
+            Assert.Equal(2, data.Count);
+
+            var dto1 = data.First(p => p.Id == 1);
+            var dto2 = data.First(p => p.Id == 2);
+
+            Assert.Equal(4.5, dto1.Rating.Rate);
+            Assert.Equal(2, dto1.Rating.Count);
+
+            Assert.Equal(3, dto2.Rating.Rate);
+            Assert.Equal(1, dto2.Rating.Count);
+
+            Assert.Equal(1, result.Page);
+            Assert.Equal(10, result.PageSize);
+            Assert.Equal(2, result.TotalCount);
+            Assert.Equal(1, result.TotalPages);
+
+        }
     }
 }
+

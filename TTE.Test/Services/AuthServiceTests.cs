@@ -1,12 +1,12 @@
-﻿using TTE.Infrastructure.Models;
-using TTE.Infrastructure.Repositories;
+﻿using System.Linq.Expressions;
 using Moq;
-using Xunit;
-using TTE.Application.Services;
-using TTE.Commons.Services;
 using TTE.Application.DTOs;
-using TTE.Commons.Constants;
 using TTE.Application.Interfaces;
+using TTE.Application.Services;
+using TTE.Commons.Constants;
+using TTE.Commons.Services;
+using TTE.Infrastructure.Models;
+using TTE.Infrastructure.Repositories;
 
 namespace TTE.Tests.Services
 {
@@ -18,7 +18,8 @@ namespace TTE.Tests.Services
         private readonly Mock<ISecurityService> _mockSecurityService;
         private readonly IAuthService _authService;
 
-        public AuthServiceTests() {
+        public AuthServiceTests()
+        {
             _mockUserRepository = new Mock<IGenericRepository<User>>();
             _mockRoleRepository = new Mock<IGenericRepository<Role>>();
             _mockSecurityQuestionRepository = new Mock<IGenericRepository<SecurityQuestion>>();
@@ -30,6 +31,101 @@ namespace TTE.Tests.Services
                 _mockSecurityQuestionRepository.Object,
                 _mockSecurityService.Object
             );
+        }
+
+        [Fact]
+        public async Task LoginUser_ShouldReturnSuccess_WhenCredentialsAreValid()
+        {
+            var request = new LoginRequestDto
+            {
+                Email = "test@example.com",
+                Password = "securepass"
+            };
+
+            var user = new User
+            {
+                Id = 1,
+                Email = request.Email,
+                UserName = "TestUser",
+                Password = "hashedPassword",
+                Role = new Role { Name = AppConstants.SHOPPER }
+            };
+
+            _mockUserRepository.Setup(repo => repo.GetByCondition(
+                It.IsAny<Expression<Func<User, bool>>>(), AppConstants.ROLE))
+                .ReturnsAsync(user);
+
+            _mockSecurityService.Setup(s => s.VerifyPassword(request.Password, user.Password))
+                                .Returns(true);
+
+            _mockSecurityService.Setup(s => s.GenerateToken(user.UserName, user.Role.Name, user.Id))
+                                .Returns("mock-token");
+
+            // Act
+            var result = await _authService.LoginUser(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.Success);
+            Assert.Equal(AuthenticationMessages.MESSAGE_LOGIN_SUCCESS, result.Message);
+
+            var loginData = Assert.IsType<LoginResponseDto>(result.Data);
+            Assert.Equal("mock-token", loginData.Token);
+            Assert.Equal(user.UserName, loginData.Username);
+            Assert.Equal(user.Email, loginData.Email);
+        }
+
+        [Fact]
+        public async Task LoginUser_ShouldReturnNull_WhenUserNotFound()
+        {
+            var request = new LoginRequestDto
+            {
+                Email = "notfound@example.com",
+                Password = "irrelevant"
+            };
+
+            _mockUserRepository.Setup(repo => repo.GetByCondition(
+                It.IsAny<Expression<Func<User, bool>>>(), AppConstants.ROLE))
+                .ReturnsAsync((User)null);
+
+            // Act
+            var result = await _authService.LoginUser(request);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task LoginUser_ShouldReturnNull_WhenPasswordIsIncorrect()
+        {
+
+            var request = new LoginRequestDto
+            {
+                Email = "test@example.com",
+                Password = "wrongpassword"
+            };
+
+            var user = new User
+            {
+                Id = 1,
+                Email = request.Email,
+                UserName = "TestUser",
+                Password = "hashedPassword",
+                Role = new Role { Name = AppConstants.SHOPPER }
+            };
+
+            _mockUserRepository.Setup(repo => repo.GetByCondition(
+                It.IsAny<Expression<Func<User, bool>>>(), AppConstants.ROLE))
+                .ReturnsAsync(user);
+
+            _mockSecurityService.Setup(s => s.VerifyPassword(request.Password, user.Password))
+                                .Returns(false);
+
+            // Act
+            var result = await _authService.LoginUser(request);
+
+            // Assert
+            Assert.Null(result);
         }
 
         [Fact]
@@ -69,7 +165,7 @@ namespace TTE.Tests.Services
             Assert.NotNull(userData);
             Assert.True(result.Success);
             Assert.Equal(AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, result.Message);
-            
+
             Assert.Equal(request.Email, userData.Email);
             Assert.Equal(request.UserName, userData.UserName);
         }
@@ -116,7 +212,7 @@ namespace TTE.Tests.Services
                                            .ReturnsAsync(securityQuestion);
 
             _mockRoleRepository.Setup(repo => repo.GetByCondition(r => r.Name == AppConstants.SHOPPER))
-                               .ReturnsAsync((Role)null); 
+                               .ReturnsAsync((Role)null);
 
             // Act
             var result = await _authService.RegisterUser(request);
