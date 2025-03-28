@@ -126,7 +126,7 @@ namespace TTE.Application.Services
             var category = await _genericCategoryRepository.GetByCondition(c => c.Name == request.Category);
             if (category == null)
             {
-                return new GenericResponseDto<ProductCreatedResponseDto>(false, "category not found");
+                return new GenericResponseDto<ProductCreatedResponseDto>(false, ValidationMessages.CATEGORY_NOT_FOUND);
             }
 
             var product = new Product
@@ -166,10 +166,10 @@ namespace TTE.Application.Services
             var response = new ProductCreatedResponseDto
             {
                 Id = product.Id,
-                Message = "Product created successfully."
+                Message = ValidationMessages.MESSAGE_PRODUCT_CREATED_SUCCESSFULLY
             };
 
-            return new GenericResponseDto<ProductCreatedResponseDto>(true, "Created", response);
+            return new GenericResponseDto<ProductCreatedResponseDto>(true, "", response);
         }
 
         public async Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole)
@@ -204,7 +204,7 @@ namespace TTE.Application.Services
             var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
             if (product == null)
             {
-                return new GenericResponseDto<ProductByIdResponse>(false, "Product not found.");
+                return new GenericResponseDto<ProductByIdResponse>(false,ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
 
             var category = await _genericCategoryRepository.GetByCondition(c => c.Id == product.CategoryId);
