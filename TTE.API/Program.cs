@@ -8,6 +8,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddSwaggerServices(builder.Configuration);
 
+
 builder.Services.AddControllers();
 
 var app = builder.Build();

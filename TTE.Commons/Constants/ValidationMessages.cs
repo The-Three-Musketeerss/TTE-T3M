@@ -35,5 +35,7 @@
         public const string MESSAGE_WISHLIST_PRODUCT_ADDED = "Product added to wishlist.";
         public const string MESSAGE_WISHLIST_PRODUCT_REMOVED = "Product removed from wishlist.";
         public const string MESSAGE_WISHLIST_PRODUCT_NOT_FOUND = "Product not found in wishlist.";
+
+        public const string MESSAGE_RATING_NOT_VALID = "Rating must be between 1 and 5.";
     }
 }
