@@ -16,6 +16,7 @@ namespace TTE.API.Configurations
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IWishlistService, WishlistService>();
+            services.AddScoped<IReviewService, ReviewService>();
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
