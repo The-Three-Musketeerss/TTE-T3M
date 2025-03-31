@@ -35,6 +35,10 @@ namespace TTE.Application.Mapping
             CreateMap<CouponRequestDto, Coupon>();
             CreateMap<Coupon, CouponResponseDto>();
 
+            CreateMap<Cart_Item, CartItemResponseDto>();
+            CreateMap<Coupon, CouponAppliedDto>()
+                .ForMember(dest => dest.CouponCode, opt => opt.MapFrom(src => src.Code))
+                .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.Discount));
 
         }
     }

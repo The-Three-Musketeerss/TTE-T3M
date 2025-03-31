@@ -41,6 +41,13 @@
         public const string MESSAGE_COUPON_DELETED_SUCCESSFULLY = "Coupon deleted successfully.";
         public const string MESSAGE_COUPON_CODE_ALREADY_EXISTS = "Coupon code already exists.";
         public const string MESSAGE_COUPON_NOT_FOUND = "Coupon not found.";
+        public const string MESSAGE_COUPON_APPLIED_SUCCESSFULLY = "Coupon applied successfully.";
         public const string MESSAGE_COUPONS_RETRIEVED_SUCCESSFULLY = "Coupons retrieved successfully.";
+
+        public const string MESSAGE_CART_NOT_FOUND = "Cart not found.";
+        public const string MESSAGE_CART_ITEM_NOT_FOUND = "Cart item not found.";
+        public const string MESSAGE_CART_ITEM_DELETED = "Cart item deleted successfully.";
+        public const string MESSAGE_CART_RETRIEVED_SUCCESSFULLY = "Cart retrieved successfully.";
+        public const string MESSAGE_CART_ITEM_ADDED = "Product added/updated in cart.";
     }
 }
