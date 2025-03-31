@@ -74,7 +74,7 @@ namespace TTE.Application.Services
                 ShippingCost = cart.ShippingCost,
                 CouponId = cart.CouponId,
                 CreatedAt = DateTime.UtcNow,
-                Status = "pending"
+                Status = "Approved"
             };
 
             await _orderRepo.Add(order);
