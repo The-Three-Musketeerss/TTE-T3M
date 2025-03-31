@@ -18,19 +18,22 @@ namespace TTE.Application.Services
         private readonly IRatingRepository _ratingRepository;
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Job> _jobRepository;
 
         public ReviewService(
         IGenericRepository<Review> reviewRepository,
         IGenericRepository<Rating> genericRatingRepository,
         IGenericRepository<Product> productRepository,
         IGenericRepository<User> userRepository,
-        IRatingRepository ratingRepository)
+        IRatingRepository ratingRepository,
+        IGenericRepository<Job> jobRepository)
         {
             _reviewRepository = reviewRepository;
             _genericRatingRepository = genericRatingRepository;
             _productRepository = productRepository;
             _userRepository = userRepository;
             _ratingRepository = ratingRepository;
+            _jobRepository = jobRepository;
         }
 
 
@@ -44,7 +47,7 @@ namespace TTE.Application.Services
             var user = await _userRepository.GetByCondition(u => u.UserName == request.User);
             if (user == null)
             {
-                return new GenericResponseDto<string>(false, "User not found.");
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
             }
 
             var existingReview = await _reviewRepository.GetByCondition(
@@ -82,16 +85,16 @@ namespace TTE.Application.Services
             };
             await _genericRatingRepository.Add(rating);
 
-            return new GenericResponseDto<string>(true, "Review added successfully.");
+            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_REVIEW_ADDED_SUCCESSFULLY);
         }
 
         public async Task<GenericResponseDto<List<ReviewResponseDto>>> GetReviews(int productId)
         {
             var product = await _productRepository.GetByCondition(p => p.Id == productId);
             if (product == null)
-                return new GenericResponseDto<List<ReviewResponseDto>>(false, "Product not found.");
+                return new GenericResponseDto<List<ReviewResponseDto>>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
 
-            var reviews = await _reviewRepository.GetAllByCondition(r => r.ProductId == productId,"User");
+            var reviews = await _reviewRepository.GetAllByCondition(r => r.ProductId == productId,AppConstants.USER);
 
             var ratings = await _ratingRepository.GetRatingsByProductId(productId);
 
@@ -108,5 +111,6 @@ namespace TTE.Application.Services
 
             return new GenericResponseDto<List<ReviewResponseDto>>(true, "", response);
         }
+
     }
 }

@@ -27,7 +27,8 @@
 
         public const string MESSAGE_USER_NOT_FOUND = "User not found.";
         public const string MESSAGE_USER_UPDATED_SUCCESSFULLY = "User {0} has been updated successfully.";
-        public const string MESSAGE_EMAIL_ALREADY_EXISTS = "Email already registred.";
+        public const string MESSAGE_EMAIL_ALREADY_EXISTS = "Email already registered.";
+        public const string MESSAGE_USERNAME_ALREADY_EXISTS = "USERNAME already registered";
         public const string USER_DELETED_SUCCESSFULLY = "Users deleted successfully.";
 
         public const string MESSAGE_WISHLIST_RETRIEVED_SUCCESSFULLY = "Wishlist retrieved successfully.";
@@ -56,5 +57,12 @@
         public const string MESSAGE_CART_EMPTY = "Cart is empty.";
 
         public const string MESSAGE_RATING_NOT_VALID = "Rating must be between 1 and 5.";
+        public const string MESSAGE_REVIEW_ADDED_SUCCESSFULLY = "Review added successfully.";
+
+        public const string MESSAGE_JOBS_PENDING = "Jobs pending";
+        public const string MESSAGE_JOB_NOT_FOUND = "Job not found.";
+        public const string MESSAGE_JOB_ALREADY_REVIEWED = "Job has already been reviewed.";
+        public const string MESSAGE_JOB_INVALID_ACTION = "Invalid action. Use 'approve' or 'decline'.";
+        public const string MESSAGE_JOB_REVIEW_SUCCESS = "Job {0}d successfully.";
     }
 }

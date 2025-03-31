@@ -3,6 +3,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
+using TTE.Application.DTOs;
+using TTE.Application.Services;
 
 namespace TTE.API.Controllers
 {
@@ -23,6 +25,16 @@ namespace TTE.API.Controllers
         {
             var result = await _jobService.GetPendingJobs();
             return Ok(result);
+        }
+
+
+
+        [HttpPost("/api/reviewJob/{jobId}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> ReviewJob(int jobId, [FromBody] JobReviewRequestDto request)
+        {
+            var result = await _jobService.ReviewJob(jobId, request);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
     }
 }
