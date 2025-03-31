@@ -58,7 +58,7 @@ namespace TTE.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("apply-coupon")]
+        [HttpPost("coupon")]
         public async Task<IActionResult> ApplyCoupon([FromBody] ApplyCouponDto request)
         {
             int userId = GetUserIdFromToken();
