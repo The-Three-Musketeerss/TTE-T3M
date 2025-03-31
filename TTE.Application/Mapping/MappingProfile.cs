@@ -32,6 +32,20 @@ namespace TTE.Application.Mapping
                 .ForMember(dest => dest.Rating, opt => opt.Ignore()) 
                 .ForMember(dest => dest.Inventory, opt => opt.Ignore());
 
+            CreateMap<CouponRequestDto, Coupon>();
+            CreateMap<Coupon, CouponResponseDto>();
+
+            CreateMap<Cart_Item, CartItemResponseDto>();
+            CreateMap<Coupon, CouponAppliedDto>()
+                .ForMember(dest => dest.CouponCode, opt => opt.MapFrom(src => src.Code))
+                .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.Discount));
+
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.TotalBeforeDiscount, opt => opt.MapFrom(src => src.Total_before_discount))
+                .ForMember(dest => dest.TotalAfterDiscount, opt => opt.MapFrom(src => src.Total_after_discount));
+            CreateMap<Order_Item, OrderItemDto>();
+
+
         }
     }
 }

@@ -36,6 +36,25 @@
         public const string MESSAGE_WISHLIST_PRODUCT_REMOVED = "Product removed from wishlist.";
         public const string MESSAGE_WISHLIST_PRODUCT_NOT_FOUND = "Product not found in wishlist.";
 
+
+        public const string MESSAGE_COUPON_CREATED_SUCCESSFULLY = "Coupon created successfully.";
+        public const string MESSAGE_COUPON_UPDATED_SUCCESSFULLY = "Coupon updated successfully.";
+        public const string MESSAGE_COUPON_DELETED_SUCCESSFULLY = "Coupon deleted successfully.";
+        public const string MESSAGE_COUPON_CODE_ALREADY_EXISTS = "Coupon code already exists.";
+        public const string MESSAGE_COUPON_NOT_FOUND = "Coupon not found.";
+        public const string MESSAGE_COUPON_APPLIED_SUCCESSFULLY = "Coupon applied successfully.";
+        public const string MESSAGE_COUPONS_RETRIEVED_SUCCESSFULLY = "Coupons retrieved successfully.";
+
+        public const string MESSAGE_CART_NOT_FOUND = "Cart not found.";
+        public const string MESSAGE_CART_ITEM_NOT_FOUND = "Cart item not found.";
+        public const string MESSAGE_CART_ITEM_DELETED = "Cart item deleted successfully.";
+        public const string MESSAGE_CART_RETRIEVED_SUCCESSFULLY = "Cart retrieved successfully.";
+        public const string MESSAGE_CART_ITEM_ADDED = "Product added/updated in cart.";
+
+        public const string MESSAGE_ORDER_CREATED_SUCCESSFULLY = "Order created successfully.";
+        public const string MESSAGE_ORDERS_RETRIEVED_SUCCESSFULLY = "Orders retrieved successfully.";
+        public const string MESSAGE_CART_EMPTY = "Cart is empty.";
+
         public const string MESSAGE_RATING_NOT_VALID = "Rating must be between 1 and 5.";
     }
 }

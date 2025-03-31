@@ -68,6 +68,12 @@ namespace TTE.Infrastructure.Repositories
             }
         }
 
+        public async Task Delete(T entity)
+        {
+            _entity.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<T>> Get()
         {
             return await _entity.AsNoTracking().ToListAsync();
