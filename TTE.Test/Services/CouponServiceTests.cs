@@ -3,6 +3,7 @@ using Moq;
 using System.Linq.Expressions;
 using TTE.Application.DTOs;
 using TTE.Application.Services;
+using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
 using TTE.Infrastructure.Repositories;
 
@@ -37,7 +38,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal("Coupon created successfully.", result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_CREATED_SUCCESSFULLY, result.Message);
         }
 
         [Fact]
@@ -52,7 +53,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Coupon code already exists.", result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_CODE_ALREADY_EXISTS, result.Message);
         }
 
         [Fact]
@@ -70,7 +71,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal("Coupon updated successfully.", result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_UPDATED_SUCCESSFULLY, result.Message);
             Assert.Equal("NEWCODE", existing.Code);
             Assert.Equal(20, existing.Discount);
         }
@@ -86,7 +87,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Coupon not found.", result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_NOT_FOUND, result.Message);
         }
 
         [Fact]
@@ -101,7 +102,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal("Coupon deleted successfully.", result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_DELETED_SUCCESSFULLY, result.Message);
         }
 
         [Fact]
@@ -115,7 +116,7 @@ namespace TTE.Tests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Coupon not found.", result.Message);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_NOT_FOUND, result.Message);
         }
     }
 }

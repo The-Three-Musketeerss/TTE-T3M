@@ -3,6 +3,7 @@ using Moq;
 using TTE.API.Controllers;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
+using TTE.Commons.Constants;
 
 namespace TTE.Tests.Controllers
 {
@@ -21,7 +22,7 @@ namespace TTE.Tests.Controllers
         public async Task CreateCoupon_ShouldReturnOk_WhenSuccess()
         {
             var request = new CouponRequestDto { Code = "SAVE10", Discount = 10 };
-            var response = new GenericResponseDto<string>(true, "Coupon created successfully.");
+            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_COUPON_CREATED_SUCCESSFULLY);
             _mockCouponService.Setup(s => s.CreateCoupon(request)).ReturnsAsync(response);
 
             // Act
@@ -31,13 +32,14 @@ namespace TTE.Tests.Controllers
             var okResult = Assert.IsType<OkObjectResult>(result);
             var value = Assert.IsType<GenericResponseDto<string>>(okResult.Value);
             Assert.True(value.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_CREATED_SUCCESSFULLY, value.Message);
         }
 
         [Fact]
         public async Task CreateCoupon_ShouldReturnBadRequest_WhenFail()
         {
             var request = new CouponRequestDto { Code = "SAVE10", Discount = 10 };
-            var response = new GenericResponseDto<string>(false, "Coupon code already exists.");
+            var response = new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_COUPON_CODE_ALREADY_EXISTS);
             _mockCouponService.Setup(s => s.CreateCoupon(request)).ReturnsAsync(response);
 
             // Act
@@ -47,12 +49,13 @@ namespace TTE.Tests.Controllers
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
             var value = Assert.IsType<GenericResponseDto<string>>(badResult.Value);
             Assert.False(value.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_CODE_ALREADY_EXISTS, value.Message);
         }
 
         [Fact]
         public async Task UpdateCoupon_ShouldReturnOk_WhenSuccess()
         {
-            var response = new GenericResponseDto<string>(true, "Coupon updated successfully.");
+            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_COUPON_UPDATED_SUCCESSFULLY);
             _mockCouponService.Setup(s => s.UpdateCoupon(1, It.IsAny<CouponRequestDto>()))
                 .ReturnsAsync(response);
 
@@ -61,13 +64,15 @@ namespace TTE.Tests.Controllers
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.True(((GenericResponseDto<string>)okResult.Value).Success);
+            var value = Assert.IsType<GenericResponseDto<string>>(okResult.Value);
+            Assert.True(value.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_UPDATED_SUCCESSFULLY, value.Message);
         }
 
         [Fact]
         public async Task UpdateCoupon_ShouldReturnNotFound_WhenCouponDoesNotExist()
         {
-            var response = new GenericResponseDto<string>(false, "Coupon not found.");
+            var response = new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_COUPON_NOT_FOUND);
             _mockCouponService.Setup(s => s.UpdateCoupon(1, It.IsAny<CouponRequestDto>()))
                 .ReturnsAsync(response);
 
@@ -76,13 +81,15 @@ namespace TTE.Tests.Controllers
 
             // Assert
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.False(((GenericResponseDto<string>)notFoundResult.Value).Success);
+            var value = Assert.IsType<GenericResponseDto<string>>(notFoundResult.Value);
+            Assert.False(value.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_NOT_FOUND, value.Message);
         }
 
         [Fact]
         public async Task DeleteCoupon_ShouldReturnOk_WhenSuccess()
         {
-            var response = new GenericResponseDto<string>(true, "Coupon deleted successfully.");
+            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_COUPON_DELETED_SUCCESSFULLY);
             _mockCouponService.Setup(s => s.DeleteCoupon(1)).ReturnsAsync(response);
 
             // Act
@@ -90,13 +97,15 @@ namespace TTE.Tests.Controllers
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.True(((GenericResponseDto<string>)okResult.Value).Success);
+            var value = Assert.IsType<GenericResponseDto<string>>(okResult.Value);
+            Assert.True(value.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_DELETED_SUCCESSFULLY, value.Message);
         }
 
         [Fact]
         public async Task DeleteCoupon_ShouldReturnNotFound_WhenFail()
         {
-            var response = new GenericResponseDto<string>(false, "Coupon not found.");
+            var response = new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_COUPON_NOT_FOUND);
             _mockCouponService.Setup(s => s.DeleteCoupon(1)).ReturnsAsync(response);
 
             // Act
@@ -104,7 +113,9 @@ namespace TTE.Tests.Controllers
 
             // Assert
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.False(((GenericResponseDto<string>)notFoundResult.Value).Success);
+            var value = Assert.IsType<GenericResponseDto<string>>(notFoundResult.Value);
+            Assert.False(value.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_COUPON_NOT_FOUND, value.Message);
         }
     }
 }
