@@ -35,5 +35,12 @@
         public const string MESSAGE_WISHLIST_PRODUCT_ADDED = "Product added to wishlist.";
         public const string MESSAGE_WISHLIST_PRODUCT_REMOVED = "Product removed from wishlist.";
         public const string MESSAGE_WISHLIST_PRODUCT_NOT_FOUND = "Product not found in wishlist.";
+
+        public const string MESSAGE_COUPON_CREATED_SUCCESSFULLY = "Coupon created successfully.";
+        public const string MESSAGE_COUPON_UPDATED_SUCCESSFULLY = "Coupon updated successfully.";
+        public const string MESSAGE_COUPON_DELETED_SUCCESSFULLY = "Coupon deleted successfully.";
+        public const string MESSAGE_COUPON_CODE_ALREADY_EXISTS = "Coupon code already exists.";
+        public const string MESSAGE_COUPON_NOT_FOUND = "Coupon not found.";
+        public const string MESSAGE_COUPONS_RETRIEVED_SUCCESSFULLY = "Coupons retrieved successfully.";
     }
 }
