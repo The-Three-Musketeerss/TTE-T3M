@@ -33,6 +33,16 @@ namespace TTE.Application.Services
         {
             var requestData = request;
 
+            var user = await _userRepository.GetByCondition(u => u.Email == requestData.Email);
+            if (user != null)
+            {
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_EMAIL_ALREADY_EXISTS);
+            }
+            var user1 = await _userRepository.GetByCondition(u => u.UserName == requestData.UserName);
+            if (user1 != null)
+            {
+                return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_USERNAME_ALREADY_EXISTS);
+            }
             var securityQuestion = await _securityQuestionRepository.GetByCondition(s => s.Id == requestData.SecurityQuestionId);
             if (securityQuestion == null)
             {
@@ -46,7 +56,7 @@ namespace TTE.Application.Services
                 return new GenericResponseDto<ShopperResponseDto>(false, ValidationMessages.MESSAGE_ROLE_NOT_FOUND);
             }
 
-            var user = new User
+            var newUser = new User
             {
                 UserName = requestData.UserName,
                 Email = requestData.Email,
@@ -57,15 +67,15 @@ namespace TTE.Application.Services
                 RoleId = role.Id,
             };
 
-            await _userRepository.Add(user);
+            await _userRepository.Add(newUser);
 
             var response = new ShopperResponseDto
             {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name,
-                UserName = user.UserName,
-                RoleId = user.RoleId,
+                Id = newUser.Id,
+                Email = newUser.Email,
+                Name = newUser.Name,
+                UserName = newUser.UserName,
+                RoleId = newUser.RoleId,
             };
 
             return new GenericResponseDto<ShopperResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);

@@ -11,5 +11,6 @@ namespace TTE.Application.Interfaces
     {
         Task<GenericResponseDto<List<ReviewResponseDto>>> GetReviews(int productId);
         Task<GenericResponseDto<string>> AddReview(int productId, ReviewRequestDto request);
+
     }
 }
