@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
+using System.Linq.Expressions;
 using TTE.Application.DTOs;
 using TTE.Application.Services;
 using TTE.Commons.Constants;
@@ -15,7 +16,7 @@ namespace TTE.Tests.Services
         private readonly Mock<IGenericRepository<Cart>> _mockCartRepo;
         private readonly Mock<IGenericRepository<Cart_Item>> _mockCartItemRepo;
         private readonly Mock<IGenericRepository<Product>> _mockProductRepo;
-        private readonly Mock<IGenericRepository<Coupon>> _mockCouponRepo;
+        private readonly Mock<IGenericRepository<Inventory>> _mockInventoryRepo;
         private readonly Mock<IMapper> _mockMapper;
         private readonly OrderService _service;
 
@@ -26,6 +27,7 @@ namespace TTE.Tests.Services
             _mockCartRepo = new Mock<IGenericRepository<Cart>>();
             _mockCartItemRepo = new Mock<IGenericRepository<Cart_Item>>();
             _mockProductRepo = new Mock<IGenericRepository<Product>>();
+            _mockInventoryRepo = new Mock<IGenericRepository<Inventory>>();
             _mockMapper = new Mock<IMapper>();
 
             _service = new OrderService(
@@ -34,6 +36,7 @@ namespace TTE.Tests.Services
                 _mockCartRepo.Object,
                 _mockCartItemRepo.Object,
                 _mockProductRepo.Object,
+                _mockInventoryRepo.Object,
                 _mockMapper.Object
             );
         }
@@ -41,7 +44,8 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task CreateOrderFromCart_ShouldReturnFail_WhenCartIsNull()
         {
-            _mockCartRepo.Setup(r => r.GetByCondition(c => c.UserId == 1, "Coupon"))
+            _mockCartRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
                 .ReturnsAsync((Cart)null);
 
             // Act
@@ -56,8 +60,14 @@ namespace TTE.Tests.Services
         public async Task CreateOrderFromCart_ShouldReturnFail_WhenCartIsEmpty()
         {
             var cart = new Cart { Id = 1, UserId = 1 };
-            _mockCartRepo.Setup(r => r.GetByCondition(c => c.UserId == 1, "Coupon")).ReturnsAsync(cart);
-            _mockCartItemRepo.Setup(r => r.GetAllByCondition(i => i.CartId == cart.Id)).ReturnsAsync(new List<Cart_Item>());
+
+            _mockCartRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(cart);
+
+            _mockCartItemRepo
+                .Setup(r => r.GetAllByCondition(It.IsAny<Expression<Func<Cart_Item, bool>>>()))
+                .ReturnsAsync(new List<Cart_Item>());
 
             // Act
             var result = await _service.CreateOrderFromCart(1);
@@ -65,6 +75,88 @@ namespace TTE.Tests.Services
             // Assert
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_CART_EMPTY, result.Message);
+        }
+
+        [Fact]
+        public async Task CreateOrderFromCart_ShouldFail_WhenInventoryNotEnough()
+        {
+            var cart = new Cart { Id = 1, UserId = 1 };
+            var cartItems = new List<Cart_Item> {
+                new Cart_Item { CartId = 1, ProductId = 1, Quantity = 5 }
+            };
+            var products = new List<Product> {
+                new Product { Id = 1, Title = "Test Product", Price = 10 }
+            };
+            var inventories = new List<Inventory> {
+                new Inventory { ProductId = 1, Available = 2 }
+            };
+
+            _mockCartRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(cart);
+
+            _mockCartItemRepo
+                .Setup(r => r.GetAllByCondition(It.IsAny<Expression<Func<Cart_Item, bool>>>()))
+                .ReturnsAsync(cartItems);
+
+            _mockProductRepo.Setup(r => r.Get()).ReturnsAsync(products);
+            _mockInventoryRepo.Setup(r => r.Get()).ReturnsAsync(inventories);
+
+            // Act
+            var result = await _service.CreateOrderFromCart(1);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal(
+                string.Format(ValidationMessages.MESSAGE_INVENTORY_NOT_ENOUGH, "Test Product", 2, 5),
+                result.Message
+            );
+        }
+
+        [Fact]
+        public async Task CreateOrderFromCart_ShouldSucceed_WhenInventoryIsSufficient()
+        {
+            var cart = new Cart
+            {
+                Id = 1,
+                UserId = 1,
+                Total_before_discount = 100,
+                Total_after_discount = 90,
+                ShippingCost = 10
+            };
+            var cartItems = new List<Cart_Item> {
+                new Cart_Item { CartId = 1, ProductId = 1, Quantity = 2 }
+            };
+            var products = new List<Product> {
+                new Product { Id = 1, Title = "Test Product", Price = 45 }
+            };
+            var inventories = new List<Inventory> {
+                new Inventory { ProductId = 1, Available = 5 }
+            };
+
+            _mockCartRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(cart);
+
+            _mockCartItemRepo
+                .Setup(r => r.GetAllByCondition(It.IsAny<Expression<Func<Cart_Item, bool>>>()))
+                .ReturnsAsync(cartItems);
+
+            _mockProductRepo.Setup(r => r.Get()).ReturnsAsync(products);
+            _mockInventoryRepo.Setup(r => r.Get()).ReturnsAsync(inventories);
+
+            _mockOrderRepo.Setup(r => r.Add(It.IsAny<Order>())).ReturnsAsync(123);
+            _mockOrderItemRepo.Setup(r => r.Add(It.IsAny<Order_Item>())).Returns(Task.FromResult(0));
+            _mockInventoryRepo.Setup(r => r.Update(It.IsAny<Inventory>())).Returns(Task.CompletedTask);
+            _mockCartItemRepo.Setup(r => r.Delete(It.IsAny<Cart_Item>())).Returns(Task.CompletedTask);
+            _mockCartRepo.Setup(r => r.Update(It.IsAny<Cart>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _service.CreateOrderFromCart(1);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_ORDER_CREATED_SUCCESSFULLY, result.Message);
         }
 
         [Fact]
@@ -93,6 +185,5 @@ namespace TTE.Tests.Services
             Assert.Single(list);
             Assert.Equal(1, list.First().Id);
         }
-
     }
 }

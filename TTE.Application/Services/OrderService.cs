@@ -14,6 +14,7 @@ namespace TTE.Application.Services
         private readonly IGenericRepository<Cart> _cartRepo;
         private readonly IGenericRepository<Cart_Item> _cartItemRepo;
         private readonly IGenericRepository<Product> _productRepo;
+        private readonly IGenericRepository<Inventory> _inventoryRepo;
         private readonly IMapper _mapper;
 
         public OrderService(
@@ -22,6 +23,7 @@ namespace TTE.Application.Services
             IGenericRepository<Cart> cartRepo,
             IGenericRepository<Cart_Item> cartItemRepo,
             IGenericRepository<Product> productRepo,
+            IGenericRepository<Inventory> inventoryRepo,
             IMapper mapper)
         {
             _orderRepo = orderRepo;
@@ -29,6 +31,7 @@ namespace TTE.Application.Services
             _cartRepo = cartRepo;
             _cartItemRepo = cartItemRepo;
             _productRepo = productRepo;
+            _inventoryRepo = inventoryRepo;
             _mapper = mapper;
         }
 
@@ -41,6 +44,26 @@ namespace TTE.Application.Services
             var cartItems = await _cartItemRepo.GetAllByCondition(i => i.CartId == cart.Id);
             if (!cartItems.Any())
                 return new GenericResponseDto<int>(false, ValidationMessages.MESSAGE_CART_EMPTY);
+
+            var products = await _productRepo.Get();
+            var inventories = await _inventoryRepo.Get();
+
+            foreach (var item in cartItems)
+            {
+                var product = products.FirstOrDefault(p => p.Id == item.ProductId);
+                if (product == null)
+                    return new GenericResponseDto<int>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+
+                var inventory = inventories.FirstOrDefault(i => i.ProductId == item.ProductId);
+                if (inventory == null)
+                    return new GenericResponseDto<int>(false, ValidationMessages.MESSAGE_INVENTORY_NOT_FOUND);
+
+                if (inventory.Available < item.Quantity)
+                    return new GenericResponseDto<int>(false, string.Format(ValidationMessages.MESSAGE_INVENTORY_NOT_ENOUGH, product.Title, inventory.Available, item.Quantity));
+
+                inventory.Available -= item.Quantity;
+                await _inventoryRepo.Update(inventory);
+            }
 
             var order = new Order
             {
@@ -55,8 +78,6 @@ namespace TTE.Application.Services
             };
 
             await _orderRepo.Add(order);
-
-            var products = await _productRepo.Get();
 
             foreach (var item in cartItems)
             {
