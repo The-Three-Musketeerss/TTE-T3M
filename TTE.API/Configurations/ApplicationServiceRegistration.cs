@@ -20,7 +20,7 @@ namespace TTE.API.Configurations
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IOrderService, OrderService>();
-
+            services.AddScoped<IJobService, JobService>();
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
