@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using TTE.Commons.Validators;
 
 namespace TTE.Application.DTOs
 {
 
     public class InventoryDto
     {
+        [RequiredFieldValidator]
+        [Range(0, int.MaxValue)]
         public int Total { get; set; }
+        [RequiredFieldValidator]
+        [Range(0, int.MaxValue)]
         public int Available { get; set; }
     }
 }
