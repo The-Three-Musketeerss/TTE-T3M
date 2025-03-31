@@ -18,6 +18,6 @@ namespace TTE.Infrastructure.Models
 
         //Coupon FK
         public int? CouponId { get; set; }
-        public Coupon Coupon { get; set; }
+        public Coupon? Coupon { get; set; }
     }
 }

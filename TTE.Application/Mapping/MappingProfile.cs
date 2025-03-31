@@ -40,6 +40,12 @@ namespace TTE.Application.Mapping
                 .ForMember(dest => dest.CouponCode, opt => opt.MapFrom(src => src.Code))
                 .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.Discount));
 
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.TotalBeforeDiscount, opt => opt.MapFrom(src => src.Total_before_discount))
+                .ForMember(dest => dest.TotalAfterDiscount, opt => opt.MapFrom(src => src.Total_after_discount));
+            CreateMap<Order_Item, OrderItemDto>();
+
+
         }
     }
 }

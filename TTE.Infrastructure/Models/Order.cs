@@ -20,7 +20,7 @@ namespace TTE.Infrastructure.Models
         public User User { get; set; }
 
         //Coupon FK
-        public int CouponId { get; set; }
-        public Coupon Coupon { get; set; }
+        public int? CouponId { get; set; }
+        public Coupon? Coupon { get; set; }
     }
 }

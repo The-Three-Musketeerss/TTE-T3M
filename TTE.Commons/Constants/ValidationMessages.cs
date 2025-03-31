@@ -51,6 +51,10 @@
         public const string MESSAGE_CART_RETRIEVED_SUCCESSFULLY = "Cart retrieved successfully.";
         public const string MESSAGE_CART_ITEM_ADDED = "Product added/updated in cart.";
 
+        public const string MESSAGE_ORDER_CREATED_SUCCESSFULLY = "Order created successfully.";
+        public const string MESSAGE_ORDERS_RETRIEVED_SUCCESSFULLY = "Orders retrieved successfully.";
+        public const string MESSAGE_CART_EMPTY = "Cart is empty.";
+
         public const string MESSAGE_RATING_NOT_VALID = "Rating must be between 1 and 5.";
     }
 }
