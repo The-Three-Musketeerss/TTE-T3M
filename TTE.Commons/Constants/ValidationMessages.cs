@@ -36,6 +36,7 @@
         public const string MESSAGE_WISHLIST_PRODUCT_REMOVED = "Product removed from wishlist.";
         public const string MESSAGE_WISHLIST_PRODUCT_NOT_FOUND = "Product not found in wishlist.";
 
+
         public const string MESSAGE_COUPON_CREATED_SUCCESSFULLY = "Coupon created successfully.";
         public const string MESSAGE_COUPON_UPDATED_SUCCESSFULLY = "Coupon updated successfully.";
         public const string MESSAGE_COUPON_DELETED_SUCCESSFULLY = "Coupon deleted successfully.";
@@ -49,5 +50,7 @@
         public const string MESSAGE_CART_ITEM_DELETED = "Cart item deleted successfully.";
         public const string MESSAGE_CART_RETRIEVED_SUCCESSFULLY = "Cart retrieved successfully.";
         public const string MESSAGE_CART_ITEM_ADDED = "Product added/updated in cart.";
+
+        public const string MESSAGE_RATING_NOT_VALID = "Rating must be between 1 and 5.";
     }
 }

@@ -18,6 +18,8 @@ namespace TTE.API.Configurations
             services.AddScoped<IWishlistService, WishlistService>();
             services.AddScoped<ICouponService, CouponService>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IReviewService, ReviewService>();
+
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
