@@ -103,6 +103,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: deployments/ecs-task.json
-          service: weatherservice
+          service: TTEService
           cluster: TTE-Cluster
           wait-for-service-stability: true
