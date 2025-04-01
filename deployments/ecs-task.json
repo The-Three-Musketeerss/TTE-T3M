@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:116981779724:task-definition/TTE-Task:7",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:116981779724:task-definition/TTE-Task:13",
     "containerDefinitions": [
         {
             "name": "tte-api",
@@ -19,12 +19,24 @@
                 {
                     "name": "ASPNETCORE_ENVIRONMENT",
                     "value": "Production"
+                },
+                {
+                    "name": "AUTH_TOKEN_URL",
+                    "value": "http://localhost:8080"
                 }
             ],
-            "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
-            "ulimits": [],
+            "secrets": [
+                {
+                    "name": "DB_CONNECTION_STRING",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:116981779724:secret:prod/db/connstring-q5Fksi"
+                },
+                {
+                    "name": "JWT_SECRET",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:116981779724:secret:prod/jwt/secret-cSRXHj"
+                }
+            ],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -44,7 +56,7 @@
     "taskRoleArn": "arn:aws:iam::116981779724:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::116981779724:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 7,
+    "revision": 13,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -59,6 +71,9 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.secrets.asm.environment-variables"
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
@@ -93,7 +108,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2025-04-01T03:38:34.378Z",
+    "registeredAt": "2025-04-01T04:31:19.224Z",
     "registeredBy": "arn:aws:iam::116981779724:root",
     "enableFaultInjection": false,
     "tags": []
