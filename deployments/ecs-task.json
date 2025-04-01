@@ -1,13 +1,13 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:116981779724:task-definition/TTE-Task:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:116981779724:task-definition/TTE-Task:7",
     "containerDefinitions": [
         {
-            "name": "weather-api",
+            "name": "tte-api",
             "image": "116981779724.dkr.ecr.us-east-1.amazonaws.com/t3m/ttemporium",
             "cpu": 0,
             "portMappings": [
                 {
-                    "name": "weather-api-8080-tcp",
+                    "name": "tte-api-8080-tcp",
                     "containerPort": 8080,
                     "hostPort": 8080,
                     "protocol": "tcp",
@@ -15,7 +15,12 @@
                 }
             ],
             "essential": true,
-            "environment": [],
+            "environment": [
+                {
+                    "name": "ASPNETCORE_ENVIRONMENT",
+                    "value": "Production"
+                }
+            ],
             "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
@@ -39,7 +44,7 @@
     "taskRoleArn": "arn:aws:iam::116981779724:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::116981779724:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 1,
+    "revision": 7,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -88,7 +93,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2025-03-11T13:54:07.360Z",
+    "registeredAt": "2025-04-01T03:38:34.378Z",
     "registeredBy": "arn:aws:iam::116981779724:root",
     "enableFaultInjection": false,
     "tags": []
