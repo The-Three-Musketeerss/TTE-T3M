@@ -11,7 +11,7 @@ WORKDIR /src
 COPY TTE.API/TTE.API.csproj TTE.API/
 COPY TTE.Application/TTE.Application.csproj TTE.Application/
 COPY TTE.Infrastructure/TTE.Infrastructure.csproj TTE.Infrastructure/
-COPY TTE.Test/TTE.Test.csproj TTE.Test/
+COPY TTE.Tests/TTE.Test.csproj TTE.Tests/
 RUN dotnet restore TTE.API/TTE.API.csproj
 
 # Copy remaining files and build
