@@ -9,6 +9,7 @@ namespace TTE.API.Configurations
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = EnvVariables.DB_CONNECTION_STRING;
+            Console.WriteLine($"Connection String: {connectionString}");
             var serverVersion = ServerVersion.AutoDetect(connectionString);
 
             services.AddDbContext<AppDbContext>(options =>
