@@ -32,14 +32,14 @@ namespace TTE.Application.Services
         }
 
 
-        public async Task<GenericResponseDto<string>> AddReview(int productId, ReviewRequestDto request)
+        public async Task<GenericResponseDto<string>> AddReview(int productId, ReviewRequestDto request, int userId)
         {
             var product = await _productRepository.GetByCondition(p => p.Id == productId);
             if (product == null) {
                 return new GenericResponseDto<string> (false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
 
-            var user = await _userRepository.GetByCondition(u => u.UserName == request.User);
+            var user = await _userRepository.GetByCondition(u => u.Id == userId);
             if (user == null)
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);

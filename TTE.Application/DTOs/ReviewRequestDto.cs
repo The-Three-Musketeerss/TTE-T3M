@@ -5,9 +5,6 @@ namespace TTE.Application.DTOs
 {
     public class ReviewRequestDto
     {
-        [Required]
-        public string User { get; set; }
-
         [Range(1, 5, ErrorMessage = ValidationMessages.MESSAGE_RATING_NOT_VALID )]
         public int Rating { get; set; }
 

@@ -10,7 +10,7 @@ namespace TTE.Application.Interfaces
     public interface IReviewService
     {
         Task<GenericResponseDto<List<ReviewResponseDto>>> GetReviews(int productId);
-        Task<GenericResponseDto<string>> AddReview(int productId, ReviewRequestDto request);
+        Task<GenericResponseDto<string>> AddReview(int productId, ReviewRequestDto request, int userId);
 
     }
 }
