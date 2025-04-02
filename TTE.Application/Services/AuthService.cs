@@ -105,11 +105,23 @@ namespace TTE.Application.Services
             var requestData = request;
             var role = await _roleRepository.GetByCondition(r => r.Name == AppConstants.EMPLOYEE);
 
+            var user = await _userRepository.GetByCondition(u => u.Email == requestData.Email);
+            if (user != null)
+            {
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_EMAIL_ALREADY_EXISTS, []);
+            }
+
+            user = await _userRepository.GetByCondition(u => u.UserName == requestData.UserName);
+            if (user != null)
+            {
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_USERNAME_ALREADY_EXISTS, []);
+            }
+
             if (role == null)
             {
                 return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROLE_NOT_FOUND, []);
             }
-            var user = new User
+            user = new User
             {
                 Name = requestData.Name,
                 UserName = requestData.UserName,
