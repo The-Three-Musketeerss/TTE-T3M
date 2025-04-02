@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TTE.API.Controllers;
 using TTE.Application.DTOs;
@@ -16,6 +18,44 @@ namespace TTE.Tests.Controllers
         {
             _mockUserService = new Mock<IUserService>();
             _userController = new UserController(_mockUserService.Object);
+        }
+
+        private void SetUserRole(string role)
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                    new Claim(ClaimTypes.Role, role)
+                }, "mock"));
+
+            _userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+        }
+
+        [Fact]
+        public async Task GetUsers_ShouldReturnOk_AdminRole()
+        {
+            SetUserRole(AppConstants.ADMIN);
+            var response = new GenericResponseDto<UserResponseDto>(true, ValidationMessages.MESSAGE_USERS_RETRIEVED_SUCCESSFULLY, new List<UserResponseDto>());
+            _mockUserService.Setup(service => service.GetUsers()).ReturnsAsync(response);
+            // Act
+            var result = await _userController.GetAllUsers() as OkObjectResult;
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(response, result.Value);
+        }
+
+        [Fact]
+        public async Task GetUsers_ShouldReturnForbid()
+        {
+            SetUserRole(AppConstants.USER);
+            // Act
+            var result = await _userController.GetAllUsers() as ForbidResult;
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<ForbidResult>(result);
         }
 
         [Fact]
@@ -47,7 +87,7 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task UpdateUser_ShouldReturnBadRequest_WhenUserNotFound()
         {
-            
+
             var username = "nonexistentuser";
             var request = new UpdateUserRequestDto
             {
@@ -73,7 +113,7 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task DeleteUsers_ShouldReturnOk_WhenUsersExist()
         {
-            
+
             var usernames = new List<string> { "user1", "user2" };
             var response = new GenericResponseDto<string>(true, ValidationMessages.USER_DELETED_SUCCESSFULLY);
 
@@ -92,7 +132,7 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task DeleteUsers_ShouldReturnBadRequest_WhenUsersNotFound()
         {
-           
+
             var usernames = new List<string> { "NAN" };
             var response = new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
 
