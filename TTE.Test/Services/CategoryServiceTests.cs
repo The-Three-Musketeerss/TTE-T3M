@@ -59,6 +59,16 @@ namespace TTE.Tests.Services
         }
 
         [Fact]
+        public async Task GetCategoriesReturnSucess()
+        {
+            var categories = new List<Category> { new Category { Id = 1, Name = "Test" } };
+            _mockCategoryRepo.Setup(r => r.Get()).ReturnsAsync(categories);
+            var result = await _service.GetCategories();
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, result.Message);
+        }
+
+        [Fact]
         public async Task UpdateCategory_ShouldReturnSuccess_WhenCategoryExists()
         {
             var categoryId = 1;
