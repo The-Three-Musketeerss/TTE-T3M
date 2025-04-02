@@ -135,7 +135,7 @@ namespace TTE.Application.Services
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                Role = _roleRepository.GetByCondition(r => r.Id == user.RoleId).Result.Name,
+                Role = role.Name,
             };
             return new GenericResponseDto<EmployeeResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
         }
