@@ -22,7 +22,7 @@ public class WishlistController : ControllerBase
         return !string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out userId);
     }
 
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> GetWishlist()
     {
         if (!TryGetUserId(out var userId))

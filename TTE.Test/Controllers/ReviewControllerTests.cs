@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TTE.API.Controllers;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
+using Xunit;
 
 namespace TTE.Tests.Controllers
 {
     public class ReviewControllerTests
     {
-
         private readonly Mock<IReviewService> _mockReviewService;
         private readonly ReviewController _controller;
 
@@ -22,6 +21,19 @@ namespace TTE.Tests.Controllers
         {
             _mockReviewService = new Mock<IReviewService>();
             _controller = new ReviewController(_mockReviewService.Object);
+        }
+
+        private void SetUserWithId(int userId)
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                new Claim("UserId", userId.ToString())
+            }, "mock"));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
         }
 
         [Fact]
@@ -51,7 +63,6 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task GetReviews_ShouldReturnNotFound_WhenProductDoesNotExist()
         {
-            // Arrange
             var productId = 999;
             var response = new GenericResponseDto<List<ReviewResponseDto>>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
 
@@ -70,18 +81,20 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task AddReview_ShouldReturnOk_WhenReviewIsCreated()
         {
-            // Arrange
             var productId = 1;
+            var userId = 10;
+
+            SetUserWithId(userId);
+
             var request = new ReviewRequestDto
             {
-                User = "john",
                 Review = "Great!",
                 Rating = 5
             };
 
             var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_REVIEW_ADDED_SUCCESSFULLY);
 
-            _mockReviewService.Setup(s => s.AddReview(productId, request))
+            _mockReviewService.Setup(s => s.AddReview(productId, request, userId))
                 .ReturnsAsync(response);
 
             // Act
@@ -96,18 +109,20 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task AddReview_ShouldReturnBadRequest_WhenFailedToCreate()
         {
-            // Arrange
             var productId = 1;
+            var userId = 10;
+
+            SetUserWithId(userId);
+
             var request = new ReviewRequestDto
             {
-                User = "invalid_user",
                 Review = "Not good",
                 Rating = 2
             };
 
             var response = new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
 
-            _mockReviewService.Setup(s => s.AddReview(productId, request))
+            _mockReviewService.Setup(s => s.AddReview(productId, request, userId))
                 .ReturnsAsync(response);
 
             // Act

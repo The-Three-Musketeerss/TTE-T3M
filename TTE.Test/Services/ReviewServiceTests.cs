@@ -40,12 +40,12 @@ namespace TTE.Tests.Services
         {
             // Arrange
             var productId = 1;
-            var user = new User { Id = 10, UserName = "john_doe", Name = "John" };
+            var userId = 10;
+            var user = new User { Id = userId, UserName = "john_doe", Name = "John" };
             var product = new Product { Id = productId };
 
             var request = new ReviewRequestDto
             {
-                User = "john_doe",
                 Rating = 5,
                 Review = "Great product!"
             };
@@ -53,7 +53,7 @@ namespace TTE.Tests.Services
             _mockProductRepo.Setup(r => r.GetByCondition(p => p.Id == productId))
                 .ReturnsAsync(product);
 
-            _mockUserRepo.Setup(r => r.GetByCondition(u => u.UserName == request.User))
+            _mockUserRepo.Setup(r => r.GetByCondition(u => u.Id == userId))
                 .ReturnsAsync(user);
 
             _mockReviewRepo.Setup(r => r.GetByCondition(r => r.ProductId == productId && r.UserId == user.Id))
@@ -69,7 +69,7 @@ namespace TTE.Tests.Services
                 .ReturnsAsync(1);
 
             // Act
-            var result = await _service.AddReview(productId, request);
+            var result = await _service.AddReview(productId, request, userId);
 
             // Assert
             Assert.True(result.Success);
@@ -79,10 +79,11 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task AddReview_ShouldFail_WhenProductNotFound()
         {
+            var userId = 1;
             _mockProductRepo.Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Product, bool>>>()))
                 .ReturnsAsync((Product)null);
 
-            var result = await _service.AddReview(1, new ReviewRequestDto());
+            var result = await _service.AddReview(1, new ReviewRequestDto(), userId);
 
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND, result.Message);
@@ -91,18 +92,20 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task AddReview_ShouldFail_WhenUserNotFound()
         {
-            _mockProductRepo.Setup(r => r.GetByCondition(p => p.Id == 1))
-                .ReturnsAsync(new Product { Id = 1 });
+            var productId = 1;
+            var userId = 999;
 
-            _mockUserRepo.Setup(r => r.GetByCondition(u => u.UserName == "john"))
+            _mockProductRepo.Setup(r => r.GetByCondition(p => p.Id == productId))
+                .ReturnsAsync(new Product { Id = productId });
+
+            _mockUserRepo.Setup(r => r.GetByCondition(u => u.Id == userId))
                 .ReturnsAsync((User)null);
 
-            var result = await _service.AddReview(1, new ReviewRequestDto
+            var result = await _service.AddReview(productId, new ReviewRequestDto
             {
-                User = "john",
                 Review = "Nice",
                 Rating = 4
-            });
+            }, userId);
 
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_USER_NOT_FOUND, result.Message);

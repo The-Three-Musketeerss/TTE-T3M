@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TTE.Application.DTOs;
 using TTE.Application.Interfaces;
 using TTE.Application.Services;
+using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
@@ -17,6 +18,12 @@ namespace TTE.API.Controllers
             _reviewService = reviewService;
         }
 
+        private int GetUserIdFromToken()
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            return int.TryParse(userIdClaim, out var userId) ? userId : 0;
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetReviews(int productId)
@@ -29,7 +36,11 @@ namespace TTE.API.Controllers
         [Authorize]
         public async Task<IActionResult> AddReview(int productId, [FromBody] ReviewRequestDto request)
         {
-            var result = await _reviewService.AddReview(productId, request);
+            int userId = GetUserIdFromToken();
+            if (userId == 0)
+                return Unauthorized(new { message = ValidationMessages.MESSAGE_USER_NOT_FOUND });
+
+            var result = await _reviewService.AddReview(productId, request, userId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
