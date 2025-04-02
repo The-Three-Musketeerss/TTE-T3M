@@ -32,6 +32,43 @@ namespace TTE.Tests.Services
         }
 
         [Fact]
+        public async Task CreateCategoryReturnSucess()
+        {
+            var userRole = AppConstants.ADMIN;
+            var request = new CategoryRequestDto { Name = "Test" };
+            _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Name == request.Name))
+                             .ReturnsAsync((Category)null);
+            var category = new Category { Name = request.Name };
+            _mockMapper.Setup(m => m.Map<Category>(request)).Returns(category);
+            _mockCategoryRepo.Setup(r => r.Add(category)).ReturnsAsync(1);
+            var result = await _service.CreateCategory(request, userRole);
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.CATEGORY_CREATED_SUCCESSFULLY, result.Message);
+        }
+
+        [Fact]
+        public async Task CreateCategoryReturnFail()
+        {
+            var userRole = AppConstants.ADMIN;
+            var request = new CategoryRequestDto { Name = "Test" };
+            _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Name == request.Name))
+                             .ReturnsAsync(new Category());
+            var result = await _service.CreateCategory(request, userRole);
+            Assert.False(result.Success);
+            Assert.Equal(ValidationMessages.CATEGORY_ALREADY_EXISTS, result.Message);
+        }
+
+        [Fact]
+        public async Task GetCategoriesReturnSucess()
+        {
+            var categories = new List<Category> { new Category { Id = 1, Name = "Test" } };
+            _mockCategoryRepo.Setup(r => r.Get()).ReturnsAsync(categories);
+            var result = await _service.GetCategories();
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, result.Message);
+        }
+
+        [Fact]
         public async Task UpdateCategory_ShouldReturnSuccess_WhenCategoryExists()
         {
             var categoryId = 1;

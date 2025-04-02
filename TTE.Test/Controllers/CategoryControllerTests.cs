@@ -34,6 +34,70 @@ namespace TTE.Tests.Controllers
         }
 
         [Fact]
+        public async Task CreateCategory_ShouldReturnOk_WhenAdminCreatesSuccessfully()
+        {
+            SetUserRole(AppConstants.ADMIN);
+            var request = new CategoryRequestDto { Name = "Test Category" };
+            var expectedResponse = new GenericResponseDto<CategoryResponseDto>(
+                true,
+                ValidationMessages.CATEGORY_CREATED_SUCCESSFULLY
+            );
+            _mockCategoryService
+                .Setup(s => s.CreateCategory(request, AppConstants.ADMIN))
+                .ReturnsAsync(expectedResponse);
+            // Act
+            var result = await _controller.CreateCategory(request);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<GenericResponseDto<CategoryResponseDto>>(okResult.Value);
+            Assert.True(response.Success);
+            Assert.Equal(ValidationMessages.CATEGORY_CREATED_SUCCESSFULLY, response.Message);
+        }
+
+        [Fact]
+        public async Task CreateCategory_ShouldReturnForbid_WhenRoleIsInvalid()
+        {
+            SetUserRole("Customer");
+
+            var request = new CategoryRequestDto();
+
+            // Act
+            var result = await _controller.CreateCategory(request);
+
+            // Assert
+            Assert.IsType<ForbidResult>(result);
+        }
+
+        [Fact]
+        public async Task GetCategories_ShouldReturnOk()
+        {
+            var expectedResponse = new GenericResponseDto<CategoryResponseDto>(
+                true,
+                ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY,
+                new List<CategoryResponseDto>
+                {
+                    new CategoryResponseDto { Id = 1, Name = "Category 1" },
+                    new CategoryResponseDto { Id = 2, Name = "Category 2" }
+                }
+            );
+
+            _mockCategoryService
+                .Setup(s => s.GetCategories())
+                .ReturnsAsync(expectedResponse);
+
+            // Act
+            var result = await _controller.GetCategories();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<GenericResponseDto<CategoryResponseDto>>(okResult.Value);
+            Assert.True(response.Success);
+            Assert.Equal(ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, response.Message);
+            Assert.NotNull(response.Data);
+            Assert.Equal(2, ((IEnumerable<CategoryResponseDto>)response.Data).Count());
+        }
+
+        [Fact]
         public async Task DeleteCategory_ShouldReturnOk_WhenAdminDeletesSuccessfully()
         {
             SetUserRole(AppConstants.ADMIN);
