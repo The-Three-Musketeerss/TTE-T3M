@@ -243,6 +243,196 @@ namespace TTE.Tests.Services
             Assert.Equal(1, result.TotalPages);
 
         }
+
+        [Fact]
+        public async Task UpdateProduct_ShouldReturnSuccess_WhenProductExistsAndValidUpdate()
+        {
+            // Arrange
+            int productId = 1;
+            var request = new ProductUpdateRequestDto
+            {
+                Price = 150,
+                Category = "NewCategory",
+                Inventory = new InventoryRequestDto { Total = 100, Available = 50 }
+            };
+
+            var existingProduct = new Product
+            {
+                Id = productId,
+                Price = 100,
+                Inventory = new Inventory { ProductId = productId, Total = 100, Available = 50 }
+            };
+
+            var newCategory = new Category { Id = 2, Name = "NewCategory" };
+
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetEntityWithIncludes(It.IsAny<string[]>()))
+                .ReturnsAsync(new List<Product> { existingProduct });
+
+            _mockGenericCategoryRepository
+                .Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Category, bool>>>()))
+                .ReturnsAsync(newCategory);
+
+            // Setup mapper to map the update request onto the product.
+            _mockMapper.Setup(m => m.Map(request, existingProduct)).Verifiable();
+
+            _mockGenericProductRepository
+                .Setup(repo => repo.Update(existingProduct))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _productService.UpdateProduct(productId, request);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY, result.Message);
+        }
+
+        [Fact]
+        public async Task UpdateProduct_ShouldReturnProductNotFound_WhenProductDoesNotExist()
+        {
+            // Arrange
+            int productId = 99;
+            var request = new ProductUpdateRequestDto { Price = 150 };
+
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetEntityWithIncludes(It.IsAny<string[]>()))
+                .ReturnsAsync(new List<Product>()); // No products found
+
+            // Act
+            var result = await _productService.UpdateProduct(productId, request);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND, result.Message);
+        }
+
+        [Fact]
+        public async Task UpdateProduct_ShouldReturnFailure_WhenAvailableInventoryGreaterThanTotal()
+        {
+            // Arrange
+            int productId = 1;
+            var request = new ProductUpdateRequestDto
+            {
+                Price = 150,
+                Inventory = new InventoryRequestDto { Total = 50, Available = 60 } // Invalid: Available > Total
+            };
+
+            var existingProduct = new Product
+            {
+                Id = productId,
+                Price = 100,
+                Inventory = new Inventory { ProductId = productId, Total = 50, Available = 40 }
+            };
+
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetEntityWithIncludes(It.IsAny<string[]>()))
+                .ReturnsAsync(new List<Product> { existingProduct });
+
+            // Act
+            var result = await _productService.UpdateProduct(productId, request);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("Available inventory cannot be greater than total inventory.", result.Message);
+        }
+
+        [Fact]
+        public async Task UpdateProduct_ShouldReturnFailure_WhenCategoryNotFound()
+        {
+            // Arrange
+            int productId = 1;
+            var request = new ProductUpdateRequestDto
+            {
+                Price = 150,
+                Category = "NonexistentCategory",
+                Inventory = new InventoryRequestDto { Total = 100, Available = 50 }
+            };
+
+            var existingProduct = new Product
+            {
+                Id = productId,
+                Price = 100,
+                Inventory = new Inventory { ProductId = productId, Total = 100, Available = 50 }
+            };
+
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetEntityWithIncludes(It.IsAny<string[]>()))
+                .ReturnsAsync(new List<Product> { existingProduct });
+
+            _mockGenericCategoryRepository
+                .Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Category, bool>>>()))
+                .ReturnsAsync((Category)null); // Category not found
+
+            // Act
+            var result = await _productService.UpdateProduct(productId, request);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal(ValidationMessages.CATEGORY_NOT_FOUND, result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteProduct_ShouldReturnProductNotFound_WhenProductDoesNotExist()
+        {
+            // Arrange
+            int productId = 99;
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Product, bool>>>()))
+                .ReturnsAsync((Product)null);
+
+            // Act
+            var result = await _productService.DeleteProduct(productId, AppConstants.ADMIN);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND, result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteProduct_ShouldReturnSuccess_ForAdmin()
+        {
+            // Arrange
+            int productId = 1;
+            var product = new Product { Id = productId };
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Product, bool>>>()))
+                .ReturnsAsync(product);
+
+            _mockGenericProductRepository
+                .Setup(repo => repo.Delete(productId))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _productService.DeleteProduct(productId, AppConstants.ADMIN);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY, result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteProduct_ShouldReturnSuccess_ForEmployee()
+        {
+            // Arrange
+            int productId = 1;
+            var product = new Product { Id = productId };
+            _mockGenericProductRepository
+                .Setup(repo => repo.GetByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Product, bool>>>()))
+                .ReturnsAsync(product);
+
+            _mockGenericJobRepository
+                .Setup(repo => repo.Add(It.IsAny<Job>()))
+                .ReturnsAsync(1);
+
+            // Act
+            var result = await _productService.DeleteProduct(productId, AppConstants.EMPLOYEE);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY, result.Message);
+        }
+
     }
 }
 

@@ -218,5 +218,92 @@ namespace TTE.Tests.Controllers
             Assert.Equal(5, response.TotalCount);
             Assert.Equal(2, response.TotalPages);
         }
+
+        [Fact]
+        public async Task UpdateProduct_ShouldReturnOk_WhenUpdateIsSuccessful()
+        {
+            // Arrange
+            int productId = 1;
+            var request = new ProductUpdateRequestDto
+            {
+                Price = 200,
+                Category = "Electronics",
+                Inventory = new InventoryRequestDto { Total = 100, Available = 80 }
+            };
+
+            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_UPDATED_SUCCESSFULLY);
+            _mockProductService.Setup(s => s.UpdateProduct(productId, request))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.UpdateProduct(productId, request) as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(response, result.Value);
+        }
+
+        [Fact]
+        public async Task DeleteProduct_ShouldReturnOk_WhenAdminDeletesProduct()
+        {
+            // Arrange
+            int productId = 1;
+            // Set user role as ADMIN
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, AppConstants.ADMIN) }, "mock"));
+            _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = user } };
+
+            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY);
+            _mockProductService.Setup(s => s.DeleteProduct(productId, AppConstants.ADMIN))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.DeleteProduct(productId) as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(response, result.Value);
+        }
+
+        [Fact]
+        public async Task DeleteProduct_ShouldReturnOk_WhenEmployeeDeletesProduct()
+        {
+            // Arrange
+            int productId = 1;
+            // Set user role as EMPLOYEE
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, AppConstants.EMPLOYEE) }, "mock"));
+            _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = user } };
+
+            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY);
+            _mockProductService.Setup(s => s.DeleteProduct(productId, AppConstants.EMPLOYEE))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.DeleteProduct(productId) as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(response, result.Value);
+        }
+
+        [Fact]
+        public async Task DeleteProduct_ShouldReturnUnauthorized_WhenUserRoleIsMissing()
+        {
+            // Arrange
+            int productId = 1;
+            // No role claim set in HttpContext
+            _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
+
+            // Act
+            var result = await _controller.DeleteProduct(productId);
+
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(401, unauthorizedResult.StatusCode);
+            // Optionally, verify that the message indicates the role was not found.
+        }
+
     }
 }
