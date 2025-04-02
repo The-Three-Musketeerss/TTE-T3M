@@ -63,7 +63,6 @@ namespace TTE.Application.Services
             {
                 cart = new Cart { UserId = userId, ShippingCost = 0 };
                 await _cartRepo.Add(cart);
-                cart = await _cartRepo.GetByCondition(c => c.UserId == userId, "Coupon");
             }
 
             var existingItem = await _cartItemRepo.GetByCondition(i =>
