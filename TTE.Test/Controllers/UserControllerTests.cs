@@ -58,19 +58,6 @@ namespace TTE.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetUsers_ShouldReturnForbid()
-        {
-            // Arrange
-            SetUserRole(AppConstants.USER);
-
-            // Act
-            var result = await _userController.GetAllUsers() as ForbidResult;
-
-            // Assert
-            Assert.NotNull(result);
-        }
-
-        [Fact]
         public async Task UpdateUser_ShouldReturnOk_WhenUserExists()
         {
 

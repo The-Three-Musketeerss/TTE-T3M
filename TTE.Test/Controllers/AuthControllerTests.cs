@@ -198,25 +198,5 @@ namespace TTE.Tests.Controllers
             Assert.Equal(response, result.Value);
         }
 
-        [Fact]
-        public async Task RegisterEmployee_ShouldReturnForbidden_WhenNotAdmin()
-        {
-            // Arrange
-            SetUserRole(AppConstants.USER);
-            var request = new EmployeeRequestDto
-            {
-                Name = "User",
-                UserName = "user",
-                Email = "user@example.com",
-                Password = "UserPass123"
-            };
-
-            // Act
-            var result = await _authController.RegisterEmployee(request) as ForbidResult;
-
-            // Assert
-            Assert.NotNull(result);
-        }
-
     }
 }

@@ -51,9 +51,10 @@ namespace TTE.Tests.Services
             _mockUserRepository.Setup(repo => repo.GetEntityWithIncludes(It.IsAny<string[]>()))
                    .ReturnsAsync(users);
 
-            // Map the returned Users to UserResponseDto
-            _mockMapper.Setup(m => m.Map<List<UserResponseDto>>(users))
-                       .Returns(userResponseDtos);
+            _mockMapper.Setup(m => m.Map<UserResponseDto>(It.Is<User>(u => u.UserName == "user1")))
+           .Returns(userResponseDtos[0]);
+            _mockMapper.Setup(m => m.Map<UserResponseDto>(It.Is<User>(u => u.UserName == "user2")))
+                       .Returns(userResponseDtos[1]);
 
             // Act
             var result = await _userService.GetUsers();
