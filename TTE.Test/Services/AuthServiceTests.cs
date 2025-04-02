@@ -197,6 +197,7 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task RegisterEmployee_ShouldReturnSuccess()
         {
+            // Arrange
             var request = new EmployeeRequestDto
             {
                 Email = "employee@example.com",
@@ -206,27 +207,24 @@ namespace TTE.Tests.Services
             };
 
             var role = new Role { Id = 2, Name = AppConstants.EMPLOYEE };
-
-            _mockRoleRepository.Setup(repo => repo.GetByCondition(r => r.Name == AppConstants.EMPLOYEE))
+            _mockRoleRepository.Setup(r => r.GetByCondition(r => r.Name == AppConstants.EMPLOYEE))
                                .ReturnsAsync(role);
 
-            _mockSecurityService.Setup(s => s.HashPassword(It.IsAny<string>()))
-                                .Returns("hashedPassword");
+            _mockSecurityService
+                .Setup(s => s.HashPassword(request.Password))
+                .Returns("hashedPassword");
 
-            _mockUserRepository.Setup(repo => repo.Add(It.IsAny<User>()))
-                               .ReturnsAsync(1);
+            _mockUserRepository
+                .Setup(repo => repo.Add(It.IsAny<User>()))
+                .ReturnsAsync(1);
 
             // Act
             var result = await _authService.RegisterEmployee(request);
 
             // Assert
-            Assert.NotNull(result.Data);
-            Assert.IsType<EmployeeResponseDto>(result.Data);
-            var userData = result.Data as EmployeeResponseDto;
-            Assert.NotNull(userData);
             Assert.True(result.Success);
             Assert.Equal(AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, result.Message);
-
+            var userData = Assert.IsType<EmployeeResponseDto>(result.Data);
             Assert.Equal(request.Email, userData.Email);
             Assert.Equal(request.UserName, userData.UserName);
         }
@@ -234,6 +232,7 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task RegisterEmployee_ShouldFail_EmailinUse()
         {
+            // Arrange
             var request = new EmployeeRequestDto
             {
                 Email = "employee@example.com",
@@ -242,17 +241,24 @@ namespace TTE.Tests.Services
                 Name = "Employee Name"
             };
 
+            // First, ensure role is found so we don't fail early
+            var role = new Role { Id = 2, Name = AppConstants.EMPLOYEE };
+            _mockRoleRepository.Setup(r => r.GetByCondition(r => r.Name == AppConstants.EMPLOYEE))
+                               .ReturnsAsync(role);
+
             var existingUser = new User
             {
                 Id = 1,
                 Email = request.Email,
                 UserName = "ExistingUser",
                 Password = "hashedPassword",
-                Role = new Role { Name = AppConstants.EMPLOYEE }
+                Role = role
             };
 
+            // Force the repository to return an existing user matching this email
             _mockUserRepository.Setup(repo => repo.GetByCondition(
-                It.IsAny<Expression<Func<User, bool>>>(), AppConstants.ROLE))
+                It.IsAny<Expression<Func<User, bool>>>(),
+                AppConstants.ROLE))
                 .ReturnsAsync(existingUser);
 
             // Act

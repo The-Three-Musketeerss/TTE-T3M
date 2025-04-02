@@ -24,23 +24,33 @@ namespace TTE.Tests.Controllers
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                    new Claim(ClaimTypes.Role, role)
-                }, "mock"));
+                new Claim(ClaimTypes.Role, role)
+            }, "mock"));
 
-            _userController.ControllerContext = new ControllerContext()
+            _userController.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext() { User = user }
+                HttpContext = new DefaultHttpContext { User = user }
             };
         }
 
         [Fact]
         public async Task GetUsers_ShouldReturnOk_AdminRole()
         {
+            // Arrange
             SetUserRole(AppConstants.ADMIN);
-            var response = new GenericResponseDto<UserResponseDto>(true, ValidationMessages.MESSAGE_USERS_RETRIEVED_SUCCESSFULLY, new List<UserResponseDto>());
-            _mockUserService.Setup(service => service.GetUsers()).ReturnsAsync(response);
+            var response = new GenericResponseDto<UserResponseDto>(
+                true,
+                ValidationMessages.MESSAGE_USERS_RETRIEVED_SUCCESSFULLY,
+                new List<UserResponseDto>()
+            );
+
+            _mockUserService
+                .Setup(service => service.GetUsers())
+                .ReturnsAsync(response);
+
             // Act
             var result = await _userController.GetAllUsers() as OkObjectResult;
+
             // Assert
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
@@ -50,12 +60,14 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task GetUsers_ShouldReturnForbid()
         {
+            // Arrange
             SetUserRole(AppConstants.USER);
+
             // Act
             var result = await _userController.GetAllUsers() as ForbidResult;
+
             // Assert
             Assert.NotNull(result);
-            Assert.IsType<ForbidResult>(result);
         }
 
         [Fact]

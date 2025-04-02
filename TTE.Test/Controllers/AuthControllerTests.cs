@@ -101,7 +101,9 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task RegisterEmployee_ShouldReturnOk_WhenAdmin()
         {
+            // Arrange
             SetUserRole(AppConstants.ADMIN);
+
             var request = new EmployeeRequestDto
             {
                 Name = "Admin User",
@@ -110,13 +112,17 @@ namespace TTE.Tests.Controllers
                 Password = "AdminPass123"
             };
 
-            var response = new GenericResponseDto<EmployeeResponseDto>(true, "Employee registered successfully", new EmployeeResponseDto
-            {
-                Id = 1,
-                UserName = request.UserName,
-                Email = request.Email,
-                Role = "Admin"
-            });
+            var response = new GenericResponseDto<EmployeeResponseDto>(
+                true,
+                AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS,
+                new EmployeeResponseDto
+                {
+                    Id = 1,
+                    UserName = request.UserName,
+                    Email = request.Email,
+                    Role = "Admin"
+                }
+            );
 
             _mockAuthService.Setup(service => service.RegisterEmployee(request))
                             .ReturnsAsync(response);
@@ -127,12 +133,12 @@ namespace TTE.Tests.Controllers
             // Assert
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
+
             var responseData = Assert.IsType<GenericResponseDto<EmployeeResponseDto>>(result.Value);
             Assert.True(responseData.Success);
-            Assert.Equal(ValidationMessages.CATEGORY_CREATED_EMPLOYEE_SUCCESSFULLY, responseData.Message);
-        }
 
-        
+            Assert.Equal(AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, responseData.Message);
+        }
 
         [Fact]
         public async Task RegisterUser_ShouldReturnOk_WhenValidRequest()
@@ -191,10 +197,12 @@ namespace TTE.Tests.Controllers
             Assert.Equal(400, result.StatusCode);
             Assert.Equal(response, result.Value);
         }
+
         [Fact]
         public async Task RegisterEmployee_ShouldReturnForbidden_WhenNotAdmin()
         {
-            SetUserRole(AppConstants.USER); // Set a non-admin role
+            // Arrange
+            SetUserRole(AppConstants.USER);
             var request = new EmployeeRequestDto
             {
                 Name = "User",
