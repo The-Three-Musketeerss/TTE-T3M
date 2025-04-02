@@ -32,6 +32,41 @@ namespace TTE.Tests.Services
         }
 
         [Fact]
+        public async Task GetUsers_ShouldReturnSuccess()
+        {
+            // Arrange
+            var users = new List<User>
+            {
+                new User { UserName = "user1", Email = "user1@example.com", Name = "User One" },
+                new User { UserName = "user2", Email = "user2@example.com", Name = "User Two" }
+            };
+
+            var userResponseDtos = users.Select(u => new UserResponseDto
+            {
+                UserName = u.UserName,
+                Email = u.Email,
+                Name = u.Name
+            }).ToList();
+
+            _mockUserRepository.Setup(repo => repo.GetEntityWithIncludes(It.IsAny<string[]>()))
+                   .ReturnsAsync(users);
+
+            _mockMapper.Setup(m => m.Map<UserResponseDto>(It.Is<User>(u => u.UserName == "user1")))
+           .Returns(userResponseDtos[0]);
+            _mockMapper.Setup(m => m.Map<UserResponseDto>(It.Is<User>(u => u.UserName == "user2")))
+                       .Returns(userResponseDtos[1]);
+
+            // Act
+            var result = await _userService.GetUsers();
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_USERS_RETRIEVED_SUCCESSFULLY, result.Message);
+
+            Assert.Equal(userResponseDtos, result.Data);
+        }
+
+        [Fact]
         public async Task UpdateUser_ShouldReturnSuccess_WhenUserExists()
         {
 
