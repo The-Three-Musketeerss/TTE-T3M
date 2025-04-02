@@ -485,3 +485,9 @@ $RECYCLE.BIN/
 
 TTE.API/Properties/launchSettings.json
 appsettings.*
+
+# Ignorar carpetas de cobertura
+coverage/
+coverage-report/
+TestResults/
+
