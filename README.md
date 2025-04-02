@@ -14,9 +14,9 @@ Follow these steps to set up the project locally:
 
 ```bash
 git clone https://github.com/The-Three-Musketeerss/TTE-T3M.git
-cd tech-trend-emporium 
+cd TTE-T3M 
 ```
-### 1. Restore 
+### 2. Restore 
 ```bash
 dotnet restore
 ```
@@ -27,7 +27,8 @@ dotnet restore
 | Tool / Library | Version | Description |
 |----------------|---------|-------------|
 | ASP.NET Core | 7.0 | Web framework used to build the RESTful backend APIs. |
-| Entity Framework Core (Pomelo.MySQL) | 9.0.3 | ORM used for database access with MySQL. |
+| Entity Framework Core | 9.0.3 | ORM used for database access using .NET code. |
+| Pomelo MySql | 8.0.3 | A specific database provider for EF Core that allows you to connect to and work with MySQL. |
 | AutoMapper | 14.0.0 | Maps DTOs to domain models and vice versa, reducing boilerplate. |
 | JWT Authentication | 11.0.0 | Secures API endpoints using JSON Web Tokens. |
 | Swashbuckle.AspNetCore (Swagger) | 6.6.2 | Generates interactive API documentation. |
@@ -37,8 +38,6 @@ dotnet restore
 | Moq | 4.20.72 | Mocking library used to isolate unit tests. |
 | Coverlet | 6.0.4 | Generates code coverage data from unit tests. |
 | ReportGenerator | 5.4.5 | Converts coverage data into human-readable HTML reports. |
-| AWS SDK | 3.7.402.31 | Access AWS services programmatically. |
-| AWS Secrets Manager | 3.7.400.125 | Securely stores and retrieves secrets like DB credentials. |
 
 ---
 
@@ -48,16 +47,20 @@ dotnet restore
 - Coverage report generated using `Coverlet` + `ReportGenerator`
 - **Coverage: ~80% line coverage** across API and Services
 
-### Run tests and generate coverage:
+### Install coverage:
 ```bash
-cd TTE.Tests
-dotnet test --collect:"XPlat Code Coverage"
+cd TTE.Test
+dotnet add package coverlet.msbuild
 ```
-
+### Run tests and generate coverage:
+Go to the main Folder (TTE-T3M) with de .sln and run:
+```bash
+dotnet test ./TTE.Test/TTE.Tests.csproj --collect:"XPlat Code Coverage"
+```
+Save the root (TestResults/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/coverage.cobertura.xml)
 ### Generate HTML coverage report:
 ```bash
-reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html
-start coverage-report/index.html
+reportgenerator -reports:"TTE.Test\TestResults\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html
 ```
 
 ---
@@ -68,7 +71,7 @@ start coverage-report/index.html
 Open `appsettings.json` in `TTE.API` and update:
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "server=localhost;user=tte_user;password=upb123;database=tech_trend_emporium"
+  "DefaultConnection": "server=;user=;password=;database="
 }
 ```
 
@@ -78,17 +81,34 @@ dotnet ef migrations add InitialCreation --project TTE.Infrastructure --startup-
 dotnet ef database update --project TTE.Infrastructure --startup-project TTE.API
 ```
 
-### 3. Create a SuperAdmin manually in the DB
+### 3. Seed products from FakeStore API
+To populate the database with real-like products:
+Go to the TTE.Seeding folder.
+Create a file named appsettings.json with your DB connection:
+```bash
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "server=;user=;password=;database="
+  }
+}
+```
+Run the seeding process:
+```bash
+dotnet run --project TTE.Seeding
+```
+This will fetch products from https://fakestoreapi.com and insert them (with categories and inventory) into your database.
+
+### 4. Create a SuperAdmin manually in the DB
 Insert a user into the `Users` table with a role of SuperAdmin (RoleId = 1).  
 **Hash the password using Bcrypt** before inserting.
 
-### 4. Build and run the project
+### 5. Build and run the project
 ```bash
 dotnet build TTE.sln
 dotnet run --project TTE.API
 ```
 
-### 5. Open Swagger
+### 6. Open Swagger
 ```text
 http://localhost:5006/swagger/index.html
 ```
@@ -110,7 +130,9 @@ http://localhost:5006/swagger/index.html
 ```
 TTE.API             --> Controllers & Startup
 TTE.Application     --> DTOs, Services, Interfaces
+TTE.Commons         --> Constants and validators 
 TTE.Infrastructure  --> EF Models, DbContext, Repositories
+TTE.Seeding         --> Populating the database with data from Fake Store API
 TTE.Tests           --> Unit tests (xUnit + Moq)
 ```
 
@@ -134,7 +156,7 @@ This project follows the trunk-based development strategy with the following rul
 ## Contribute
 If you would like to contribute to this project:
 
-- Frotk this repository.
+- Fork this repository.
 - Create a new branch
 ```bash
     git checkout -b Feature/my-feature
