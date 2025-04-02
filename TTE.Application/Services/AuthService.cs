@@ -108,18 +108,18 @@ namespace TTE.Application.Services
             var user = await _userRepository.GetByCondition(u => u.Email == requestData.Email);
             if (user != null)
             {
-                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_EMAIL_ALREADY_EXISTS, []);
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_EMAIL_ALREADY_EXISTS);
             }
 
             user = await _userRepository.GetByCondition(u => u.UserName == requestData.UserName);
             if (user != null)
             {
-                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_USERNAME_ALREADY_EXISTS, []);
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_USERNAME_ALREADY_EXISTS);
             }
 
             if (role == null)
             {
-                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROLE_NOT_FOUND, []);
+                return new GenericResponseDto<EmployeeResponseDto>(false, ValidationMessages.MESSAGE_ROLE_NOT_FOUND);
             }
             user = new User
             {

@@ -257,9 +257,9 @@ namespace TTE.Tests.Services
 
             // Force the repository to return an existing user matching this email
             _mockUserRepository.Setup(repo => repo.GetByCondition(
-                It.IsAny<Expression<Func<User, bool>>>(),
-                AppConstants.ROLE))
+                It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync(existingUser);
+
 
             // Act
             var result = await _authService.RegisterEmployee(request);
