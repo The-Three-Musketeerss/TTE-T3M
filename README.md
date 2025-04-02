@@ -58,9 +58,10 @@ Go to the main Folder (TTE-T3M) with de .sln and run:
 dotnet test ./TTE.Test/TTE.Tests.csproj --collect:"XPlat Code Coverage"
 ```
 Save the root (TestResults/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/coverage.cobertura.xml)
-### Generate HTML coverage report:
+### Generate and run HTML coverage report:
 ```bash
 reportgenerator -reports:"TTE.Test\TestResults\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html
+start coverage-report\index.html
 ```
 
 ---
