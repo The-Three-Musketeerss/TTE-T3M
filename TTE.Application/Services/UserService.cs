@@ -26,7 +26,7 @@ namespace TTE.Application.Services
             var users = await _userRepository.GetEntityWithIncludes(includes);
             var userDtos = users.Select(u => _mapper.Map<UserResponseDto>(u)).ToList();
 
-            return new GenericResponseDto<UserResponseDto>(true, "Users retrieved successfully", userDtos);
+            return new GenericResponseDto<UserResponseDto>(true, ValidationMessages.MESSAGE_USERS_RETRIEVED_SUCCESSFULLY, userDtos);
         }
 
         public async Task<GenericResponseDto<string>> UpdateUser(string username, UpdateUserRequestDto request)

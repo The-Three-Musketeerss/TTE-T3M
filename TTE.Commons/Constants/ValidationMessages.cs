@@ -30,6 +30,7 @@
         public const string MESSAGE_EMAIL_ALREADY_EXISTS = "Email already registered.";
         public const string MESSAGE_USERNAME_ALREADY_EXISTS = "USERNAME already registered";
         public const string USER_DELETED_SUCCESSFULLY = "Users deleted successfully.";
+        public const string MESSAGE_USERS_RETRIEVED_SUCCESSFULLY = "Users retrieved successfully.";
 
         public const string MESSAGE_WISHLIST_RETRIEVED_SUCCESSFULLY = "Wishlist retrieved successfully.";
         public const string MESSAGE_PRODUCT_ALREADY_IN_WISHLIST = "Product already in wishlist.";
