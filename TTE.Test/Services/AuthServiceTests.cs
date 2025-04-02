@@ -195,6 +195,76 @@ namespace TTE.Tests.Services
         }
 
         [Fact]
+        public async Task RegisterEmployee_ShouldReturnSuccess()
+        {
+            var request = new EmployeeRequestDto
+            {
+                Email = "employee@example.com",
+                UserName = "EmployeeUser",
+                Password = "SecurePass123",
+                Name = "Employee Name"
+            };
+
+            var role = new Role { Id = 2, Name = AppConstants.EMPLOYEE };
+
+            _mockRoleRepository.Setup(repo => repo.GetByCondition(r => r.Name == AppConstants.EMPLOYEE))
+                               .ReturnsAsync(role);
+
+            _mockSecurityService.Setup(s => s.HashPassword(It.IsAny<string>()))
+                                .Returns("hashedPassword");
+
+            _mockUserRepository.Setup(repo => repo.Add(It.IsAny<User>()))
+                               .ReturnsAsync(1);
+
+            // Act
+            var result = await _authService.RegisterEmployee(request);
+
+            // Assert
+            Assert.NotNull(result.Data);
+            Assert.IsType<EmployeeResponseDto>(result.Data);
+            var userData = result.Data as EmployeeResponseDto;
+            Assert.NotNull(userData);
+            Assert.True(result.Success);
+            Assert.Equal(AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, result.Message);
+
+            Assert.Equal(request.Email, userData.Email);
+            Assert.Equal(request.UserName, userData.UserName);
+        }
+
+        [Fact]
+        public async Task RegisterEmployee_ShouldFail_EmailinUse()
+        {
+            var request = new EmployeeRequestDto
+            {
+                Email = "employee@example.com",
+                UserName = "EmployeeUser",
+                Password = "SecurePass123",
+                Name = "Employee Name"
+            };
+
+            var existingUser = new User
+            {
+                Id = 1,
+                Email = request.Email,
+                UserName = "ExistingUser",
+                Password = "hashedPassword",
+                Role = new Role { Name = AppConstants.EMPLOYEE }
+            };
+
+            _mockUserRepository.Setup(repo => repo.GetByCondition(
+                It.IsAny<Expression<Func<User, bool>>>(), AppConstants.ROLE))
+                .ReturnsAsync(existingUser);
+
+            // Act
+            var result = await _authService.RegisterEmployee(request);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal(ValidationMessages.MESSAGE_EMAIL_ALREADY_EXISTS, result.Message);
+            Assert.Null(result.Data);
+        }
+
+        [Fact]
         public async Task RegisterUser_ShouldFail_WhenRoleNotFound()
         {
             var request = new ShopperRequestDto

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TTE.API.Controllers;
 using TTE.Application.DTOs;
@@ -16,6 +18,19 @@ namespace TTE.Tests.Controllers
         {
             _mockAuthService = new Mock<IAuthService>();
             _authController = new AuthController(_mockAuthService.Object);
+        }
+
+        private void SetUserRole(string role)
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Role, role)
+            }, "mock"));
+
+            _authController.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
         }
 
         [Fact]
@@ -84,6 +99,42 @@ namespace TTE.Tests.Controllers
         }
 
         [Fact]
+        public async Task RegisterEmployee_ShouldReturnOk_WhenAdmin()
+        {
+            SetUserRole(AppConstants.ADMIN);
+            var request = new EmployeeRequestDto
+            {
+                Name = "Admin User",
+                UserName = "adminuser",
+                Email = "admin@example.com",
+                Password = "AdminPass123"
+            };
+
+            var response = new GenericResponseDto<EmployeeResponseDto>(true, "Employee registered successfully", new EmployeeResponseDto
+            {
+                Id = 1,
+                UserName = request.UserName,
+                Email = request.Email,
+                Role = "Admin"
+            });
+
+            _mockAuthService.Setup(service => service.RegisterEmployee(request))
+                            .ReturnsAsync(response);
+
+            // Act
+            var result = await _authController.RegisterEmployee(request) as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            var responseData = Assert.IsType<GenericResponseDto<EmployeeResponseDto>>(result.Value);
+            Assert.True(responseData.Success);
+            Assert.Equal(ValidationMessages.CATEGORY_CREATED_EMPLOYEE_SUCCESSFULLY, responseData.Message);
+        }
+
+        
+
+        [Fact]
         public async Task RegisterUser_ShouldReturnOk_WhenValidRequest()
         {
             var request = new ShopperRequestDto
@@ -139,6 +190,24 @@ namespace TTE.Tests.Controllers
             Assert.NotNull(result);
             Assert.Equal(400, result.StatusCode);
             Assert.Equal(response, result.Value);
+        }
+        [Fact]
+        public async Task RegisterEmployee_ShouldReturnForbidden_WhenNotAdmin()
+        {
+            SetUserRole(AppConstants.USER); // Set a non-admin role
+            var request = new EmployeeRequestDto
+            {
+                Name = "User",
+                UserName = "user",
+                Email = "user@example.com",
+                Password = "UserPass123"
+            };
+
+            // Act
+            var result = await _authController.RegisterEmployee(request) as ForbidResult;
+
+            // Assert
+            Assert.NotNull(result);
         }
 
     }
