@@ -1,4 +1,5 @@
-﻿using TTE.Application.Interfaces;
+﻿using TTE.Application.Handlers;
+using TTE.Application.Interfaces;
 using TTE.Application.Mapping;
 using TTE.Application.Services;
 using TTE.Commons.Services;
@@ -22,6 +23,8 @@ namespace TTE.API.Configurations
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IJobService, JobService>();
             services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<ProductJobHandler>();
+            services.AddScoped<CategoryJobHandler>();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();

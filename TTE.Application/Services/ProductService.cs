@@ -166,10 +166,14 @@ namespace TTE.Application.Services
             var response = new ProductCreatedResponseDto
             {
                 Id = product.Id,
-                Message = ValidationMessages.MESSAGE_PRODUCT_CREATED_SUCCESSFULLY
+                Title = product.Title
             };
 
-            return new GenericResponseDto<ProductCreatedResponseDto>(true, "", response);
+            string state = product.Approved == false
+                ? ValidationMessages.WAITING_FOR_APPROVAL
+                : ValidationMessages.MESSAGE_PRODUCT_CREATED_SUCCESSFULLY;
+
+            return new GenericResponseDto<ProductCreatedResponseDto>(true, state, response);
         }
 
         public async Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole)

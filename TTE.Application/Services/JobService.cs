@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TTE.Application.DTOs;
+﻿using TTE.Application.DTOs;
+using TTE.Application.Handlers;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
@@ -14,10 +10,23 @@ namespace TTE.Application.Services
     public class JobService : IJobService
     {
         private readonly IGenericRepository<Job> _jobRepository;
+        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly ICategoryJobHandler _categoryJobHandler;
+        private readonly IProductJobHandler _productJobHandler;
 
-        public JobService(IGenericRepository<Job> jobRepository)
+        public JobService(IGenericRepository<Job> jobRepository, 
+            IGenericRepository<Product> productRepository, 
+            IGenericRepository<Category> categoryRepository,
+            ICategoryJobHandler categoryJobHandler,
+            IProductJobHandler productJobHandler)
+
         {
             _jobRepository = jobRepository;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
+            _categoryJobHandler = categoryJobHandler;
+            _productJobHandler = productJobHandler;
         }
         public async Task<GenericResponseDto<List<JobResponseDto>>> GetPendingJobs()
         {
@@ -25,8 +34,9 @@ namespace TTE.Application.Services
 
             var result = jobs.Select(j => new JobResponseDto
             {
+                Id = j.Id,
                 Type = j.Type.ToString().ToLower(),       
-                Id = j.Item_id,                           
+                Id_item = j.Item_id,                           
                 Operation = j.Operation.ToString().ToLower()
             }).ToList();
 
@@ -42,21 +52,21 @@ namespace TTE.Application.Services
             if (job.Status != Job.StatusEnum.Pending)
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_JOB_ALREADY_REVIEWED);
 
-            switch (request.Action.ToLower())
+            var action = request.Action.ToLower();
+
+            switch (job.Type)
             {
-                case AppConstants.APPROVE:
-                    job.Status = Job.StatusEnum.Approved;
-                    break;
-                case AppConstants.DECLINE:
-                    job.Status = Job.StatusEnum.Declined;
-                    break;
+                case Job.JobEnum.Product:
+                    var product = await _productRepository.GetByCondition(p => p.Id == job.Item_id);
+                    return await _productJobHandler.Handle(job, product, action);
+
+                case Job.JobEnum.Category:
+                    var category = await _categoryRepository.GetByCondition(c => c.Id == job.Item_id);
+                    return await _categoryJobHandler.Handle(job, category, action);
+
                 default:
-                    return new GenericResponseDto<string>(false,ValidationMessages.MESSAGE_JOB_INVALID_ACTION);
+                    return new GenericResponseDto<string>(false, ValidationMessages.UNSUPPORTED_JOB);
             }
-
-            await _jobRepository.Update(job);
-
-            return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_JOB_REVIEW_SUCCESS, request.Action.ToLower()));
         }
     }
 }
