@@ -47,6 +47,8 @@ dotnet restore
 - Coverage report generated using `Coverlet` + `ReportGenerator`
 - **Coverage: ~86% line coverage** across API and Services
 
+![WhatsApp Image 2025-04-03 at 10 09 41 AM](https://github.com/user-attachments/assets/4b4e65bc-435c-4bee-9dca-df9daa3f2e4b)
+
 ### Install coverage:
 ```bash
 cd TTE.Test
