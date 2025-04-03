@@ -46,8 +46,9 @@ dotnet restore
 - All **API controllers** and **Service layer** have unit tests written using `xUnit` and `Moq`
 - Coverage report generated using `Coverlet` + `ReportGenerator`
 - **Coverage: ~86% line coverage** across API and Services
-
+- 
 ![WhatsApp Image 2025-04-03 at 10 09 41 AM](https://github.com/user-attachments/assets/4b4e65bc-435c-4bee-9dca-df9daa3f2e4b)
+
 
 ### Install coverage:
 ```bash
@@ -60,6 +61,7 @@ Go to the main Folder (TTE-T3M) with de .sln and run:
 dotnet test ./TTE.Test/TTE.Tests.csproj --collect:"XPlat Code Coverage"
 ```
 Save the root (TestResults/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/coverage.cobertura.xml)
+
 ### Generate and run HTML coverage report:
 ```bash
 reportgenerator -reports:"TTE.Test\TestResults\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html

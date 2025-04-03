@@ -37,7 +37,7 @@ namespace TTE.Application.Services
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
             }
 
-            user.UserName = request.Name;
+            user.Name = request.Name;
             user.Email = request.Email;
             user.Password = _securityService.HashPassword(request.Password);
 
