@@ -204,11 +204,12 @@ namespace TTE.Application.Services
         }
         public async Task<GenericResponseDto<ProductByIdResponse>> GetProductById(int productId)
         {
+            var includes = new string[] { "Category" };
 
-            var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
+            var product = await _genericProductRepository.GetByCondition(p => p.Id == productId,includes);
             if (product == null)
             {
-                return new GenericResponseDto<ProductByIdResponse>(false,ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+                return new GenericResponseDto<ProductByIdResponse>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
 
             var category = await _genericCategoryRepository.GetByCondition(c => c.Id == product.CategoryId);
@@ -226,6 +227,7 @@ namespace TTE.Application.Services
             var inventoryDto = inventory != null ? _mapper.Map<InventoryDto>(inventory) : new InventoryDto { Total = 0, Available = 0 };
 
             var productDto = _mapper.Map<ProductByIdResponse>(product);
+
             productDto.Rating = ratingDto;
             productDto.Inventory = inventoryDto;
 

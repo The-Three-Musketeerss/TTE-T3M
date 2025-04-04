@@ -115,6 +115,7 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task GetProductById_ShouldReturnProduct_WhenExists()
         {
+            var includes = new string[] { "Category" };
             // Arrange
             var product = new Product
             {
@@ -131,7 +132,7 @@ namespace TTE.Tests.Services
             var ratingList = new List<Rating> { new Rating { ProductId = 1, Rate = 4 }, new Rating { ProductId = 1, Rate = 5 } };
             var inventory = new Inventory { ProductId = 1, Total = 50, Available = 25 };
 
-            _mockGenericProductRepository.Setup(r => r.GetByCondition(p => p.Id == 1))
+            _mockGenericProductRepository.Setup(r => r.GetByCondition(p => p.Id == 1,includes))
                                    .ReturnsAsync(product);
             _mockGenericCategoryRepository.Setup(r => r.GetByCondition(c => c.Id == 2))
                              .ReturnsAsync(category);
