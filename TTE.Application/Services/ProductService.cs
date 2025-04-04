@@ -207,7 +207,7 @@ namespace TTE.Application.Services
             var includes = new string[] { "Category" };
 
             var product = await _genericProductRepository.GetByCondition(p => p.Id == productId,includes);
-            if (product == null)
+            if (product == null || product.Approved==false)
             {
                 return new GenericResponseDto<ProductByIdResponse>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
