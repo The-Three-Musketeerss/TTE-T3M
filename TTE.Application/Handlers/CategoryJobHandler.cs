@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TTE.Application.DTOs;
 using TTE.Commons.Constants;
@@ -24,30 +21,40 @@ namespace TTE.Application.Handlers
         public async Task<GenericResponseDto<string>> Handle(Job job, Category category, string action)
         {
             if (category == null)
-                return new GenericResponseDto<string>(false,ValidationMessages.CATEGORY_NOT_FOUND);
+                return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_NOT_FOUND);
 
-            switch (action)
+            switch (action.ToLower())
             {
                 case AppConstants.APPROVE:
                     job.Status = Job.StatusEnum.Approved;
+
                     if (job.Operation == Job.OperationEnum.Create)
+                    {
                         category.Approved = true;
+                        await _categoryRepo.Update(category);
+                    }
 
                     if (job.Operation == Job.OperationEnum.Delete)
+                    {
                         await _categoryRepo.Delete(category);
+                    }
                     break;
 
                 case AppConstants.DECLINE:
                     job.Status = Job.StatusEnum.Declined;
+
+                    if (job.Operation == Job.OperationEnum.Create)
+                    {
+                        await _categoryRepo.Delete(category);
+                    }
                     break;
 
                 default:
                     return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_JOB_INVALID_ACTION);
             }
 
-            job.Status = action == AppConstants.APPROVE ? Job.StatusEnum.Approved : Job.StatusEnum.Declined;
             await _jobRepo.Update(job);
-            await _categoryRepo.Update(category);
+
             return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_JOB_REVIEW_SUCCESS, action));
         }
     }
