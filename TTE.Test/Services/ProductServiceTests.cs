@@ -84,7 +84,7 @@ namespace TTE.Tests.Services
             var data = result.Data as ProductCreatedResponseDto;
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
-            Assert.Equal(ValidationMessages.MESSAGE_PRODUCT_CREATED_SUCCESSFULLY, data.Message);
+            Assert.Equal(request.Title, data.Title);
         }
 
         [Fact]

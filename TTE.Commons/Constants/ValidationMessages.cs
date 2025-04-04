@@ -66,5 +66,7 @@
         public const string MESSAGE_JOB_ALREADY_REVIEWED = "Job has already been reviewed.";
         public const string MESSAGE_JOB_INVALID_ACTION = "Invalid action. Use 'approve' or 'decline'.";
         public const string MESSAGE_JOB_REVIEW_SUCCESS = "Job {0}d successfully.";
+        public const string UNSUPPORTED_JOB = "Unsupported job type.";
+        public const string WAITING_FOR_APPROVAL = " waiting for approval";
     }
 }

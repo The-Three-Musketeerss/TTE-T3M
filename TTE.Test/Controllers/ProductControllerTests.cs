@@ -55,7 +55,7 @@ namespace TTE.Tests.Controllers
             var response = new GenericResponseDto<ProductCreatedResponseDto>(true, "", new ProductCreatedResponseDto
             {
                 Id = 1,
-                Message = "Product created successfully."
+                Title = request.Title,
             });
 
             _mockProductService.Setup(service => service.CreateProducts(request, AppConstants.ADMIN))
