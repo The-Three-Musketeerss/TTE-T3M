@@ -23,8 +23,8 @@ namespace TTE.API.Configurations
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IJobService, JobService>();
             services.AddAutoMapper(typeof(MappingProfile));
-            services.AddScoped<ProductJobHandler>();
-            services.AddScoped<CategoryJobHandler>();
+            services.AddScoped<IProductJobHandler, ProductJobHandler>();
+            services.AddScoped<ICategoryJobHandler, CategoryJobHandler>();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();
