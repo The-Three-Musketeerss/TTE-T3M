@@ -45,7 +45,7 @@ dotnet restore
 
 - All **API controllers** and **Service layer** have unit tests written using `xUnit` and `Moq`
 - Coverage report generated using `Coverlet` + `ReportGenerator`
-- **Coverage: ~83% line coverage** across API and Services
+- **Coverage: ~84% line coverage** across API and Services
   
 ![2037be72-29ab-4de2-be90-0b5d2dec1070](https://github.com/user-attachments/assets/d04536f9-b125-4f16-8371-e2c8e6bb791a)
 
