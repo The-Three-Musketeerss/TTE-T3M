@@ -27,17 +27,23 @@ namespace TTE.Application.Handlers
         public async Task<GenericResponseDto<string>> Handle(Job job, Product product, string action)
         {
             if (product == null)
-                return new GenericResponseDto<string>(false,ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
+                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
 
             switch (action.ToLower())
             {
                 case AppConstants.APPROVE:
                     job.Status = Job.StatusEnum.Approved;
+
                     if (job.Operation == Job.OperationEnum.Create)
+                    {
                         product.Approved = true;
+                        await _productRepo.Update(product);
+                    }
 
                     if (job.Operation == Job.OperationEnum.Delete)
+                    {
                         await _productRepo.Delete(product);
+                    }
                     break;
 
                 case AppConstants.DECLINE:
@@ -48,11 +54,10 @@ namespace TTE.Application.Handlers
                     return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_JOB_INVALID_ACTION);
             }
 
-            job.Status = action == AppConstants.APPROVE ? Job.StatusEnum.Approved : Job.StatusEnum.Declined;
-            
             await _jobRepo.Update(job);
-            await _productRepo.Update(product);
-            return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_JOB_REVIEW_SUCCESS,action));
+
+            return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_JOB_REVIEW_SUCCESS, action));
         }
+
     }
 }
