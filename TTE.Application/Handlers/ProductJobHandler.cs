@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Amazon.Runtime.Internal;
 using TTE.Application.DTOs;
 using TTE.Commons.Constants;
 using TTE.Infrastructure.Models;
@@ -13,15 +9,13 @@ namespace TTE.Application.Handlers
 {
     public class ProductJobHandler : IProductJobHandler
     {
-
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<Job> _jobRepo;
 
-
         public ProductJobHandler(IGenericRepository<Product> productRepo, IGenericRepository<Job> jobRepo)
         {
-            _jobRepo = jobRepo;
             _productRepo = productRepo;
+            _jobRepo = jobRepo;
         }
 
         public async Task<GenericResponseDto<string>> Handle(Job job, Product product, string action)
@@ -48,6 +42,11 @@ namespace TTE.Application.Handlers
 
                 case AppConstants.DECLINE:
                     job.Status = Job.StatusEnum.Declined;
+
+                    if (job.Operation == Job.OperationEnum.Create)
+                    {
+                        await _productRepo.Delete(product);
+                    }
                     break;
 
                 default:
@@ -58,6 +57,5 @@ namespace TTE.Application.Handlers
 
             return new GenericResponseDto<string>(true, string.Format(ValidationMessages.MESSAGE_JOB_REVIEW_SUCCESS, action));
         }
-
     }
 }

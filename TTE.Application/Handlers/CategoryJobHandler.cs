@@ -42,6 +42,11 @@ namespace TTE.Application.Handlers
 
                 case AppConstants.DECLINE:
                     job.Status = Job.StatusEnum.Declined;
+
+                    if (job.Operation == Job.OperationEnum.Create)
+                    {
+                        await _categoryRepo.Delete(category);
+                    }
                     break;
 
                 default:
