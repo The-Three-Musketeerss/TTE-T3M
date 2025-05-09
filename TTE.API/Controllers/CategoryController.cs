@@ -67,5 +67,11 @@ namespace TTE.API.Controllers
             return response.Success ? Ok(response) : BadRequest(response);
         }
 
+        [HttpGet("top")]
+        public async Task<IActionResult> GetTopCategoryNames([FromQuery] int top = 3)
+        {
+            var response = await _categoryService.GetTopCategoryNamesByProductCount(top);
+            return Ok(response);
+        }
     }
 }

@@ -37,5 +37,18 @@ namespace TTE.Infrastructure.Repositories
 
             return (products, totalCount);
         }
+
+        public async Task<List<string>> GetTopCategoryNamesByProductCount(int top)
+        {
+            return await _context.Products
+                .Where(p => p.Approved)
+                .GroupBy(p => p.Category.Name)
+                .Select(g => new { CategoryName = g.Key, Count = g.Count() })
+                .OrderByDescending(g => g.Count)
+                .Take(top)
+                .Select(g => g.CategoryName)
+                .ToListAsync();
+        }
+
     }
 }

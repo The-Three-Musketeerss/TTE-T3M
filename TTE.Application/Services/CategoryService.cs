@@ -11,14 +11,16 @@ namespace TTE.Application.Services
     {
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IGenericRepository<Job> _jobRepository;
-        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<Product> _genericProductRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
 
-        public CategoryService(IGenericRepository<Category> categoryRepository, IGenericRepository<Job> jobRepository, IGenericRepository<Product> productRepository, IMapper mapper)
+        public CategoryService(IGenericRepository<Category> categoryRepository, IGenericRepository<Job> jobRepository, IGenericRepository<Product> genericProductRepository, IProductRepository productRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _jobRepository = jobRepository;
+            _genericProductRepository = genericProductRepository;
             _productRepository = productRepository;
             _mapper = mapper;
         }
@@ -27,7 +29,7 @@ namespace TTE.Application.Services
         {
             var categoryToDelete = await _categoryRepository.GetByCondition(c => c.Id == id);
 
-            var productsWithCategory = await _productRepository.GetAllByCondition(p => p.CategoryId == id);
+            var productsWithCategory = await _genericProductRepository.GetAllByCondition(p => p.CategoryId == id);
             if (productsWithCategory.Any())
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.CATEGORY_HAS_PRODUCTS);
@@ -116,6 +118,12 @@ namespace TTE.Application.Services
 
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_UPDATED_SUCCESSFULLY);
 
+        }
+
+        public async Task<GenericResponseDto<string>> GetTopCategoryNamesByProductCount(int top = 3)
+        {
+            var names = await _productRepository.GetTopCategoryNamesByProductCount(top);
+            return new GenericResponseDto<string>(true, ValidationMessages.CATEGORIES_RETRIEVED_SUCCESSFULLY, names);
         }
     }
 }
