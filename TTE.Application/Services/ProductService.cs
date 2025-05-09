@@ -136,7 +136,8 @@ namespace TTE.Application.Services
                 Description = request.Description,
                 CategoryId = category.Id,
                 Image = request.Image,
-                Approved = userRole == AppConstants.ADMIN ? true : false
+                Approved = userRole == AppConstants.ADMIN ? true : false,
+                CreatedAt = DateTime.UtcNow
             };
 
             await _genericProductRepository.Add(product);
@@ -233,5 +234,18 @@ namespace TTE.Application.Services
 
             return new GenericResponseDto<ProductByIdResponse>(true,"", productDto);
         }
+
+        public async Task<List<ProductResponseDto>> GetLatestProducts()
+        {
+            var products = await _productRepository.GetLatestProducts();
+            return _mapper.Map<List<ProductResponseDto>>(products);
+        }
+
+        public async Task<List<ProductResponseDto>> GetTopSellingProducts()
+        {
+            var products = await _productRepository.GetTopSellingProducts();
+            return _mapper.Map<List<ProductResponseDto>>(products);
+        }
+
     }
 }

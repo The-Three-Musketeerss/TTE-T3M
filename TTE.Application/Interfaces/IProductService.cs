@@ -14,6 +14,7 @@ namespace TTE.Application.Interfaces
         Task<GenericResponseDto<ProductByIdResponse>> GetProductById(int productId);
         Task<GenericResponseDto<string>> UpdateProduct(int productId, ProductUpdateRequestDto request);
         Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole);
-
+        Task<List<ProductResponseDto>> GetLatestProducts();
+        Task<List<ProductResponseDto>> GetTopSellingProducts();
     }
 }

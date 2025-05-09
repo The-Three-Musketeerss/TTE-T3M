@@ -50,5 +50,53 @@ namespace TTE.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Product>> GetLatestProducts(int count = 3)
+        {
+            return await _context.Products
+                .Where(p => p.Approved)
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(count)
+                .Include(p => p.Category)
+                .ToListAsync();
+        }
+
+        public async Task<List<Product>> GetTopSellingProducts(int count = 3)
+        {
+            var topSoldIds = await _context.Order_Items
+                .GroupBy(oi => oi.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    TotalSold = g.Sum(x => x.Quantity)
+                })
+                .OrderByDescending(g => g.TotalSold)
+                .Take(count)
+                .Select(g => g.ProductId)
+                .ToListAsync();
+
+            var topSoldProducts = await _context.Products
+                .Where(p => topSoldIds.Contains(p.Id) && p.Approved)
+                .Include(p => p.Category)
+                .ToListAsync();
+
+            if (topSoldProducts.Count < count)
+            {
+                var needed = count - topSoldProducts.Count;
+
+                var fallbackProducts = await _context.Products
+                    .Where(p => p.Approved && !topSoldIds.Contains(p.Id))
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Include(p => p.Category)
+                    .Take(needed)
+                    .ToListAsync();
+
+                topSoldProducts.AddRange(fallbackProducts);
+            }
+
+            return topSoldProducts;
+        }
+
+
+
     }
 }
