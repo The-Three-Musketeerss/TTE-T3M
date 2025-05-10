@@ -39,9 +39,10 @@ namespace TTE.API.Controllers
             [FromQuery] string? orderBy,
             [FromQuery] bool descending = false,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = null)
         {
-            var response = await _productService.GetProducts(category, orderBy, descending, page, pageSize);
+            var response = await _productService.GetProducts(category, orderBy, descending, page, pageSize, search);
             return Ok(response);
         }
 

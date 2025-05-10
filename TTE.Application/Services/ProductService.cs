@@ -85,9 +85,9 @@ namespace TTE.Application.Services
         }
 
         public async Task<ProductPaginatedResponseDto> GetProducts(
-            string? category, string? orderBy, bool descending, int page, int pageSize)
+            string? category, string? orderBy, bool descending, int page, int pageSize, string? search)
         {
-            var (products, totalCount) = await _productRepository.GetProducts(category, orderBy, descending, page, pageSize);
+            var (products, totalCount) = await _productRepository.GetProducts(category, orderBy, descending, page, pageSize, search);
 
             var productIds = products.Select(p => p.Id).ToList();
 
