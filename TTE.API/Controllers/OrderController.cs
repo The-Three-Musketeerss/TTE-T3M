@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TTE.Application.Interfaces;
 using TTE.Commons.Constants;
+using TTE.Application.DTOs;
 
 namespace TTE.API.Controllers
 {
@@ -25,15 +26,16 @@ namespace TTE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder()
+        public async Task<IActionResult> CreateOrder([FromBody] OrderRequestDto request)
         {
             int userId = GetUserIdFromToken();
             if (userId == 0)
                 return Unauthorized(new { message = ValidationMessages.MESSAGE_USER_NOT_FOUND });
 
-            var result = await _orderService.CreateOrderFromCart(userId);
+            var result = await _orderService.CreateOrderFromCart(userId, request);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetOrders()

@@ -15,6 +15,9 @@ namespace TTE.Infrastructure.Models
         public decimal FinalTotal { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string PaymentStatus { get; set; } = "Paid";
         //User FK
         public int UserId { get; set; }
         public User User { get; set; }
