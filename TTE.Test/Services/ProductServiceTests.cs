@@ -204,7 +204,7 @@ namespace TTE.Tests.Services
             };
 
             _mockProductRepository
-                .Setup(r => r.GetProducts(null, null, false, 1, 10))
+                .Setup(r => r.GetProducts(null, null, false, 1, 10, null))
                 .ReturnsAsync((products, products.Count));
 
             _mockRatingRepository
@@ -220,7 +220,7 @@ namespace TTE.Tests.Services
                 .Returns(mappedDtos[1]);
 
             // Act
-            var result = await _productService.GetProducts(null, null, false, 1, 10);
+            var result = await _productService.GetProducts(null, null, false, 1, 10, null);
 
             // Assert
             Assert.True(result.Success);

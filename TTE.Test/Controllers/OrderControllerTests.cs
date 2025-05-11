@@ -35,13 +35,15 @@ namespace TTE.Tests.Controllers
         [Fact]
         public async Task CreateOrder_ShouldReturnUnauthorized_WhenNoUserId()
         {
+            var request = new OrderRequestDto();
+
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity()) }
             };
 
             // Act
-            var result = await _controller.CreateOrder();
+            var result = await _controller.CreateOrder(request);
 
             // Assert
             Assert.IsType<UnauthorizedObjectResult>(result);
@@ -51,12 +53,13 @@ namespace TTE.Tests.Controllers
         public async Task CreateOrder_ShouldReturnOk_WhenSuccessful()
         {
             SetUserId(1);
+            var request = new OrderRequestDto();
             var response = new GenericResponseDto<int>(true, "ok", 123);
 
-            _mockOrderService.Setup(s => s.CreateOrderFromCart(1)).ReturnsAsync(response);
+            _mockOrderService.Setup(s => s.CreateOrderFromCart(1, request)).ReturnsAsync(response);
 
             // Act
-            var result = await _controller.CreateOrder();
+            var result = await _controller.CreateOrder(request);
 
             // Assert
             var ok = Assert.IsType<OkObjectResult>(result);

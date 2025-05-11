@@ -17,6 +17,7 @@ namespace TTE.Tests.Services
         private readonly Mock<IGenericRepository<Cart_Item>> _mockCartItemRepo;
         private readonly Mock<IGenericRepository<Product>> _mockProductRepo;
         private readonly Mock<IGenericRepository<Inventory>> _mockInventoryRepo;
+        private readonly Mock<IGenericRepository<User>> _mockUserRepo;
         private readonly Mock<IMapper> _mockMapper;
         private readonly OrderService _service;
 
@@ -28,6 +29,7 @@ namespace TTE.Tests.Services
             _mockCartItemRepo = new Mock<IGenericRepository<Cart_Item>>();
             _mockProductRepo = new Mock<IGenericRepository<Product>>();
             _mockInventoryRepo = new Mock<IGenericRepository<Inventory>>();
+            _mockUserRepo = new Mock<IGenericRepository<User>>();
             _mockMapper = new Mock<IMapper>();
 
             _service = new OrderService(
@@ -37,9 +39,12 @@ namespace TTE.Tests.Services
                 _mockCartItemRepo.Object,
                 _mockProductRepo.Object,
                 _mockInventoryRepo.Object,
+                _mockUserRepo.Object,
                 _mockMapper.Object
             );
         }
+
+        private readonly OrderRequestDto _defaultRequest = new OrderRequestDto();
 
         [Fact]
         public async Task CreateOrderFromCart_ShouldReturnFail_WhenCartIsNull()
@@ -49,7 +54,7 @@ namespace TTE.Tests.Services
                 .ReturnsAsync((Cart)null);
 
             // Act
-            var result = await _service.CreateOrderFromCart(1);
+            var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
             // Assert
             Assert.False(result.Success);
@@ -70,7 +75,7 @@ namespace TTE.Tests.Services
                 .ReturnsAsync(new List<Cart_Item>());
 
             // Act
-            var result = await _service.CreateOrderFromCart(1);
+            var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
             // Assert
             Assert.False(result.Success);
@@ -103,7 +108,7 @@ namespace TTE.Tests.Services
             _mockInventoryRepo.Setup(r => r.Get()).ReturnsAsync(inventories);
 
             // Act
-            var result = await _service.CreateOrderFromCart(1);
+            var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
             // Assert
             Assert.False(result.Success);
@@ -152,7 +157,7 @@ namespace TTE.Tests.Services
             _mockCartRepo.Setup(r => r.Update(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _service.CreateOrderFromCart(1);
+            var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
             // Assert
             Assert.True(result.Success);
