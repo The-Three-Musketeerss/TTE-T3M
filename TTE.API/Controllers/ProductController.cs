@@ -39,9 +39,10 @@ namespace TTE.API.Controllers
             [FromQuery] string? orderBy,
             [FromQuery] bool descending = false,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = null)
         {
-            var response = await _productService.GetProducts(category, orderBy, descending, page, pageSize);
+            var response = await _productService.GetProducts(category, orderBy, descending, page, pageSize, search);
             return Ok(response);
         }
 
@@ -72,6 +73,20 @@ namespace TTE.API.Controllers
             }
             var response = await _productService.DeleteProduct(productId, userRole);
             return Ok(response);
+        }
+
+        [HttpGet("latest")]
+        public async Task<IActionResult> GetLatestProducts()
+        {
+            var result = await _productService.GetLatestProducts();
+            return Ok(new GenericResponseDto<List<ProductResponseDto>>(true, "Latest products retrieved.", result));
+        }
+
+        [HttpGet("top-selling")]
+        public async Task<IActionResult> GetTopSellingProducts()
+        {
+            var result = await _productService.GetTopSellingProducts();
+            return Ok(new GenericResponseDto<List<ProductResponseDto>>(true, "Top selling products retrieved.", result));
         }
     }
 }

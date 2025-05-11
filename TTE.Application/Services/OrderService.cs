@@ -15,6 +15,7 @@ namespace TTE.Application.Services
         private readonly IGenericRepository<Cart_Item> _cartItemRepo;
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<Inventory> _inventoryRepo;
+        private readonly IGenericRepository<User> _userRepo;
         private readonly IMapper _mapper;
 
         public OrderService(
@@ -24,6 +25,7 @@ namespace TTE.Application.Services
             IGenericRepository<Cart_Item> cartItemRepo,
             IGenericRepository<Product> productRepo,
             IGenericRepository<Inventory> inventoryRepo,
+            IGenericRepository<User> userRepo,
             IMapper mapper)
         {
             _orderRepo = orderRepo;
@@ -32,14 +34,19 @@ namespace TTE.Application.Services
             _cartItemRepo = cartItemRepo;
             _productRepo = productRepo;
             _inventoryRepo = inventoryRepo;
+            _userRepo = userRepo;
             _mapper = mapper;
         }
 
-        public async Task<GenericResponseDto<int>> CreateOrderFromCart(int userId)
+        public async Task<GenericResponseDto<int>> CreateOrderFromCart(int userId, OrderRequestDto request)
         {
             var cart = await _cartRepo.GetByCondition(c => c.UserId == userId, "Coupon");
             if (cart == null)
                 return new GenericResponseDto<int>(false, ValidationMessages.MESSAGE_CART_NOT_FOUND);
+
+            var user = await _userRepo.GetByCondition(u => u.Id == userId);
+            if (user == null)
+                return new GenericResponseDto<int>(false, ValidationMessages.MESSAGE_USER_NOT_FOUND);
 
             var cartItems = await _cartItemRepo.GetAllByCondition(i => i.CartId == cart.Id);
             if (!cartItems.Any())
@@ -74,7 +81,10 @@ namespace TTE.Application.Services
                 ShippingCost = cart.ShippingCost,
                 CouponId = cart.CouponId,
                 CreatedAt = DateTime.UtcNow,
-                Status = "Approved"
+                Status = "Approved",
+                CustomerName = user.Name,
+                Address = request.Address,
+                PaymentStatus = "Paid"
             };
 
             await _orderRepo.Add(order);
@@ -116,7 +126,6 @@ namespace TTE.Application.Services
                 var items = await _orderItemRepo.GetAllByCondition(i => i.OrderId == order.Id);
                 var orderDto = _mapper.Map<OrderDto>(order);
                 orderDto.OrderItems = _mapper.Map<List<OrderItemDto>>(items);
-
                 orderDtos.Add(orderDto);
             }
 

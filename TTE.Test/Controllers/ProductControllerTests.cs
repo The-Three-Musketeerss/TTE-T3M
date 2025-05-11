@@ -190,7 +190,7 @@ namespace TTE.Tests.Controllers
             );
 
             _mockProductService.Setup(service =>
-                service.GetProducts(null, orderBy, descending, page, pageSize))
+                service.GetProducts(null, orderBy, descending, page, pageSize, null))
                 .ReturnsAsync(paginatedResponse);
 
             // Act

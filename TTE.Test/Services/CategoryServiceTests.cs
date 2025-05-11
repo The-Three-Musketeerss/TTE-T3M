@@ -12,7 +12,8 @@ namespace TTE.Tests.Services
     {
         private readonly Mock<IGenericRepository<Category>> _mockCategoryRepo;
         private readonly Mock<IGenericRepository<Job>> _mockJobRepo;
-        private readonly Mock<IGenericRepository<Product>> _mockProductRepo;
+        private readonly Mock<IGenericRepository<Product>> _mockGenericProductRepo;
+        private readonly Mock<IProductRepository> _mockProductRepo;
         private readonly Mock<IMapper> _mockMapper;
         private readonly CategoryService _service;
 
@@ -20,12 +21,14 @@ namespace TTE.Tests.Services
         {
             _mockCategoryRepo = new Mock<IGenericRepository<Category>>();
             _mockJobRepo = new Mock<IGenericRepository<Job>>();
-            _mockProductRepo = new Mock<IGenericRepository<Product>>();
+            _mockGenericProductRepo = new Mock<IGenericRepository<Product>>();
+            _mockProductRepo = new Mock<IProductRepository>();
             _mockMapper = new Mock<IMapper>();
 
             _service = new CategoryService(
                 _mockCategoryRepo.Object,
                 _mockJobRepo.Object,
+                _mockGenericProductRepo.Object,
                 _mockProductRepo.Object,
                 _mockMapper.Object
             );
@@ -118,7 +121,7 @@ namespace TTE.Tests.Services
             _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Id == categoryId))
                              .ReturnsAsync(category);
 
-            _mockProductRepo.Setup(r => r.GetAllByCondition(p => p.CategoryId == categoryId))
+            _mockGenericProductRepo.Setup(r => r.GetAllByCondition(p => p.CategoryId == categoryId))
                             .ReturnsAsync(new List<Product>());
 
             _mockCategoryRepo.Setup(r => r.Delete(categoryId))
@@ -143,7 +146,7 @@ namespace TTE.Tests.Services
             _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Id == categoryId))
                              .ReturnsAsync(category);
 
-            _mockProductRepo.Setup(r => r.GetAllByCondition(p => p.CategoryId == categoryId))
+            _mockGenericProductRepo.Setup(r => r.GetAllByCondition(p => p.CategoryId == categoryId))
                             .ReturnsAsync(products);
 
             // Act
@@ -164,7 +167,7 @@ namespace TTE.Tests.Services
             _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Id == categoryId))
                              .ReturnsAsync(category);
 
-            _mockProductRepo.Setup(r => r.GetAllByCondition(p => p.CategoryId == categoryId))
+            _mockGenericProductRepo.Setup(r => r.GetAllByCondition(p => p.CategoryId == categoryId))
                             .ReturnsAsync(new List<Product>());
 
             _mockJobRepo.Setup(r => r.Add(It.IsAny<Job>()))

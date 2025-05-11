@@ -10,9 +10,11 @@
         public bool Approved { get; set; }
 
         public int CategoryId { get; set; }
+        
         public Category Category { get; set; }
 
         public Inventory Inventory { get; set; }
 
+        public DateTime CreatedAt { get; set; }
     }
 }

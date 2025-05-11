@@ -29,7 +29,7 @@ namespace TTE.Application.Mapping
 
             CreateMap<Product, ProductByIdResponse>()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.Rating, opt => opt.Ignore()) 
+                .ForMember(dest => dest.Rating, opt => opt.Ignore())
                 .ForMember(dest => dest.Inventory, opt => opt.Ignore());
 
             CreateMap<CouponRequestDto, Coupon>();
@@ -42,7 +42,11 @@ namespace TTE.Application.Mapping
 
             CreateMap<Order, OrderDto>()
                 .ForMember(dest => dest.TotalBeforeDiscount, opt => opt.MapFrom(src => src.Total_before_discount))
-                .ForMember(dest => dest.TotalAfterDiscount, opt => opt.MapFrom(src => src.Total_after_discount));
+                .ForMember(dest => dest.TotalAfterDiscount, opt => opt.MapFrom(src => src.Total_after_discount))
+                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.CustomerName))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.PaymentStatus));
+
             CreateMap<Order_Item, OrderItemDto>();
 
 

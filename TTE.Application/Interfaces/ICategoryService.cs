@@ -13,5 +13,6 @@ namespace TTE.Application.Interfaces
         Task<GenericResponseDto<CategoryResponseDto>> GetCategories();
         Task<GenericResponseDto<string>> DeleteCategory(int id, string userRole);
         Task<GenericResponseDto<string>> UpdateCategory(int id, CategoryRequestDto request);
+        Task<GenericResponseDto<string>> GetTopCategoryNamesByProductCount(int top);
     }
 }

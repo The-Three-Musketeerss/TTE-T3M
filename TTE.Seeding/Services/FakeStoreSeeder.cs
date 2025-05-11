@@ -74,7 +74,8 @@ public class FakeStoreSeeder
                         Price = productDto.Price,
                         Image = productDto.Image,
                         CategoryId = categoryId,
-                        Approved = true
+                        Approved = true,
+                        CreatedAt = DateTime.UtcNow
                     };
 
                     productEntities.Add(productEntity);
