@@ -49,14 +49,16 @@ namespace TTE.Tests.Services
         [Fact]
         public async Task CreateOrderFromCart_ShouldReturnFail_WhenCartIsNull()
         {
+            _mockUserRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(new User { Id = 1 });
+
             _mockCartRepo
                 .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
                 .ReturnsAsync((Cart)null);
 
-            // Act
             var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
-            // Assert
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_CART_NOT_FOUND, result.Message);
         }
@@ -66,6 +68,10 @@ namespace TTE.Tests.Services
         {
             var cart = new Cart { Id = 1, UserId = 1 };
 
+            _mockUserRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(new User { Id = 1 });
+
             _mockCartRepo
                 .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
                 .ReturnsAsync(cart);
@@ -74,10 +80,8 @@ namespace TTE.Tests.Services
                 .Setup(r => r.GetAllByCondition(It.IsAny<Expression<Func<Cart_Item, bool>>>()))
                 .ReturnsAsync(new List<Cart_Item>());
 
-            // Act
             var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
-            // Assert
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_CART_EMPTY, result.Message);
         }
@@ -96,6 +100,10 @@ namespace TTE.Tests.Services
                 new Inventory { ProductId = 1, Available = 2 }
             };
 
+            _mockUserRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(new User { Id = 1 });
+
             _mockCartRepo
                 .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
                 .ReturnsAsync(cart);
@@ -107,10 +115,8 @@ namespace TTE.Tests.Services
             _mockProductRepo.Setup(r => r.Get()).ReturnsAsync(products);
             _mockInventoryRepo.Setup(r => r.Get()).ReturnsAsync(inventories);
 
-            // Act
             var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
-            // Assert
             Assert.False(result.Success);
             Assert.Equal(
                 string.Format(ValidationMessages.MESSAGE_INVENTORY_NOT_ENOUGH, "Test Product", 2, 5),
@@ -139,6 +145,10 @@ namespace TTE.Tests.Services
                 new Inventory { ProductId = 1, Available = 5 }
             };
 
+            _mockUserRepo
+                .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(new User { Id = 1 });
+
             _mockCartRepo
                 .Setup(r => r.GetByCondition(It.IsAny<Expression<Func<Cart, bool>>>(), It.IsAny<string[]>()))
                 .ReturnsAsync(cart);
@@ -156,10 +166,8 @@ namespace TTE.Tests.Services
             _mockCartItemRepo.Setup(r => r.Delete(It.IsAny<Cart_Item>())).Returns(Task.CompletedTask);
             _mockCartRepo.Setup(r => r.Update(It.IsAny<Cart>())).Returns(Task.CompletedTask);
 
-            // Act
             var result = await _service.CreateOrderFromCart(1, _defaultRequest);
 
-            // Assert
             Assert.True(result.Success);
             Assert.Equal(ValidationMessages.MESSAGE_ORDER_CREATED_SUCCESSFULLY, result.Message);
         }
@@ -181,10 +189,8 @@ namespace TTE.Tests.Services
                 new OrderItemDto { ProductId = 1, Quantity = 1, Price = 10 }
             });
 
-            // Act
             var result = await _service.GetOrdersByUser(1);
 
-            // Assert
             Assert.True(result.Success);
             var list = Assert.IsType<List<OrderDto>>(result.Data);
             Assert.Single(list);
