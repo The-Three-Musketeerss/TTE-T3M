@@ -7,7 +7,7 @@ using TTE.Application.DTOs;
 
 namespace TTE.API.Controllers
 {
-    [Authorize(Policy = "ShopperOnly")]
+    [Authorize]
     [ApiController]
     [Route("api/orders")]
     public class OrderController : ControllerBase
