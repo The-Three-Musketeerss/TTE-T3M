@@ -7,7 +7,7 @@ using TTE.Commons.Constants;
 
 namespace TTE.API.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "ShopperOnly")]
     [ApiController]
     [Route("api/cart")]
     public class CartController : ControllerBase
