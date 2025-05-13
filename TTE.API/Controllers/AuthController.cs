@@ -50,5 +50,12 @@ namespace TTE.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        [HttpGet("security-questions")]
+        public async Task<IActionResult> GetSecurityQuestions()
+        {
+            var result = await _authService.GetSecurityQuestions();
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
     }
 }
