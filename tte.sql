@@ -232,3 +232,25 @@ VALUES ('20250331061329_MakeCouponNavigatonNullable', '8.0.13');
 
 COMMIT;
 
+START TRANSACTION;
+
+ALTER TABLE `Products` ADD `CreatedAt` datetime(6) NOT NULL DEFAULT '0001-01-01 00:00:00';
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20250509195243_ProductCreatedAt', '8.0.13');
+
+COMMIT;
+
+START TRANSACTION;
+
+ALTER TABLE `Orders` ADD `Address` longtext CHARACTER SET utf8mb4 NOT NULL;
+
+ALTER TABLE `Orders` ADD `CustomerName` longtext CHARACTER SET utf8mb4 NOT NULL;
+
+ALTER TABLE `Orders` ADD `PaymentStatus` longtext CHARACTER SET utf8mb4 NOT NULL;
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20250510234214_OrderNewFields', '8.0.13');
+
+COMMIT;
+

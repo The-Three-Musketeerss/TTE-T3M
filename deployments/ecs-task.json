@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:116981779724:task-definition/TTE-Task:13",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:116981779724:task-definition/TTE-Task:20",
     "containerDefinitions": [
         {
             "name": "tte-api",
@@ -30,11 +30,11 @@
             "secrets": [
                 {
                     "name": "DB_CONNECTION_STRING",
-                    "valueFrom": "arn:aws:secretsmanager:us-east-1:116981779724:secret:prod/db/connstring-q5Fksi"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:116981779724:secret:prod/db/connstring-BDvvCg"
                 },
                 {
                     "name": "JWT_SECRET",
-                    "valueFrom": "arn:aws:secretsmanager:us-east-1:116981779724:secret:prod/jwt/secret-cSRXHj"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:116981779724:secret:prod/jwt/secret-voNBSu"
                 }
             ],
             "logConfiguration": {
@@ -56,7 +56,7 @@
     "taskRoleArn": "arn:aws:iam::116981779724:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::116981779724:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 13,
+    "revision": 20,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -108,7 +108,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2025-04-01T04:31:19.224Z",
+    "registeredAt": "2025-05-13T16:30:53.051Z",
     "registeredBy": "arn:aws:iam::116981779724:root",
     "enableFaultInjection": false,
     "tags": []
