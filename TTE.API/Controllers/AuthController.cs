@@ -42,5 +42,13 @@ namespace TTE.API.Controllers
             var result = await _authService.RegisterEmployee(request);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
+        {
+            var result = await _authService.ForgotPassword(request);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
     }
 }

@@ -68,5 +68,10 @@
         public const string MESSAGE_JOB_REVIEW_SUCCESS = "Job {0}d successfully.";
         public const string UNSUPPORTED_JOB = "Unsupported job type.";
         public const string WAITING_FOR_APPROVAL = " waiting for approval";
+
+        public const string MESSAGE_INVALID_SECURITY_ANSWER = "Invalid security answer.";
+        public const string MESSAGE_PASSWORD_RESET_SUCCESS = "Password updated successfully.";
+        public const string MESSAGE_EMAIL_NOT_FOUND = "User with the provided email was not found.";
+
     }
 }
