@@ -5,7 +5,7 @@ using TTE.Commons.Constants;
 
 [ApiController]
 [Route("api/user/wishlist")]
-[Authorize]
+[Authorize(Policy = "ShopperOnly")]
 public class WishlistController : ControllerBase
 {
     private readonly IWishlistService _wishlistService;
