@@ -140,5 +140,31 @@ namespace TTE.Application.Services
             return new GenericResponseDto<EmployeeResponseDto>(true, AuthenticationMessages.MESSAGE_SIGN_UP_SUCCESS, response);
         }
 
+        public async Task<GenericResponseDto<object>> ForgotPassword(ForgotPasswordRequestDto request)
+        {
+            var user = await _userRepository.GetByCondition(u => u.Email == request.Email, "SecurityQuestion");
+
+            if (user == null)
+            {
+                return new GenericResponseDto<object>(false, ValidationMessages.MESSAGE_EMAIL_NOT_FOUND);
+            }
+
+            if (user.SecurityQuestionId != request.SecurityQuestionId)
+            {
+                return new GenericResponseDto<object>(false, ValidationMessages.MESSAGE_INVALID_SECURITY_QUESTION_ID);
+            }
+
+            if (!_securityService.VerifyPassword(request.SecurityAnswer, user.SecurityAnswer ?? string.Empty))
+            {
+                return new GenericResponseDto<object>(false, ValidationMessages.MESSAGE_INVALID_SECURITY_ANSWER);
+            }
+
+            user.Password = _securityService.HashPassword(request.NewPassword);
+            await _userRepository.Update(user);
+
+            return new GenericResponseDto<object>(true, AuthenticationMessages.MESSAGE_PASSWORD_RESET_SUCCESS);
+        }
+
+
     }
 }

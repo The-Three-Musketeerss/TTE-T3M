@@ -14,5 +14,6 @@ namespace TTE.Commons.Constants
         public const string MESSAGE_SIGN_UP_SUCCESS = "User registered successfully";
 
         public const string MESSAGE_PRODUCTS_RETRIEVED = "Products retrieved successfully";
+        public const string MESSAGE_PASSWORD_RESET_SUCCESS = "Password reset successfully";
     }
 }
