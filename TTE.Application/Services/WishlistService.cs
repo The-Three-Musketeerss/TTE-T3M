@@ -33,17 +33,23 @@ namespace TTE.Application.Services
             {
                 return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_NOT_FOUND);
             }
-            var existing = await _wishlistRepo.GetByCondition(w => w.UserId == userId && w.ProductId == productId);
-            if (existing != null)
+
+            var alreadyExists = await _wishlistRepo.GetByCondition(
+                w => w.UserId == userId && w.ProductId == productId);
+
+            if (alreadyExists != null)
             {
-                return new GenericResponseDto<string>(false, ValidationMessages.MESSAGE_PRODUCT_ALREADY_IN_WISHLIST);
+                return new GenericResponseDto<string>(
+                    false, ValidationMessages.MESSAGE_PRODUCT_ALREADY_IN_WISHLIST);
             }
 
             var newItem = new Wishlist { UserId = userId, ProductId = productId };
             await _wishlistRepo.Add(newItem);
 
-            return new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_WISHLIST_PRODUCT_ADDED);
+            return new GenericResponseDto<string>(
+                true, ValidationMessages.MESSAGE_WISHLIST_PRODUCT_ADDED);
         }
+
 
         public async Task<GenericResponseDto<string>> RemoveFromWishlist(int userId, int productId)
         {
