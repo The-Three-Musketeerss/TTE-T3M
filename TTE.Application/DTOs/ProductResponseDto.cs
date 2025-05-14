@@ -10,5 +10,7 @@
         public string Image { get; set; } = string.Empty;
 
         public RatingDto Rating { get; set; } = new RatingDto();
+        public DateTime CreatedAt { get; set; }
+        public InventoryDto Inventory { get; set; } = new InventoryDto();
     }
 }
