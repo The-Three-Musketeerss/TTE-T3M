@@ -18,6 +18,7 @@ namespace TTE.Infrastructure.Repositories
         {
             IQueryable<Product> query = _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.Inventory)
                 .Where(p => p.Approved);
 
             if (!string.IsNullOrEmpty(category))
