@@ -152,6 +152,9 @@ namespace TTE.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(e => e.ProductId)
                 .IsRequired();
+            modelBuilder.Entity<Wishlist>()
+                .HasIndex(w => new { w.UserId, w.ProductId })
+                .IsUnique();
 
             modelBuilder.Entity<Job>()
                 .Property(e => e.Type)
