@@ -54,7 +54,7 @@ namespace TTE.API.Controllers
             int userId = GetUserIdFromToken();
             if (userId == 0)
                 return Unauthorized(new { message = ValidationMessages.MESSAGE_USER_NOT_FOUND });
-            var result = await _orderService.GetOrderById(orderId);
+            var result = await _orderService.GetOrderById(orderId, userId);
             return result.Success ? Ok(result) : NotFound(result);
         }
     }
