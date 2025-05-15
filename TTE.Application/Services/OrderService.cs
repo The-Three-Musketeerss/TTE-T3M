@@ -116,11 +116,13 @@ namespace TTE.Application.Services
             return new GenericResponseDto<int>(true, ValidationMessages.MESSAGE_ORDER_CREATED_SUCCESSFULLY, order.Id);
         }
 
-        public async Task<GenericResponseDto<OrderDto>> GetOrderById(int orderId)
+        public async Task<GenericResponseDto<OrderDto>> GetOrderById(int orderId, int userId)
         {
             var order = await _orderRepo.GetByCondition(o => o.Id == orderId);
             if (order == null)
                 return new GenericResponseDto<OrderDto>(false, ValidationMessages.MESSAGE_ORDER_NOT_FOUND);
+            if (order.UserId != userId)
+                return new GenericResponseDto<OrderDto>(false, ValidationMessages.MESAGGE_ID_NOT_FOUND);
             var items = await _orderItemRepo.GetAllByCondition(i => i.OrderId == order.Id);
             var orderDto = _mapper.Map<OrderDto>(order);
             orderDto.OrderItems = _mapper.Map<List<OrderItemDto>>(items);
