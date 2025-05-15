@@ -57,6 +57,8 @@
         public const string MESSAGE_CART_EMPTY = "Cart is empty.";
         public const string MESSAGE_INVENTORY_NOT_FOUND = "Inventory not found for a product in the cart.";
         public const string MESSAGE_INVENTORY_NOT_ENOUGH = "Not enough inventory for product {0}. Available: {1}, Requested: {2}";
+        public const string MESSAGE_ORDER_NOT_FOUND = "Order not found.";
+        public const string MESSAGE_ORDER_RETRIEVED_SUCCESSFULLY = "Order retrieved successfully.";
 
         public const string MESSAGE_RATING_NOT_VALID = "Rating must be between 1 and 5.";
         public const string MESSAGE_REVIEW_ADDED_SUCCESSFULLY = "Review added successfully.";

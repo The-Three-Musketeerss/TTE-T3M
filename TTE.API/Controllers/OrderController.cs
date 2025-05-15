@@ -47,5 +47,15 @@ namespace TTE.API.Controllers
             var result = await _orderService.GetOrdersByUser(userId);
             return Ok(result);
         }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderById(int orderId)
+        {
+            int userId = GetUserIdFromToken();
+            if (userId == 0)
+                return Unauthorized(new { message = ValidationMessages.MESSAGE_USER_NOT_FOUND });
+            var result = await _orderService.GetOrderById(orderId);
+            return result.Success ? Ok(result) : NotFound(result);
+        }
     }
 }

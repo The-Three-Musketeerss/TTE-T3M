@@ -116,6 +116,17 @@ namespace TTE.Application.Services
             return new GenericResponseDto<int>(true, ValidationMessages.MESSAGE_ORDER_CREATED_SUCCESSFULLY, order.Id);
         }
 
+        public async Task<GenericResponseDto<OrderDto>> GetOrderById(int orderId)
+        {
+            var order = await _orderRepo.GetByCondition(o => o.Id == orderId);
+            if (order == null)
+                return new GenericResponseDto<OrderDto>(false, ValidationMessages.MESSAGE_ORDER_NOT_FOUND);
+            var items = await _orderItemRepo.GetAllByCondition(i => i.OrderId == order.Id);
+            var orderDto = _mapper.Map<OrderDto>(order);
+            orderDto.OrderItems = _mapper.Map<List<OrderItemDto>>(items);
+            return new GenericResponseDto<OrderDto>(true, ValidationMessages.MESSAGE_ORDER_RETRIEVED_SUCCESSFULLY, orderDto);
+        }
+
         public async Task<GenericResponseDto<List<OrderDto>>> GetOrdersByUser(int userId)
         {
             var orders = await _orderRepo.GetAllByCondition(o => o.UserId == userId);
@@ -125,7 +136,7 @@ namespace TTE.Application.Services
             {
                 var items = await _orderItemRepo.GetAllByCondition(i => i.OrderId == order.Id);
                 var orderDto = _mapper.Map<OrderDto>(order);
-                orderDto.OrderItems = _mapper.Map<List<OrderItemDto>>(items);
+                orderDto.OrderItems = [];
                 orderDtos.Add(orderDto);
             }
 
