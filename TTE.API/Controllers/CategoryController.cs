@@ -23,6 +23,7 @@ namespace TTE.API.Controllers
         public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDto request)
         {
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
             if (string.IsNullOrEmpty(userRole))
             {
                 return Unauthorized(new { message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND });
@@ -31,7 +32,7 @@ namespace TTE.API.Controllers
             {
                 return Forbid();
             }
-            var result = await _categoryService.CreateCategory(request, userRole);
+            var result = await _categoryService.CreateCategory(request, userRole, userName);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
@@ -46,13 +47,14 @@ namespace TTE.API.Controllers
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {
-            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
             if (string.IsNullOrEmpty(userRole))
             {
                 return Unauthorized(new {message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND});
             }
 
-            var response = await _categoryService.DeleteCategory(categoryId, userRole);
+            var response = await _categoryService.DeleteCategory(categoryId, userRole, userName);
 
             return response.Success ? Ok(response) : BadRequest(response);
         }

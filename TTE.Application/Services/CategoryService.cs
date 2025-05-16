@@ -25,7 +25,7 @@ namespace TTE.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<GenericResponseDto<string>> DeleteCategory(int id, string userRole)
+        public async Task<GenericResponseDto<string>> DeleteCategory(int id, string userRole, string userName)
         {
             var categoryToDelete = await _categoryRepository.GetByCondition(c => c.Id == id);
 
@@ -51,7 +51,9 @@ namespace TTE.Application.Services
                 Item_id = categoryToDelete.Id,
                 CreatedAt = DateTime.Now,
                 Type = Job.JobEnum.Category,
+                ItemName = categoryToDelete.Name,
                 Operation = Job.OperationEnum.Delete,
+                CreatedBy = userName,
                 Status = Job.StatusEnum.Pending
             };
 
@@ -60,7 +62,7 @@ namespace TTE.Application.Services
             return new GenericResponseDto<string>(true, ValidationMessages.CATEGORY_DELETED_EMPLOYEE_SUCCESSFULLY);
         }
 
-        public async Task<GenericResponseDto<CategoryResponseDto>> CreateCategory(CategoryRequestDto request, string userRole)
+        public async Task<GenericResponseDto<CategoryResponseDto>> CreateCategory(CategoryRequestDto request, string userRole, string userName)
         {
             var categoryExists = await _categoryRepository.GetByCondition(c => c.Name == request.Name);
             if (categoryExists != null)
@@ -88,6 +90,8 @@ namespace TTE.Application.Services
                 Item_id = category.Id,
                 CreatedAt = DateTime.Now,
                 Type = Job.JobEnum.Category,
+                ItemName = category.Name,
+                CreatedBy = userName,
                 Operation = Job.OperationEnum.Create,
                 Status = Job.StatusEnum.Pending
             };

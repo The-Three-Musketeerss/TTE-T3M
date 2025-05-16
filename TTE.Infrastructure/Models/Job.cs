@@ -10,6 +10,8 @@ namespace TTE.Infrastructure.Models
     {
         public int Id { get; set; }
         public int Item_id { get; set; }
+        public string ItemName { get; set; } = string.Empty;
+        public string CreatedBy { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 
         //Type

@@ -121,7 +121,7 @@ namespace TTE.Application.Services
         }
 
 
-        public async Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole)
+        public async Task<GenericResponseDto<ProductCreatedResponseDto>> CreateProducts(ProductRequestDto request, string userRole, string userName)
         {
             var category = await _genericCategoryRepository.GetByCondition(c => c.Name == request.Category);
             if (category == null)
@@ -159,6 +159,8 @@ namespace TTE.Application.Services
                     CreatedAt = DateTime.Now,
                     Type = Job.JobEnum.Product,
                     Operation = Job.OperationEnum.Create,
+                    CreatedBy = userName,
+                    ItemName = product.Title,
                     Status = Job.StatusEnum.Pending
                 };
                 await _genericJobRepository.Add(job);
@@ -177,7 +179,7 @@ namespace TTE.Application.Services
             return new GenericResponseDto<ProductCreatedResponseDto>(true, state, response);
         }
 
-        public async Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole)
+        public async Task<GenericResponseDto<string>> DeleteProduct(int productId, string userRole, string userName)
         {
             var product = await _genericProductRepository.GetByCondition(p => p.Id == productId);
             if (product == null)
@@ -196,6 +198,8 @@ namespace TTE.Application.Services
                 Item_id = productId,
                 CreatedAt = DateTime.Now,
                 Type = Job.JobEnum.Product,
+                ItemName = product.Title,
+                CreatedBy = userName,
                 Operation = Job.OperationEnum.Delete,
                 Status = Job.StatusEnum.Pending
             };
