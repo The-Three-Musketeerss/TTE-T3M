@@ -36,8 +36,12 @@ namespace TTE.Application.Services
             {
                 Id = j.Id,
                 Type = j.Type.ToString().ToLower(),       
-                Id_item = j.Item_id,                           
-                Operation = j.Operation.ToString().ToLower()
+                Id_item = j.Item_id,
+                ItemName = j.ItemName,
+                Operation = j.Operation.ToString().ToLower(),
+                CreatedBy = j.CreatedBy,
+                CreatedAt = j.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
+
             }).ToList();
 
             return new GenericResponseDto<List<JobResponseDto>>(true,ValidationMessages.MESSAGE_JOBS_PENDING, result);

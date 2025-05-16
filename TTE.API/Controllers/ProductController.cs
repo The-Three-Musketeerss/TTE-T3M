@@ -23,13 +23,14 @@ namespace TTE.API.Controllers
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
         {
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
 
             if (userRole != AppConstants.ADMIN && userRole != AppConstants.EMPLOYEE)
             {
                 return Forbid();
             }
 
-            var result = await _productService.CreateProducts(request, userRole);
+            var result = await _productService.CreateProducts(request, userRole, userName!);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
@@ -66,12 +67,13 @@ namespace TTE.API.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
-            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
             if (string.IsNullOrEmpty(userRole))
             {
                 return Unauthorized(new { message = ValidationMessages.MESSAGE_ROLE_NOT_FOUND });
             }
-            var response = await _productService.DeleteProduct(productId, userRole);
+            var response = await _productService.DeleteProduct(productId, userRole, userName!);
             return Ok(response);
         }
 
