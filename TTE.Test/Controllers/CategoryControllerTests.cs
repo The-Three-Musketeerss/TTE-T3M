@@ -20,12 +20,13 @@ namespace TTE.Tests.Controllers
             _controller = new CategoryController(_mockCategoryService.Object);
         }
 
-        private void SetUserRole(string role)
+        private void SetUserRole(string role, string userName = "UnitTestUser")
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Role, role)
-            }, "mock"));
+        new Claim(ClaimTypes.Role, role),
+        new Claim(ClaimTypes.Name, userName)
+    }, "mock"));
 
             _controller.ControllerContext = new ControllerContext
             {
@@ -42,8 +43,9 @@ namespace TTE.Tests.Controllers
                 true,
                 ValidationMessages.CATEGORY_CREATED_SUCCESSFULLY
             );
+            var userName = "UnitTestUser";
             _mockCategoryService
-                .Setup(s => s.CreateCategory(request, AppConstants.ADMIN))
+                .Setup(s => s.CreateCategory(request, AppConstants.ADMIN, userName))
                 .ReturnsAsync(expectedResponse);
             // Act
             var result = await _controller.CreateCategory(request);
@@ -108,8 +110,10 @@ namespace TTE.Tests.Controllers
                 ValidationMessages.CATEGORY_DELETED_SUCCESSFULLY
             );
 
+            var userName = "UnitTestUser";
+
             _mockCategoryService
-                .Setup(s => s.DeleteCategory(categoryId, AppConstants.ADMIN))
+                .Setup(s => s.DeleteCategory(categoryId, AppConstants.ADMIN, userName))
                 .ReturnsAsync(expectedResponse);
 
             // Act
@@ -133,8 +137,10 @@ namespace TTE.Tests.Controllers
                 ValidationMessages.CATEGORY_NOT_FOUND
             );
 
+            var userName = "UnitTestUser";
+
             _mockCategoryService
-                .Setup(s => s.DeleteCategory(categoryId, AppConstants.ADMIN))
+                .Setup(s => s.DeleteCategory(categoryId, AppConstants.ADMIN, userName))
                 .ReturnsAsync(expectedResponse);
 
             // Act

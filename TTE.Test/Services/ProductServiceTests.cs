@@ -76,9 +76,10 @@ namespace TTE.Tests.Services
                               .ReturnsAsync(1);
 
             var userRole = AppConstants.ADMIN;
+            var userName = "UnitTestUser";
 
             // Act
-            var result = await _productService.CreateProducts(request, userRole) ;
+            var result = await _productService.CreateProducts(request, userRole, userName) ;
 
             // Assert
             var data = result.Data as ProductCreatedResponseDto;
@@ -105,7 +106,8 @@ namespace TTE.Tests.Services
                              .ReturnsAsync((Category)null);
 
             // Act
-            var result = await _productService.CreateProducts(request, AppConstants.ADMIN);
+            var userName = "UnitTestUser";
+            var result = await _productService.CreateProducts(request, AppConstants.ADMIN, userName);
 
             // Assert
             Assert.False(result.Success);
@@ -383,7 +385,8 @@ namespace TTE.Tests.Services
                 .ReturnsAsync((Product)null);
 
             // Act
-            var result = await _productService.DeleteProduct(productId, AppConstants.ADMIN);
+            var userName = "UnitTestUser";
+            var result = await _productService.DeleteProduct(productId, AppConstants.ADMIN, userName);
 
             // Assert
             Assert.False(result.Success);
@@ -405,7 +408,8 @@ namespace TTE.Tests.Services
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _productService.DeleteProduct(productId, AppConstants.ADMIN);
+            var userName = "UnitTestUser";
+            var result = await _productService.DeleteProduct(productId, AppConstants.ADMIN, userName);
 
             // Assert
             Assert.True(result.Success);
@@ -427,7 +431,8 @@ namespace TTE.Tests.Services
                 .ReturnsAsync(1);
 
             // Act
-            var result = await _productService.DeleteProduct(productId, AppConstants.EMPLOYEE);
+            var userName = "UnitTestUser";
+            var result = await _productService.DeleteProduct(productId, AppConstants.EMPLOYEE, userName);
 
             // Assert
             Assert.True(result.Success);

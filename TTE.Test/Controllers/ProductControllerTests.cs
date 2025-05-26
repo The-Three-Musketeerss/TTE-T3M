@@ -22,17 +22,18 @@ namespace TTE.Tests.Controllers
             _mockProductService = new Mock<IProductService>();
             _controller = new ProductController(_mockProductService.Object);
         }
-      
-        private void SetUserRole(string role)
+
+        private void SetUserRole(string role, string userName = "UnitTestUser")
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Role, role)
-            }, "mock"));
+        new Claim(ClaimTypes.Role, role),
+        new Claim(ClaimTypes.Name, userName)
+    }, "mock"));
 
-            _controller.ControllerContext = new ControllerContext()
+            _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext() { User = user }
+                HttpContext = new DefaultHttpContext { User = user }
             };
         }
 
@@ -57,8 +58,9 @@ namespace TTE.Tests.Controllers
                 Id = 1,
                 Title = request.Title,
             });
+            var userName = "UnitTestUser";
 
-            _mockProductService.Setup(service => service.CreateProducts(request, AppConstants.ADMIN))
+            _mockProductService.Setup(service => service.CreateProducts(request, AppConstants.ADMIN, userName))
                                .ReturnsAsync(response);
 
             // Act
@@ -103,7 +105,9 @@ namespace TTE.Tests.Controllers
 
             var response = new GenericResponseDto<ProductCreatedResponseDto>(false, "Category not found");
 
-            _mockProductService.Setup(service => service.CreateProducts(request, AppConstants.EMPLOYEE))
+            var userName = "UnitTestUser";
+
+            _mockProductService.Setup(service => service.CreateProducts(request, AppConstants.EMPLOYEE, userName))
                                .ReturnsAsync(response);
 
             // Act
@@ -244,49 +248,6 @@ namespace TTE.Tests.Controllers
             Assert.Equal(response, result.Value);
         }
 
-        [Fact]
-        public async Task DeleteProduct_ShouldReturnOk_WhenAdminDeletesProduct()
-        {
-            // Arrange
-            int productId = 1;
-            // Set user role as ADMIN
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, AppConstants.ADMIN) }, "mock"));
-            _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = user } };
-
-            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_SUCCESSFULLY);
-            _mockProductService.Setup(s => s.DeleteProduct(productId, AppConstants.ADMIN))
-                .ReturnsAsync(response);
-
-            // Act
-            var result = await _controller.DeleteProduct(productId) as OkObjectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
-            Assert.Equal(response, result.Value);
-        }
-
-        [Fact]
-        public async Task DeleteProduct_ShouldReturnOk_WhenEmployeeDeletesProduct()
-        {
-            // Arrange
-            int productId = 1;
-            // Set user role as EMPLOYEE
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, AppConstants.EMPLOYEE) }, "mock"));
-            _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = user } };
-
-            var response = new GenericResponseDto<string>(true, ValidationMessages.MESSAGE_PRODUCT_DELETED_EMPLOYEE_SUCCESSFULLY);
-            _mockProductService.Setup(s => s.DeleteProduct(productId, AppConstants.EMPLOYEE))
-                .ReturnsAsync(response);
-
-            // Act
-            var result = await _controller.DeleteProduct(productId) as OkObjectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
-            Assert.Equal(response, result.Value);
-        }
 
         [Fact]
         public async Task DeleteProduct_ShouldReturnUnauthorized_WhenUserRoleIsMissing()

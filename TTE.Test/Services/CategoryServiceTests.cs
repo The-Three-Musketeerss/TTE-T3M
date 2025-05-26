@@ -44,7 +44,8 @@ namespace TTE.Tests.Services
             var category = new Category { Name = request.Name };
             _mockMapper.Setup(m => m.Map<Category>(request)).Returns(category);
             _mockCategoryRepo.Setup(r => r.Add(category)).ReturnsAsync(1);
-            var result = await _service.CreateCategory(request, userRole);
+            var userName = "UnitTestUser";
+            var result = await _service.CreateCategory(request, userRole, userName);
             Assert.True(result.Success);
             Assert.Equal(ValidationMessages.CATEGORY_CREATED_SUCCESSFULLY, result.Message);
         }
@@ -56,7 +57,8 @@ namespace TTE.Tests.Services
             var request = new CategoryRequestDto { Name = "Test" };
             _mockCategoryRepo.Setup(r => r.GetByCondition(c => c.Name == request.Name))
                              .ReturnsAsync(new Category());
-            var result = await _service.CreateCategory(request, userRole);
+            var userName = "UnitTestUser";
+            var result = await _service.CreateCategory(request, userRole, userName);
             Assert.False(result.Success);
             Assert.Equal(ValidationMessages.CATEGORY_ALREADY_EXISTS, result.Message);
         }
@@ -128,7 +130,9 @@ namespace TTE.Tests.Services
                              .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _service.DeleteCategory(categoryId, userRole);
+            var userName = "UnitTestUser";
+
+            var result = await _service.DeleteCategory(categoryId, userRole, userName);
 
             // Assert
             Assert.True(result.Success);
@@ -150,7 +154,9 @@ namespace TTE.Tests.Services
                             .ReturnsAsync(products);
 
             // Act
-            var result = await _service.DeleteCategory(categoryId, userRole);
+            var userName = "UnitTestUser";
+
+            var result = await _service.DeleteCategory(categoryId, userRole, userName);
 
             // Assert
             Assert.False(result.Success);
@@ -174,7 +180,9 @@ namespace TTE.Tests.Services
                         .ReturnsAsync(1);
 
             // Act
-            var result = await _service.DeleteCategory(categoryId, userRole);
+            var userName = "UnitTestUser";
+
+            var result = await _service.DeleteCategory(categoryId, userRole, userName);
 
             // Assert
             Assert.True(result.Success);
